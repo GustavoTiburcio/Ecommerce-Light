@@ -1,10 +1,11 @@
 import React from 'react';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
+import { Container } from './styles';
 
 function BannerCarousel() {
   return (
-    <>
+    <Container>
       <Carousel
         showArrows={true}
         showStatus={false}
@@ -28,7 +29,7 @@ function BannerCarousel() {
           <img src="https://td0295.vtexassets.com/assets/vtex.file-manager-graphql/images/cd395b38-b82d-4fed-85d0-7b449d8432d5___a9bc0a417fd9f547e0306bac4f013283.jpg" />
         </div>
       </Carousel>
-    </>
+    </Container>
   );
 }
 
