@@ -8,7 +8,6 @@ export const Container = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  /* height: 100vh; */
   background: #fff;
   margin-top: -6rem;
   animation: 1s ${fadeInAnimation};

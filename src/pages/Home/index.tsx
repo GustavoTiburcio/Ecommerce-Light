@@ -4,6 +4,7 @@ import BannerCarousel from '../../components/BannerCarousel';
 import ImagensPersonalizadas from '../../components/ImagensPersonalizadas';
 import InfoBar from '../../components/InfoBar';
 import Loader from '../../components/Loader';
+import ProdutosDestaque from '../../components/ProdutosDestaque';
 import Sections from '../../components/Sections';
 import { Container } from './styles';
 
@@ -23,6 +24,7 @@ export default function Home() {
           <Sections />
           <Banner />
           <ImagensPersonalizadas />
+          <ProdutosDestaque />
         </Container>
         :
         <Loader />
