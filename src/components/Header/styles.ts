@@ -14,6 +14,9 @@ export const Container = styled.div`
     a {
       color: #000;
     }
+    .dropbtn{
+      color: #000;
+    }
   }
 `;
 
@@ -29,7 +32,7 @@ export const LogoDiv = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 25%;
+  width: 20%;
   height: 100%;
 `;
 
@@ -39,13 +42,61 @@ export const Logo = styled.img`
 
 export const Categorias = styled.div`
   align-items: center;
-  width: 50%;
+  width: 60%;
   flex-wrap: wrap;
   height: 100%;
   display: flex;
   flex-direction: row;
   text-transform: capitalize;
   font-weight: 500;
+
+  .dropdown {
+  float: left;
+  overflow: hidden;
+}
+
+.dropdown .dropbtn {
+  font-size: 16px;
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  margin: 0;
+  font-size: 1.0rem;
+  font-weight: 450;
+  text-transform: capitalize;
+}
+
+.navbar a:hover, .dropdown:hover .dropbtn {
+  color:red;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  float: none;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.dropdown-content a:hover {
+  color: red;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
 `;
 
 export const Categoria = styled.p`
@@ -57,7 +108,7 @@ export const Buttons = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 25%;
+  width: 20%;
   height: 100%;
     a {
       font-size: 2rem;
