@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Banner from '../../components/Banner';
 import BannerCarousel from '../../components/BannerCarousel';
+import ImagensPersonalizadas from '../../components/ImagensPersonalizadas';
 import InfoBar from '../../components/InfoBar';
 import Loader from '../../components/Loader';
 import Sections from '../../components/Sections';
@@ -21,6 +22,7 @@ export default function Home() {
           <InfoBar />
           <Sections />
           <Banner />
+          <ImagensPersonalizadas />
         </Container>
         :
         <Loader />

@@ -8,10 +8,6 @@ export const Container = styled.div`
   position: relative;
   z-index: 10;
 
-  /* div {
-    transition:background 0.1s linear;
-  } */
-
   div:hover {
     background-color: #FFF;
     color: #000;
@@ -35,6 +31,10 @@ export const LogoDiv = styled.div`
   justify-content: center;
   width: 25%;
   height: 100%;
+`;
+
+export const Logo = styled.img`
+  cursor: pointer;
 `;
 
 export const Categorias = styled.div`

@@ -14,6 +14,7 @@ export const SectionImageDiv = styled.div`
   width: 23%;
   overflow: hidden;
   position: relative;
+  cursor: pointer;
 
   p {
     font-size: 1.5rem;
@@ -24,24 +25,20 @@ export const SectionImageDiv = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    transition: all ease-in-out 200ms;;
     visibility: hidden;
   }
 
-  img:hover {
+  :hover {
+    p {
+      visibility: visible;
+    }
+
+    img{
       transform: scale(1.2);
       transform-origin: 50% 50%;
       filter: brightness(50%);
-      /* p {
-        font-size: 1.5rem;
-        font-style: italic;
-        font-weight: bold;
-        color: #fff;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        visibility: visible;
-      } */
+    }
   }
 `;
 

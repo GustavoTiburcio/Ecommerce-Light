@@ -6,7 +6,6 @@ export const Container = styled.div`
   width: 80%;
   height: 13rem;
   margin: 2rem 0px;
-  background-color: #eee;
 `;
 
 export const Image = styled.img`

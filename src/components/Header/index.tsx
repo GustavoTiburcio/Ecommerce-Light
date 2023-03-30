@@ -1,6 +1,6 @@
 import React from 'react';
-import { Buttons, Categoria, Categorias, Container, LogoDiv, Subcontainer } from './styles';
-import Logo from '../../assets/images/header_logo.svg';
+import { Buttons, Categoria, Categorias, Container, LogoDiv, Logo, Subcontainer } from './styles';
+import LogoSVG from '../../assets/images/header_logo.svg';
 import * as FiIcons from 'react-icons/fi';
 import * as AiIcons from 'react-icons/ai';
 import { Link } from 'react-router-dom';
@@ -14,7 +14,7 @@ export default function Header() {
     <Container>
       <Subcontainer>
         <LogoDiv>
-          <img src={Logo} alt="Logo" />
+          <Logo src={LogoSVG} alt="Logo" />
         </LogoDiv>
         <Categorias>
           {categorias.map((categoria, index) => (
