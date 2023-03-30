@@ -12,3 +12,8 @@ export const Container = styled.div`
   margin-top: -6rem;
   animation: 1s ${fadeInAnimation};
 `;
+
+export const LogoRodape = styled.img`
+  cursor: pointer;
+  margin: 2rem 0px;
+`;

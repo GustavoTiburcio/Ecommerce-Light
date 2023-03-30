@@ -5,9 +5,13 @@ import EmpresaInfo from '../../components/EmpresaInfo';
 import ImagensPersonalizadas from '../../components/ImagensPersonalizadas';
 import InfoBar from '../../components/InfoBar';
 import Loader from '../../components/Loader';
+import Newsletter from '../../components/Newsletter';
 import ProdutosDestaque from '../../components/ProdutosDestaque';
 import Sections from '../../components/Sections';
-import { Container } from './styles';
+import { Container, LogoRodape } from './styles';
+import LogoSVG from '../../assets/images/header_logo.svg';
+import Footer from '../../components/Footer';
+import Copyright from '../../components/Copyright';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -33,6 +37,10 @@ export default function Home() {
             imagensSrc={['https://td0295.vtexassets.com/assets/vtex.file-manager-graphql/images/796fc664-6db6-4ecd-8b6f-0afab65ec779___ebe784c5ce3e0231bcfc52507c2aa5fc.jpg', 'https://td0295.vtexassets.com/assets/vtex.file-manager-graphql/images/df7dff86-6158-4e21-96d4-1ff0a6c532e6___cd5be61f78f7422d535f17ce05623313.jpg']}
           />
           <EmpresaInfo />
+          <Newsletter />
+          <LogoRodape src={LogoSVG} alt="Logo" />
+          <Footer />
+          <Copyright />
         </Container>
         :
         <Loader />
