@@ -1,15 +1,45 @@
-import React from 'react';
-import { Buttons, Categorias, Container, LogoDiv, Logo, Subcontainer } from './styles';
+import React, { useState } from 'react';
+import { Buttons, Categorias, Container, LogoDiv, Logo, Subcontainer, ModalDiv } from './styles';
 import LogoSVG from '../../assets/images/header_logo.svg';
 import * as FiIcons from 'react-icons/fi';
 import * as AiIcons from 'react-icons/ai';
 import * as GiIcons from 'react-icons/gi';
 import { Link } from 'react-router-dom';
 import { categorias } from './CategoriasMock';
+import ReactModal from 'react-modal';
+import SearchBar from '../SearchBar';
 
 export default function Header() {
+  const [modalVisible, setModalVisible] = useState(false);
+
   return (
     <Container>
+      <ReactModal
+        isOpen={modalVisible}
+        appElement={document.getElementById('root') as HTMLElement}
+        contentLabel='Minimal Modal Example'
+        shouldCloseOnOverlayClick={true}
+        onRequestClose={() => setModalVisible(false)}
+        style={{
+          overlay: {
+            backgroundColor: '#1D1D1D',
+            opacity: 0.9
+          },
+          content: {
+            display: 'flex',
+            height: 150,
+            width: '50%',
+            margin: 'auto',
+          },
+        }}
+      >
+        <ModalDiv>
+          <div style={{ alignSelf: 'flex-end', cursor: 'pointer' }}>
+            <AiIcons.AiOutlineClose onClick={() => setModalVisible(false)} size={25} />
+          </div>
+          <SearchBar placeholder='O que você procura?' />
+        </ModalDiv>
+      </ReactModal>
       <Subcontainer>
         <LogoDiv>
           <Logo src={LogoSVG} alt='Logo' />
@@ -39,9 +69,9 @@ export default function Header() {
           ))}
         </Categorias>
         <Buttons>
-          <Link to={'/'}>
+          <a onClick={() => setModalVisible(true)}>
             <FiIcons.FiSearch />
-          </Link>
+          </a>
           <Link to={'/'}>
             <AiIcons.AiOutlineHeart />
           </Link>

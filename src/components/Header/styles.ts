@@ -51,52 +51,52 @@ export const Categorias = styled.div`
   font-weight: 500;
 
   .dropdown {
-  float: left;
-  overflow: hidden;
-}
+    float: left;
+    overflow: hidden;
+  }
 
-.dropdown .dropbtn {
-  font-size: 16px;
-  border: none;
-  outline: none;
-  color: white;
-  padding: 14px 16px;
-  background-color: inherit;
-  margin: 0;
-  font-size: 1.0rem;
-  font-weight: 450;
-  text-transform: capitalize;
-}
+  .dropdown .dropbtn {
+    font-size: 16px;
+    border: none;
+    outline: none;
+    color: white;
+    padding: 14px 16px;
+    background-color: inherit;
+    margin: 0;
+    font-size: 1.0rem;
+    font-weight: 450;
+    text-transform: capitalize;
+  }
 
-.navbar a:hover, .dropdown:hover .dropbtn {
-  color:red;
-}
+  .navbar a:hover, .dropdown:hover .dropbtn {
+    color:red;
+  }
 
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #fff;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
 
-.dropdown-content a {
-  float: none;
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  text-align: left;
-}
+  .dropdown-content a {
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+  }
 
-.dropdown-content a:hover {
-  color: red;
-}
+  .dropdown-content a:hover {
+    color: red;
+  }
 
-.dropdown:hover .dropdown-content {
-  display: block;
-}
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
 `;
 
 export const Categoria = styled.p`
@@ -115,8 +115,16 @@ export const Buttons = styled.div`
       background: none;
       color: #fff;
       margin: 0px 10px;
+      cursor: pointer;
     }
     a:hover {
       color: #000
     }
+`;
+
+export const ModalDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
 `;

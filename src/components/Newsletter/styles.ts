@@ -32,7 +32,7 @@ export const Input = styled.input`
     font-weight: bold;
     opacity: 0.5;
     font-size: 1rem;
-}
+  }
 `;
 
 export const Button = styled.button`
