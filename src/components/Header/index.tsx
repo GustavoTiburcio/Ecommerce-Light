@@ -4,16 +4,18 @@ import LogoSVG from '../../assets/images/header_logo.svg';
 import * as FiIcons from 'react-icons/fi';
 import * as AiIcons from 'react-icons/ai';
 import * as GiIcons from 'react-icons/gi';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { categorias } from './CategoriasMock';
 import ReactModal from 'react-modal';
 import SearchBar from '../SearchBar';
 
+
 export default function Header() {
   const [modalVisible, setModalVisible] = useState(false);
+  const paginaAtual = useLocation();
 
   return (
-    <Container>
+    <Container hoverHeaderActive={paginaAtual.pathname === '/' ? true : false}>
       <ReactModal
         isOpen={modalVisible}
         appElement={document.getElementById('root') as HTMLElement}
@@ -44,7 +46,7 @@ export default function Header() {
         <LogoDiv>
           <Logo src={LogoSVG} alt='Logo' />
         </LogoDiv>
-        <Categorias>
+        <Categorias hoverHeaderActive={paginaAtual.pathname === '/' ? true : false}>
           <div className='dropdown'>
             <button className='dropbtn'>
               <GiIcons.GiHamburgerMenu size={25} style={{ marginTop: 5 }} />

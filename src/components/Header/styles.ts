@@ -1,6 +1,10 @@
 import styled from 'styled-components';
 
-export const Container = styled.div`
+interface HeaderProps {
+  hoverHeaderActive?: boolean;
+}
+
+export const Container = styled.div<HeaderProps>`
   display: flex;
   height: 6rem;
   max-height: 180px;
@@ -8,16 +12,25 @@ export const Container = styled.div`
   position: relative;
   z-index: 10;
 
-  div:hover {
-    background-color: #FFF;
-    color: #000;
-    a {
-      color: #000;
+  ${({ hoverHeaderActive: hoverHeaderActive }) => {
+    if (hoverHeaderActive) {
+      return `div:hover {
+        background-color: #FFF;
+        color: #000;
+        a {
+          color: #000;
+        }
+        .dropbtn {
+          color: #000;
+        }
+      }`;
     }
-    .dropbtn{
-      color: #000;
-    }
-  }
+    return `
+      * {
+        color: #000;
+      }
+      `;
+  }}
 `;
 
 export const Subcontainer = styled.div`
@@ -40,7 +53,7 @@ export const Logo = styled.img`
   cursor: pointer;
 `;
 
-export const Categorias = styled.div`
+export const Categorias = styled.div<HeaderProps>`
   align-items: center;
   width: 60%;
   flex-wrap: wrap;
@@ -59,7 +72,7 @@ export const Categorias = styled.div`
     font-size: 16px;
     border: none;
     outline: none;
-    color: white;
+    color: ${({ hoverHeaderActive: hoverHeaderActive }) => hoverHeaderActive ? '#fff' : '#000'};
     padding: 14px 16px;
     background-color: inherit;
     margin: 0;
