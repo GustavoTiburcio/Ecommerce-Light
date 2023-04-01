@@ -44,7 +44,9 @@ export default function Header() {
       </ReactModal>
       <Subcontainer>
         <LogoDiv>
-          <Logo src={LogoSVG} alt='Logo' />
+          <Link to={'/'}>
+            <Logo src={LogoSVG} alt='Logo' />
+          </Link>
         </LogoDiv>
         <Categorias hoverHeaderActive={paginaAtual.pathname === '/' ? true : false}>
           <div className='dropdown'>
