@@ -5,7 +5,7 @@ export default function EmpresaInfo() {
   return (
     <Container>
       <ImageDiv>
-        <Image src='https://ioaltogiro.vtexassets.com/arquivos/AG_New-Home_SabrinaSato.jpg'/>
+        <Image src='https://td0295.vtexassets.com/assets/vtex.file-manager-graphql/images/ae093054-48e3-4115-82bc-299f6ca3f245___82ab759a4366171b25a3e1717e05c4f3.jpg'/>
       </ImageDiv>
       <TextDiv>
         <b>Paixão pelo corpo em movimento</b>

@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import {
-  Button, Container, Cor, CoresDiv,
-  CorTamanhoDiv, DescricaoProdutoDiv, DetalhesDiv, FreteDiv, FreteInput, FreteInputDiv, ImageCarouselDiv, NavDiv,
-  NavDivCarrinho,
-  NotaProdutoDiv,
-  PaletaCoresDiv,
-  PaletaTamanhosDiv,
-  PrecoDiv, ProdutoInfoDiv, ProdutoReviewDiv, QuantidadeButton, QuantidadeInput, QuantidadeInputDiv, RecomendacaoDiv, Ref, StarDiv, Tamanho, TamanhosDiv, Titulo
+  Button, Container, CoresDiv, CorTamanhoDiv, DescricaoProdutoDiv,
+  DetalhesDiv, FreteDiv, FreteInput, FreteInputDiv, ImageCarouselContainer,
+  ImageCarouselDiv, NavDiv, NavDivCarrinho, NotaProdutoDiv, PaletaCoresDiv,
+  PaletaTamanhosDiv, PrecoDiv, ProdutoInfoDiv, ProdutoReviewDiv,
+  QuantidadeButton, QuantidadeInput, QuantidadeInputDiv, RecomendacaoDiv,
+  Ref, StarDiv, TamanhosDiv, Titulo
 } from './styles';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
@@ -15,17 +14,21 @@ import Copyright from '../../components/Copyright';
 import Footer from '../../components/Footer';
 import * as FiIcons from 'react-icons/fi';
 import Accordion from '../../components/Accordion';
+import Cores from '../../components/Cores/Index';
+import Tamanhos from '../../components/Tamanhos';
 
 export default function ProdutoDetalhes() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  const [quantidade, setQuantidade] = useState('1');
 
   const acordionContent = [
     { title: 'Descrição', content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, q.' },
     { title: 'Composição', content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, q.' },
     { title: 'Troca e Devolução', content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, q.' },
   ];
+
+  const [quantidade, setQuantidade] = useState('1');
+  const [corSelecionada, setCorSelecionada] = useState();
+  const [tamanhoSelecionado, setTamanhoSelecionado] = useState();
 
   return (
     <Container>
@@ -39,24 +42,36 @@ export default function ProdutoDetalhes() {
             emulateTouch={true}
             infiniteLoop
           >
-            <div style={{ height: '45rem' }}>
-              <img style={{ height: '100%', width: '80%' }} src='https://td0295.vtexassets.com/arquivos/ids/1752130/jaqueta-hyper-com-bolsos-e-capuz-p-azul-poseidon-frontal-ano-2023---outono-2311902-c5540-1.jpg?v=638113083281100000' />
-            </div>
-            <div style={{ height: '45rem' }}>
-              <img style={{ height: '100%', width: '80%' }} src='https://td0295.vtexassets.com/arquivos/ids/1752131/jaqueta-hyper-com-bolsos-e-capuz-p-azul-poseidon-costa-ano-2023---outono-2311902-c5540-2.jpg?v=638113083283600000' />
-            </div>
-            <div style={{ height: '45rem' }}>
-              <img style={{ height: '100%', width: '80%' }} src='https://td0295.vtexassets.com/arquivos/ids/1752130/jaqueta-hyper-com-bolsos-e-capuz-p-azul-poseidon-frontal-ano-2023---outono-2311902-c5540-1.jpg?v=638113083281100000' />
-            </div>
-            <div style={{ height: '45rem' }}>
-              <img style={{ height: '100%', width: '80%' }} src='https://td0295.vtexassets.com/arquivos/ids/1752131/jaqueta-hyper-com-bolsos-e-capuz-p-azul-poseidon-costa-ano-2023---outono-2311902-c5540-2.jpg?v=638113083283600000' />
-            </div>
+            <ImageCarouselContainer>
+              <img
+                style={{ height: '100%', width: '80%', objectFit: 'cover' }}
+                src='https://td0295.vtexassets.com/arquivos/ids/1762495-1600-auto?v=638159793932930000&width=1600&height=auto&aspect=true'
+              />
+            </ImageCarouselContainer>
+            <ImageCarouselContainer>
+              <img
+                style={{ height: '100%', width: '80%', objectFit: 'cover' }}
+                src='https://td0295.vtexassets.com/arquivos/ids/1762496-1600-auto?v=638159793934800000&width=1600&height=auto&aspect=true'
+              />
+            </ImageCarouselContainer>
+            <ImageCarouselContainer>
+              <img
+                style={{ height: '100%', width: '80%', objectFit: 'cover' }}
+                src='https://td0295.vtexassets.com/arquivos/ids/1762497-1600-auto?v=638159793937300000&width=1600&height=auto&aspect=true'
+              />
+            </ImageCarouselContainer>
+            <ImageCarouselContainer>
+              <img
+                style={{ height: '100%', width: '80%', objectFit: 'cover' }}
+                src='https://td0295.vtexassets.com/arquivos/ids/1762498-1600-auto?v=638159793939670000&width=1600&height=auto&aspect=true'
+              />
+            </ImageCarouselContainer>
           </Carousel>
         </ImageCarouselDiv>
         <ProdutoInfoDiv>
           <NavDiv>
             <Button>
-              Marcar como favorito
+              Favoritar
               <AiIcons.AiOutlineHeart style={{ marginLeft: 10 }} size={25} />
             </Button>
           </NavDiv>
@@ -79,23 +94,13 @@ export default function ProdutoDetalhes() {
             <CoresDiv>
               <span>Cor</span>
               <PaletaCoresDiv>
-                <Cor />
-                <Cor />
-                <Cor />
+                <Cores setCorSelecionada={setCorSelecionada} />
               </PaletaCoresDiv>
             </CoresDiv>
             <TamanhosDiv>
               <span>Tamanho</span>
               <PaletaTamanhosDiv>
-                <Tamanho>
-                  P
-                </Tamanho>
-                <Tamanho>
-                  M
-                </Tamanho>
-                <Tamanho>
-                  G
-                </Tamanho>
+                <Tamanhos setTamanhoSelecionado={setTamanhoSelecionado} />
               </PaletaTamanhosDiv>
             </TamanhosDiv>
           </CorTamanhoDiv>
@@ -113,7 +118,7 @@ export default function ProdutoDetalhes() {
             <QuantidadeInputDiv>
               <QuantidadeButton
                 onClick={() => {
-                  if (quantidade === '0') {
+                  if (quantidade === '1') {
                     return;
                   }
                   setQuantidade(prev => {
@@ -126,7 +131,11 @@ export default function ProdutoDetalhes() {
               <QuantidadeInput
                 type={'number'}
                 value={quantidade}
-                onChange={(e) => setQuantidade(e.target.value!)}
+                onChange={(e) => {
+                  if (+e.target.value >= 0) {
+                    setQuantidade(e.target.value!);
+                  }
+                }}
               />
               <QuantidadeButton
                 onClick={() => {

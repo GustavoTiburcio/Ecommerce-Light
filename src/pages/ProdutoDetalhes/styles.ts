@@ -49,6 +49,10 @@ export const ImageCarouselDiv = styled.div`
   }
 `;
 
+export const ImageCarouselContainer = styled.div`
+  height: 45rem;
+`;
+
 export const ProdutoInfoDiv = styled.div`
   display: flex;
   flex-direction: column;
@@ -153,16 +157,8 @@ export const PaletaCoresDiv = styled.div`
   flex-wrap: wrap;
   flex-direction: row;
   width: 100%;
-`;
-
-export const Cor = styled.div`
-  height: 36px;
-  width: 36px;
-  background-color: #143751;
-  cursor: pointer;
-  :nth-child(n+2) {
-    margin-left: 10px;
-  }
+  column-gap: 10px;
+  row-gap: 10px
 `;
 
 export const TamanhosDiv = styled.div`
@@ -178,21 +174,6 @@ export const PaletaTamanhosDiv = styled.div`
   flex-wrap: wrap;
   flex-direction: row;
   width: 100%;
-`;
-
-export const Tamanho = styled.div`
-  display: flex;
-  height: 36px;
-  width: 36px;
-  justify-content: center;
-  align-items: center;
-  border: 2px solid #000;
-  font-weight: bold;
-  cursor: pointer;
-
-  :nth-child(n+2) {
-    margin-left: 10px;
-  }
 `;
 
 export const FreteDiv = styled.div`
