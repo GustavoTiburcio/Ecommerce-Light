@@ -9,6 +9,7 @@ export const Container = styled.div`
   height: 15rem;
   margin: 2rem 0px;
   background-color: #f7f7f7;
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 
   b{
     font-size: 1.5rem;

@@ -30,6 +30,27 @@ export default function ProdutoDetalhes() {
   const [corSelecionada, setCorSelecionada] = useState();
   const [tamanhoSelecionado, setTamanhoSelecionado] = useState();
 
+  function incrementarQuantidade() {
+    if (quantidade === '1') {
+      return;
+    }
+    setQuantidade(prev => {
+      return String(+prev - 1);
+    });
+  }
+
+  function decrementarQuantidade() {
+    setQuantidade(prev => {
+      return String(+prev + 1);
+    });
+  }
+
+  function alterarQuantidade(e: React.ChangeEvent<HTMLInputElement>) {
+    if (+e.target.value >= 0) {
+      setQuantidade(e.target.value!);
+    }
+  }
+
   return (
     <Container>
       <DetalhesDiv>
@@ -117,32 +138,17 @@ export default function ProdutoDetalhes() {
             </FreteDiv>
             <QuantidadeInputDiv>
               <QuantidadeButton
-                onClick={() => {
-                  if (quantidade === '1') {
-                    return;
-                  }
-                  setQuantidade(prev => {
-                    return String(+prev - 1);
-                  });
-                }}
+                onClick={incrementarQuantidade}
               >
                 -
               </QuantidadeButton>
               <QuantidadeInput
                 type={'number'}
                 value={quantidade}
-                onChange={(e) => {
-                  if (+e.target.value >= 0) {
-                    setQuantidade(e.target.value!);
-                  }
-                }}
+                onChange={alterarQuantidade}
               />
               <QuantidadeButton
-                onClick={() => {
-                  setQuantidade(prev => {
-                    return String(+prev + 1);
-                  });
-                }}>
+                onClick={decrementarQuantidade}>
                 +
               </QuantidadeButton>
             </QuantidadeInputDiv>
