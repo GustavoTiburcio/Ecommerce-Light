@@ -34,8 +34,19 @@ export const ProdutosDiv = styled.div`
 
 export const FiltrosDiv = styled.div`
   display:flex;
+  /* align-items: center; */
   flex-direction: column;
-  width: 20%;
+  width: 16%;
+  margin-left: 2%;
+  text-align: center;
+
+  span {
+    font-size: 1.2rem;
+    font-weight: 450;
+  }
+  p {
+    font-size: 1.1rem;
+  }
   `;
 
 export const CardsDiv = styled.div`
@@ -44,4 +55,9 @@ export const CardsDiv = styled.div`
   flex-wrap: wrap;
   column-gap: 25px;
   row-gap: 4rem;
+`;
+
+export const InputSlider = styled.input`
+  margin: 10px 0;
+  width: 90%;
 `;

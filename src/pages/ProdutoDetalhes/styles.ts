@@ -72,8 +72,13 @@ export const NavDiv = styled.div`
   display: flex;
   width: 100%;
   height: 10%;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
+
+  span {
+    font-weight: 450;
+    font-size: 1.1rem;
+  }
 `;
 
 export const NavDivCarrinho = styled.div`

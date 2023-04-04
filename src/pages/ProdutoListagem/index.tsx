@@ -1,8 +1,9 @@
 import React from 'react';
+import Accordion from '../../components/Accordion';
 import Card from '../../components/Card';
 import Copyright from '../../components/Copyright';
 import Footer from '../../components/Footer';
-import { Container, Banner, TitleDiv, ProdutosDiv, FiltrosDiv, CardsDiv } from './styles';
+import { Container, Banner, TitleDiv, ProdutosDiv, FiltrosDiv, CardsDiv, InputSlider } from './styles';
 
 export default function ProdutoListagem() {
 
@@ -30,6 +31,12 @@ export default function ProdutoListagem() {
           <span>
             Filtros
           </span>
+          <Accordion titulo={'Cores'} conteudo={'Cores'} />
+          <Accordion titulo={'Tamanho'} conteudo={'Tamanhos'} />
+          <p>Faixa de preço</p>
+          <InputSlider
+            type="range" name="preço" min="0" max="50"
+          />
         </FiltrosDiv>
         <CardsDiv>
           {produtos.map((produto) => {

@@ -65,25 +65,25 @@ export default function ProdutoDetalhes() {
           >
             <ImageCarouselContainer>
               <img
-                style={{ height: '100%', width: '80%', objectFit: 'cover' }}
+                style={{ height: '100%', width: '80%' }}
                 src='https://td0295.vtexassets.com/arquivos/ids/1762495-1600-auto?v=638159793932930000&width=1600&height=auto&aspect=true'
               />
             </ImageCarouselContainer>
             <ImageCarouselContainer>
               <img
-                style={{ height: '100%', width: '80%', objectFit: 'cover' }}
+                style={{ height: '100%', width: '80%' }}
                 src='https://td0295.vtexassets.com/arquivos/ids/1762496-1600-auto?v=638159793934800000&width=1600&height=auto&aspect=true'
               />
             </ImageCarouselContainer>
             <ImageCarouselContainer>
               <img
-                style={{ height: '100%', width: '80%', objectFit: 'cover' }}
+                style={{ height: '100%', width: '80%' }}
                 src='https://td0295.vtexassets.com/arquivos/ids/1762497-1600-auto?v=638159793937300000&width=1600&height=auto&aspect=true'
               />
             </ImageCarouselContainer>
             <ImageCarouselContainer>
               <img
-                style={{ height: '100%', width: '80%', objectFit: 'cover' }}
+                style={{ height: '100%', width: '80%' }}
                 src='https://td0295.vtexassets.com/arquivos/ids/1762498-1600-auto?v=638159793939670000&width=1600&height=auto&aspect=true'
               />
             </ImageCarouselContainer>
@@ -91,6 +91,7 @@ export default function ProdutoDetalhes() {
         </ImageCarouselDiv>
         <ProdutoInfoDiv>
           <NavDiv>
+            <span>Home {'>'} Feminino {'>'} Fitness</span>
             <Button>
               Favoritar
               <AiIcons.AiOutlineHeart style={{ marginLeft: 10 }} size={25} />
