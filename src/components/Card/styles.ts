@@ -1,5 +1,7 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+import { fadeInUp } from 'react-animations';
 
+const fadeInUpAnimation = keyframes`${fadeInUp}`;
 
 export const CardContainer = styled.div`
   display:  flex;
@@ -10,6 +12,7 @@ export const CardContainer = styled.div`
   background-color: transparent;
   text-align: start;
   cursor: pointer;
+  animation: 0.5s ${fadeInUpAnimation};
 `;
 
 export const CardImage = styled.img`

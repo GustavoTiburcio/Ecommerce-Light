@@ -1,4 +1,7 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+import { flash } from 'react-animations';
+
+const flashAnimation = keyframes`${flash}`;
 
 export const Container = styled.div`
   display: flex;
@@ -60,4 +63,10 @@ export const CardsDiv = styled.div`
 export const InputSlider = styled.input`
   margin: 10px 0;
   width: 90%;
+`;
+
+export const ActivityIndicator = styled.img`
+  margin: 2rem 0px;
+  animation: 3s ${flashAnimation};
+  animation-iteration-count: infinite;
 `;
