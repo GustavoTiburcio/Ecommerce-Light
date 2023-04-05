@@ -2,40 +2,42 @@ import styled from 'styled-components';
 
 interface HeaderProps {
   hoverHeaderActive?: boolean;
-  backgroundColor?: string;
 }
 
 export const Container = styled.div<HeaderProps>`
   display: flex;
   height: 6rem;
   max-height: 180px;
-  color: ${({ backgroundColor }) => backgroundColor === '#fff' ? '#000' : '#fff'};
   /* position: relative; */
   position: sticky;
   top: 0;
   z-index: 999;
   /* position: fixed; */
   /* z-index: 10; */
-  background-color: ${({ backgroundColor }) => backgroundColor ? backgroundColor : 'transparent'};
+
+  * {
+    color: #fff;
+  }
 
   ${({ hoverHeaderActive }) => {
     if (hoverHeaderActive) {
       return `div:hover {
         background-color: #FFF;
+        * {
         color: #000;
-        a {
-          color: #000;
         }
-        .dropbtn {
-          color: #000;
-        }
-      }`;
-    }
-    return `
-      * {
-        color: #000;
       }
       `;
+    } else {
+      return `div {
+        background-color: #FFF;
+        * {
+        color: #000;
+        }
+      }
+      box-shadow: 0 4px 8px 0 rgba(171, 183, 183,0.2), 0 3px 10px 0 rgba(171, 183, 183,0.5);
+      `;
+    }
   }}
 `;
 
@@ -68,6 +70,7 @@ export const Categorias = styled.div<HeaderProps>`
   flex-direction: row;
   text-transform: capitalize;
   font-weight: 500;
+  color: ${({ hoverHeaderActive }) => !hoverHeaderActive ? '#fff' : '#000'};
 
   .dropdown {
     float: left;
@@ -78,7 +81,6 @@ export const Categorias = styled.div<HeaderProps>`
     font-size: 16px;
     border: none;
     outline: none;
-    /* color: ${({ hoverHeaderActive, backgroundColor }) => hoverHeaderActive && backgroundColor === 'transparent' ? '#fff' : '#000'}; */
     padding: 14px 16px;
     background-color: inherit;
     margin: 0;

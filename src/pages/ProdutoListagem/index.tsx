@@ -11,12 +11,7 @@ import Logo from '../../assets/images/header_logo.svg';
 
 
 export default function ProdutoListagem() {
-  const [produtos, setProdutos] = useState([
-    // { nome: 'Top Alto Giro hyper Costas Decotada', preço: '149,90', parcelamento: '6x R$ 24,98 sem juros', imageSrc: 'https://td0295.vtexassets.com/arquivos/ids/1752537-900-900?v=1766576413&width=900&height=900&aspect=true' },
-    // { nome: 'Jaqueta Alto Giro Hyper Com Bolsos E Capuz', preço: '658,90', parcelamento: '6x R$ 109,81 sem juros', imageSrc: 'https://td0295.vtexassets.com/arquivos/ids/1752130-900-900?v=638113083281100000&width=900&height=900&aspect=true' },
-    // { nome: 'Leggin Alto Giro Hyper Recortes E Bolsos', preço: '358,90', parcelamento: '6x R$ 59,81 sem juros', imageSrc: 'https://td0295.vtexassets.com/arquivos/ids/1751823-900-900?v=1766575988&width=900&height=900&aspect=true' },
-    // { nome: 'Shorts Alto Giro Opaque Sobreposto', preço: '179,90', parcelamento: '6x R$ 29,98 sem juros', imageSrc: 'https://td0295.vtexassets.com/arquivos/ids/1751773-900-900?v=1766575821&width=900&height=900&aspect=true' }
-  ]);
+  const [produtos, setProdutos] = useState<any>([]);
   const [temMais, setTemMais] = useState(true);
   const [pagina, setPagina] = useState<number>(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -49,7 +44,7 @@ export default function ProdutoListagem() {
     const scrollHeight = document.documentElement.scrollHeight;
     const clientHeight = document.documentElement.clientHeight;
 
-    if (scrollTop + clientHeight >= scrollHeight) {
+    if (scrollTop + clientHeight + 150 >= scrollHeight) {
       setPagina(pagina + 1);
     }
   }
@@ -61,7 +56,6 @@ export default function ProdutoListagem() {
   //Busca mais produtos quando usuario scrolla até o final da página
   useEffect(() => {
     if (temMais) {
-      console.log('passou');
       window.addEventListener('scroll', onScroll);
       return () => window.removeEventListener('scroll', onScroll);
     }
@@ -88,7 +82,7 @@ export default function ProdutoListagem() {
           />
         </FiltrosDiv>
         <CardsDiv>
-          {produtos.map((produto: any, index) => {
+          {produtos.map((produto: any, index: number) => {
             return (
               <React.Fragment key={index}>
                 <Card

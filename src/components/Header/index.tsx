@@ -12,7 +12,7 @@ import SearchBar from '../SearchBar';
 
 export default function Header() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [headerVisible, setHeaderVisible] = useState(false);
+  const [headerFixoNoScroll, setHeaderFixoNoScroll] = useState(false);
   const paginaAtual = useLocation();
 
   useEffect(() => {
@@ -21,9 +21,9 @@ export default function Header() {
       const scrollTop = e.target.documentElement.scrollTop;
       console.log(scrollTop);
       if (scrollTop > 200) {
-        setHeaderVisible(true);
+        setHeaderFixoNoScroll(true);
       } else {
-        setHeaderVisible(false);
+        setHeaderFixoNoScroll(false);
       }
     };
 
@@ -38,13 +38,12 @@ export default function Header() {
         document.removeEventListener('scroll', handleScroll);
       }
     };
-  }, [setHeaderVisible]);
+  }, [setHeaderFixoNoScroll]);
 
 
   return (
     <Container
-      hoverHeaderActive={paginaAtual.pathname === '/' ? true : false}
-      backgroundColor={headerVisible ? '#fff' : 'transparent'}
+      hoverHeaderActive={paginaAtual.pathname === '/' && headerFixoNoScroll === false ? true : false}
     >
       <ReactModal
         isOpen={modalVisible}

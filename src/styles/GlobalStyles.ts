@@ -57,6 +57,6 @@ export const GlobalStyles = createGlobalStyle`
   button {
     cursor: pointer;
     font-size: 1.1rem;
-    color: #333;
+    /* color: #333; */
   }
 `;
