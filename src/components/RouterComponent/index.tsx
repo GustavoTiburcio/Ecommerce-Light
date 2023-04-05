@@ -5,6 +5,7 @@ import Header from '../Header';
 import Home from '../../pages/Home';
 import ProdutoDetalhes from '../../pages/ProdutoDetalhes';
 import ProdutoListagem from '../../pages/ProdutoListagem';
+import Carrinho from '../../pages/Carrinho';
 
 const AppLayout = () => (
   <>
@@ -21,6 +22,9 @@ export default function RouterComponent() {
           <Route path='/' element={<Home />} />
           <Route path='/produtoDetalhes' element={<ProdutoDetalhes />} />
           <Route path='/produtoListagem' element={<ProdutoListagem />} />
+        </Route>
+        <Route>
+          <Route path='/carrinho' element={<Carrinho />} />
         </Route>
       </Routes>
     </Router>

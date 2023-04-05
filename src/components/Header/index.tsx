@@ -109,7 +109,7 @@ export default function Header() {
           <Link to={'/'}>
             <AiIcons.AiOutlineHeart />
           </Link>
-          <Link to={'/'}>
+          <Link to={'/carrinho'}>
             <FiIcons.FiShoppingCart />
           </Link>
           <Link to={'/'}>

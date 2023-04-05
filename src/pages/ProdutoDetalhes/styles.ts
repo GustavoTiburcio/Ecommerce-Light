@@ -62,7 +62,6 @@ export const ProdutoInfoDiv = styled.div`
   hr {
     border-width: 1px;
     color: #eee;
-    margin: 0px 1rem;
     opacity: 0.3;
   }
 

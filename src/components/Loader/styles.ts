@@ -11,7 +11,7 @@ export const Container = styled.div`
   background-color: #FFF;
   margin-top: -6rem;
   position: relative;
-  z-index: 15;
+  z-index: 999;
 `;
 
 export const Image = styled.img`
