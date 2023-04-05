@@ -4,13 +4,14 @@ import LogoSVG from '../../assets/images/header_logo.svg';
 import * as FiIcons from 'react-icons/fi';
 import * as AiIcons from 'react-icons/ai';
 import * as GiIcons from 'react-icons/gi';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { categorias } from './CategoriasMock';
 import ReactModal from 'react-modal';
 import SearchBar from '../SearchBar';
 
 
 export default function Header() {
+  const navigate = useNavigate();
   const [modalVisible, setModalVisible] = useState(false);
   const [headerFixoNoScroll, setHeaderFixoNoScroll] = useState(false);
   const paginaAtual = useLocation();
@@ -83,19 +84,19 @@ export default function Header() {
               <GiIcons.GiHamburgerMenu size={25} style={{ marginTop: 5 }} />
             </button>
             <div className='dropdown-content'>
-              <a href='#'>Novidades</a>
-              <a href='#'>Promoções</a>
-              <a href='#'>Fitness</a>
+              <a href='/produtoListagem'>Novidades</a>
+              <a href='/produtoListagem'>Promoções</a>
+              <a href='/produtoListagem'>Fitness</a>
             </div>
           </div>
           {categorias.map((categoria, index) => (
             <div className='dropdown' key={index}>
-              <button className='dropbtn'>
+              <button className='dropbtn' onClick={() => navigate('/produtoListagem')}>
                 {categoria.categoria}
               </button>
               <div className='dropdown-content'>
                 {categoria.filhos.map((filho, index) => (
-                  <a href='#' key={index}>{filho}</a>
+                  <a href='/produtoListagem' key={index}>{filho}</a>
                 ))}
               </div>
             </div>

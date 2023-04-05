@@ -172,7 +172,7 @@ export default function ProdutoDetalhes() {
               <span><b>-/5</b></span>
               <span>NOTA DO PRODUTO</span>
               <StarDiv>
-                {/* <AiIcons.AiFillStar color='yellow' /> */}
+                {/* <AiIcons.AiFillStar color='yellow' style={{ stroke: 'black', strokeWidth: 20}}/> */}
                 <AiIcons.AiOutlineStar />
                 <AiIcons.AiOutlineStar />
                 <AiIcons.AiOutlineStar />
