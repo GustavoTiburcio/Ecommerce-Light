@@ -32,4 +32,8 @@ export const TextDiv = styled.div`
   flex-direction: column;
   font-weight: 450;
   height: 10%;
+
+  .nomeProduto {
+    text-transform: capitalize;
+  }
 `;

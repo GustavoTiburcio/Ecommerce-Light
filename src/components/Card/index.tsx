@@ -17,7 +17,7 @@ export default function Card({ imageSrc, nome, preço, parcelamento }: CardProps
       <CardContainer onClick={() => navigate('/produtoDetalhes')}>
         <CardImage src={imageSrc} />
         <TextDiv>
-          <span>{nome}</span>
+          <span className='nomeProduto'>{nome}</span>
           <span>R$ {preço}</span>
           <b>{parcelamento}</b>
         </TextDiv>
