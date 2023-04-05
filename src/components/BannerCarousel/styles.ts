@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
+  margin-top: -1.1rem;
   .control-next.control-arrow:before {
       content: '';
       border: solid #fff;

@@ -6,9 +6,10 @@ interface HeaderProps {
 
 export const Container = styled.div<HeaderProps>`
   display: flex;
-  height: 6rem;
-  max-height: 180px;
+  /* height: 6rem; */
+  /* max-height: 180px; */
   /* position: relative; */
+  /* padding-top: 10px; */
   position: sticky;
   top: 0;
   z-index: 999;
@@ -54,7 +55,8 @@ export const LogoDiv = styled.div`
   align-items: center;
   justify-content: center;
   width: 20%;
-  height: 100%;
+  /* height: 100%; */
+  height: 6rem;
 `;
 
 export const Logo = styled.img`

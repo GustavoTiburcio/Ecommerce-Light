@@ -116,7 +116,7 @@ export default function Carrinho() {
         <ProdutoDiv>
           <ProdutoNomeDiv>
             <img src='https://td0295.vtexassets.com/arquivos/ids/1760833-800-auto?v=638159785646800000&width=800&height=auto&aspect=true' />
-            <span>Legging Hyper Recorte Tule E Silk Cos Violet Indigo M</span>
+            <span>Legging Hyper Recorte Tule E Silk Cos Violet Indigo M AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
           </ProdutoNomeDiv>
           <PrecoDiv>
             <span>R$ 254,90</span>
