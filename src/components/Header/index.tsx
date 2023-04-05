@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Buttons, Categorias, Container, LogoDiv, Logo, Subcontainer, ModalDiv } from './styles';
 import LogoSVG from '../../assets/images/header_logo.svg';
 import * as FiIcons from 'react-icons/fi';
@@ -12,10 +12,40 @@ import SearchBar from '../SearchBar';
 
 export default function Header() {
   const [modalVisible, setModalVisible] = useState(false);
+  const [headerVisible, setHeaderVisible] = useState(false);
   const paginaAtual = useLocation();
 
+  useEffect(() => {
+    // Define a function that is called when the scroll event fires
+    const handleScroll = (e: any) => {
+      const scrollTop = e.target.documentElement.scrollTop;
+      console.log(scrollTop);
+      if (scrollTop > 200) {
+        setHeaderVisible(true);
+      } else {
+        setHeaderVisible(false);
+      }
+    };
+
+    // Add the event listener inside a useEffect
+    if (document) {
+      document.addEventListener('scroll', handleScroll);
+    }
+
+    // Remove the event listener on unmount
+    return () => {
+      if (document) {
+        document.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [setHeaderVisible]);
+
+
   return (
-    <Container hoverHeaderActive={paginaAtual.pathname === '/' ? true : false}>
+    <Container
+      hoverHeaderActive={paginaAtual.pathname === '/' ? true : false}
+      backgroundColor={headerVisible ? '#fff' : 'transparent'}
+    >
       <ReactModal
         isOpen={modalVisible}
         appElement={document.getElementById('root') as HTMLElement}

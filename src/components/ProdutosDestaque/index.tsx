@@ -47,6 +47,7 @@ export default function ProdutosDestaque() {
         showThumbs={false}
         swipeable={true}
         emulateTouch={true}
+        infiniteLoop={true}
       >
         {carretelFiltrado.map(novo => novo)}
       </Carousel>

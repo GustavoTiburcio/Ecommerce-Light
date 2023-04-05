@@ -33,13 +33,14 @@ export const ProdutosDiv = styled.div`
   display:flex;
   width: 100%;
   margin: 2rem;
-  `;
+  justify-content: space-between;
+`;
 
 export const FiltrosDiv = styled.div`
   display:flex;
   /* align-items: center; */
   flex-direction: column;
-  width: 16%;
+  width: 15%;
   margin-left: 2%;
   text-align: center;
 
@@ -54,7 +55,8 @@ export const FiltrosDiv = styled.div`
 
 export const CardsDiv = styled.div`
   display:flex;
-  width: 80%;
+  justify-content: center;
+  width: 85%;
   flex-wrap: wrap;
   column-gap: 25px;
   row-gap: 4rem;

@@ -2,17 +2,23 @@ import styled from 'styled-components';
 
 interface HeaderProps {
   hoverHeaderActive?: boolean;
+  backgroundColor?: string;
 }
 
 export const Container = styled.div<HeaderProps>`
   display: flex;
   height: 6rem;
   max-height: 180px;
-  color: #fff;
-  position: relative;
-  z-index: 10;
+  color: ${({ backgroundColor }) => backgroundColor === '#fff' ? '#000' : '#fff'};
+  /* position: relative; */
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  /* position: fixed; */
+  /* z-index: 10; */
+  background-color: ${({ backgroundColor }) => backgroundColor ? backgroundColor : 'transparent'};
 
-  ${({ hoverHeaderActive: hoverHeaderActive }) => {
+  ${({ hoverHeaderActive }) => {
     if (hoverHeaderActive) {
       return `div:hover {
         background-color: #FFF;
@@ -72,7 +78,7 @@ export const Categorias = styled.div<HeaderProps>`
     font-size: 16px;
     border: none;
     outline: none;
-    color: ${({ hoverHeaderActive: hoverHeaderActive }) => hoverHeaderActive ? '#fff' : '#000'};
+    /* color: ${({ hoverHeaderActive, backgroundColor }) => hoverHeaderActive && backgroundColor === 'transparent' ? '#fff' : '#000'}; */
     padding: 14px 16px;
     background-color: inherit;
     margin: 0;
