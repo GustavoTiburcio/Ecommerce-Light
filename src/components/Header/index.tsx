@@ -112,7 +112,7 @@ export default function Header() {
           <Link to={'/carrinho'}>
             <FiIcons.FiShoppingCart />
           </Link>
-          <Link to={'/'}>
+          <Link to={'/login'}>
             <FiIcons.FiUser />
           </Link>
         </Buttons>

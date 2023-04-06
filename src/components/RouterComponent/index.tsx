@@ -6,6 +6,7 @@ import Home from '../../pages/Home';
 import ProdutoDetalhes from '../../pages/ProdutoDetalhes';
 import ProdutoListagem from '../../pages/ProdutoListagem';
 import Carrinho from '../../pages/Carrinho';
+import Login from '../../pages/Login';
 
 const AppLayout = () => (
   <>
@@ -25,6 +26,7 @@ export default function RouterComponent() {
         </Route>
         <Route>
           <Route path='/carrinho' element={<Carrinho />} />
+          <Route path='/login' element={<Login />} />
         </Route>
       </Routes>
     </Router>
