@@ -1,16 +1,31 @@
 import styled from 'styled-components';
 
 interface CorProps {
-  backgroundColor?: string;
+  backgroundImage?: string;
   selecionado: boolean;
 }
 
 export const CorDiv = styled.div<CorProps>`
-  height: 36px;
-  width: 36px;
-  background-color: ${({ backgroundColor }) => backgroundColor ? backgroundColor : '#fff'};
+  height: 48px;
+  width: 48px;
+  background-image: ${({ backgroundImage }) => backgroundImage ? `URL(${backgroundImage})` : ''};
+  background-size: cover;
   cursor: pointer;
-  border: ${({selecionado}) => selecionado ? '3px solid #000' : ''};
-  opacity: ${({selecionado}) => selecionado ? 1 : 0.7};;
+  border: 2px solid white;
+  opacity: ${({selecionado}) => selecionado ? 1 : 0.7};
+  ${({selecionado}) => selecionado ? 'outline: 2px solid red;' : ''}
+`;
 
+export const SelectPersonalizadoContainerDiv = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 36;
+
+  span {
+    margin-left: 10px;
+  }
+  p{
+    color: grey;
+  }
 `;

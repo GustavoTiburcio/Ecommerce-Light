@@ -8,12 +8,13 @@ export const Tamanho = styled.div<tamanhoProps>`
   display: flex;
   height: 36px;
   width: 36px;
+  background-color: #eee;
   justify-content: center;
   align-items: center;
-  border: 2px solid #000;
   font-weight: bold;
   cursor: pointer;
-  border-color: ${({selecionado}) => selecionado ? 'red' : ''};
+  border: 2px solid white;
+  ${({selecionado}) => selecionado ? 'outline: 2px solid red; color: red;' : ''}
 
   :nth-child(n+2) {
     margin-left: 10px;

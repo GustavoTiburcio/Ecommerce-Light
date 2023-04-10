@@ -162,7 +162,7 @@ export const PaletaCoresDiv = styled.div`
   flex-direction: row;
   width: 100%;
   column-gap: 10px;
-  row-gap: 10px
+  row-gap: 10px;
 `;
 
 export const TamanhosDiv = styled.div`
@@ -281,5 +281,20 @@ export const QuantidadeInput = styled.input`
   /* Firefox */
   [type=number] {
     -moz-appearance: textfield;
+  }
+`;
+
+
+export const SelectPersonalizadoContainerDiv = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 36;
+
+  span {
+    margin-left: 10px;
+  }
+  p{
+    color: grey;
   }
 `;
