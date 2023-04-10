@@ -7,6 +7,12 @@ export const Container = styled.div`
   height: 25rem;
   margin: 2rem 0px;
   overflow: hidden;
+
+  @media screen and (max-width: 767px) {
+    height: 7rem;
+    width: 100%;
+    margin: 1rem 0px;
+  }
 `;
 
 export const SectionImageDiv = styled.div`
@@ -40,6 +46,23 @@ export const SectionImageDiv = styled.div`
       filter: brightness(50%);
     }
   }
+
+  @media screen and (max-width: 767px) {
+    :hover {
+
+    }
+    p {
+      visibility: visible;
+      font-size: 0.6rem;
+      text-align: center;
+    }
+
+    img{
+      transform: scale(1.2);
+      transform-origin: 50% 50%;
+      filter: brightness(50%);
+    }
+  }
 `;
 
 export const SectionImage = styled.img`
@@ -47,5 +70,8 @@ export const SectionImage = styled.img`
     width: 100%;
     height: 100%;
     transition: all ease-in-out 500ms;
+    @media screen and (max-width: 767px) {
+      object-fit: contain;
+    }
 `;
 

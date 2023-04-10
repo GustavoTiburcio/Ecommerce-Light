@@ -23,8 +23,8 @@ export const ImageCarouselDiv = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  margin-left: 15px;
   width: 40%;
-  height: 100%;
 
   .control-next.control-arrow:before {
       content: '';
@@ -50,7 +50,6 @@ export const ImageCarouselDiv = styled.div`
 `;
 
 export const ImageCarouselContainer = styled.div`
-  height: 45rem;
 `;
 
 export const ProdutoInfoDiv = styled.div`
@@ -278,10 +277,10 @@ export const QuantidadeInput = styled.input`
     margin: 0;
   }
 
-  /* Firefox */
+  /* Firefox
   [type=number] {
     -moz-appearance: textfield;
-  }
+  } */
 `;
 
 

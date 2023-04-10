@@ -13,12 +13,17 @@ export const CardContainer = styled.div`
   text-align: start;
   cursor: pointer;
   animation: 0.5s ${fadeInUpAnimation};
+
+  @media screen and (max-width: 767px){
+    height: 320px;
+    width: 120px;
+  }
 `;
 
 export const CardImage = styled.img`
   object-fit: cover!important;
   max-width: 100%;
-  height: 90%;
+  height: 80%;
   box-shadow: 0 4px 8px 0 rgba(171, 183, 183,0.2), 0 3px 10px 0 rgba(171, 183, 183,0.5);
 
   :hover {
@@ -32,6 +37,10 @@ export const TextDiv = styled.div`
   flex-direction: column;
   font-weight: 450;
   height: 10%;
+  @media screen and (max-width: 767px){
+    font-size: 0.8rem;
+    height: 20%;
+  }
 
   .nomeProduto {
     text-transform: capitalize;

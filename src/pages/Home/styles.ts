@@ -11,6 +11,10 @@ export const Container = styled.div`
   background: #fff;
   margin-top: -6rem;
   animation: 1s ${fadeInAnimation};
+
+  @media screen and (max-width: 767px) {
+    margin-top: 0rem;
+  }
 `;
 
 export const LogoRodape = styled.img`

@@ -41,7 +41,7 @@ export default function Login() {
     <Container>
       <LoginDiv>
         <CadastroContainer login={login}>
-          <Form onSubmit={()=>navigate('/')}>
+          <Form onSubmit={() => navigate('/')}>
             <Title>Criar Conta</Title>
             <Input type='text' placeholder='Nome' />
             <Input type='email' placeholder='Email' />
@@ -50,7 +50,7 @@ export default function Login() {
           </Form>
         </CadastroContainer>
         <LoginContainer login={login}>
-          <Form onSubmit={()=>navigate('/')}>
+          <Form onSubmit={() => navigate('/')}>
             <Title>Vamos lá</Title>
             <Input type='email' placeholder='Email' />
             <Input type='password' placeholder='Senha' />

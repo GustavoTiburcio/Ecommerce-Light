@@ -27,6 +27,9 @@ export const LoginDiv = styled.div`
   width: 678px;
   max-width: 100%;
   min-height: 400px;
+
+  @media screen and (max-width: 767px) {
+  }
 `;
 
 export const CadastroContainer = styled.div<LoginProps>`
@@ -72,6 +75,9 @@ export const Form = styled.form`
 export const Title = styled.h1`
   font-weight: bold;
   margin: 0;
+  @media screen and (max-width: 767px) {
+    font-size: 1.5rem;
+  }
 `;
 
 export const Input = styled.input`
@@ -83,6 +89,9 @@ export const Input = styled.input`
 
   ::placeholder{
     font-weight: 500;
+  }
+  @media screen and (max-width: 767px) {
+    width: 150%;
   }
 `;
 

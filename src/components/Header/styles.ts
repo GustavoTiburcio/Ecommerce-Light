@@ -6,15 +6,9 @@ interface HeaderProps {
 
 export const Container = styled.div<HeaderProps>`
   display: flex;
-  /* height: 6rem; */
-  /* max-height: 180px; */
-  /* position: relative; */
-  /* padding-top: 10px; */
   position: sticky;
   top: 0;
   z-index: 999;
-  /* position: fixed; */
-  /* z-index: 10; */
 
   * {
     color: #fff;
@@ -40,6 +34,12 @@ export const Container = styled.div<HeaderProps>`
       `;
     }
   }}
+
+  @media screen and (max-width: 767px) {
+      * {
+        color: #000;
+      }
+    }
 `;
 
 export const Subcontainer = styled.div`
@@ -48,6 +48,10 @@ export const Subcontainer = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
+
+  @media screen and (max-width: 767px) {
+    justify-content: space-evenly;
+  }
 `;
 
 export const LogoDiv = styled.div`
@@ -57,10 +61,15 @@ export const LogoDiv = styled.div`
   width: 20%;
   /* height: 100%; */
   height: 6rem;
+  @media screen and (max-width: 767px) {
+    height: 4rem;
+    width: 40%;
+  }
 `;
 
 export const Logo = styled.img`
   cursor: pointer;
+  width: 100%;
 `;
 
 export const Categorias = styled.div<HeaderProps>`
@@ -139,6 +148,9 @@ export const Buttons = styled.div`
       color: #fff;
       margin: 0px 10px;
       cursor: pointer;
+      @media screen and (max-width: 767px) {
+        font-size: 1rem;
+      }
     }
     a:hover {
       color: #000

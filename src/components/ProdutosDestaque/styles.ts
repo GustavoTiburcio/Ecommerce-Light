@@ -9,12 +9,17 @@ export const Container = styled.div`
   height: 85vh;
   margin: 2rem 0px;
   background-color: #F7F7F7;
+  overflow: hidden;
 
   p {
     font-size: 2.5rem;
     font-weight: bold;
     font-style: italic;
   }
+
+  /* .carousel-wrapper{
+    max-width: 100%;
+  } */
 
   .control-next.control-arrow:before {
     content: '';
@@ -37,6 +42,15 @@ export const Container = styled.div`
     -webkit-transform: rotate(135deg);
     margin-left: 4rem;
   }
+
+  @media screen and (max-width: 767px){
+    height: 70vh;
+
+    p {
+      font-size: 1.5rem;
+    }
+  }
+
 `;
 
 export const CarouselContainer = styled.div`
@@ -47,6 +61,14 @@ export const CarouselContainer = styled.div`
   margin-left: 5%;
   justify-content: center;
   flex-wrap: wrap;
-  column-gap: 25px;
+  column-gap: 20px;
+
+  @media screen and (max-width: 767px){
+    height: 450px;
+    width: 90%;
+    margin-left: 5%;
+    flex-wrap: nowrap;
+    column-gap: 10px;
+  }
 `;
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button, Container, CoresDiv, CorTamanhoDiv, DescricaoProdutoDiv,
   DetalhesDiv, FreteDiv, FreteInput, FreteInputDiv, ImageCarouselContainer,
@@ -18,8 +18,6 @@ import Cores from '../../components/Cores/Index';
 import Tamanhos from '../../components/Tamanhos';
 
 export default function ProdutoDetalhes() {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-
   const acordionContent = [
     { title: 'Descrição', content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, q.' },
     { title: 'Composição', content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, q.' },
@@ -52,6 +50,10 @@ export default function ProdutoDetalhes() {
     }
   }
 
+  useEffect(()=>{
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  },[]);
+
   return (
     <Container>
       <DetalhesDiv>
@@ -66,25 +68,21 @@ export default function ProdutoDetalhes() {
           >
             <ImageCarouselContainer>
               <img
-                style={{ height: '100%', width: '80%' }}
                 src='https://td0295.vtexassets.com/arquivos/ids/1762495-1600-auto?v=638159793932930000&width=1600&height=auto&aspect=true'
               />
             </ImageCarouselContainer>
             <ImageCarouselContainer>
               <img
-                style={{ height: '100%', width: '80%' }}
                 src='https://td0295.vtexassets.com/arquivos/ids/1762496-1600-auto?v=638159793934800000&width=1600&height=auto&aspect=true'
               />
             </ImageCarouselContainer>
             <ImageCarouselContainer>
               <img
-                style={{ height: '100%', width: '80%' }}
                 src='https://td0295.vtexassets.com/arquivos/ids/1762497-1600-auto?v=638159793937300000&width=1600&height=auto&aspect=true'
               />
             </ImageCarouselContainer>
             <ImageCarouselContainer>
               <img
-                style={{ height: '100%', width: '80%' }}
                 src='https://td0295.vtexassets.com/arquivos/ids/1762498-1600-auto?v=638159793939670000&width=1600&height=auto&aspect=true'
               />
             </ImageCarouselContainer>

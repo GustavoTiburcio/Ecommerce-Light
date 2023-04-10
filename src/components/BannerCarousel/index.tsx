@@ -2,12 +2,16 @@ import React from 'react';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
 import { Container } from './styles';
+import useWindowDimensions from '../../utils/WindowDimensions';
 
 function BannerCarousel() {
+  const { width } = useWindowDimensions();
+  const isMobile = width <= 767;
+
   return (
     <Container>
       <Carousel
-        showArrows={true}
+        showArrows={!isMobile}
         showStatus={false}
         showThumbs={false}
         swipeable={true}

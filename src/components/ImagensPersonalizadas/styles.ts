@@ -10,6 +10,12 @@ export const Container = styled.div`
   width: 80%;
   height: 25rem;
   margin: 2rem 0px;
+
+  @media screen and (max-width: 767px){
+    height: 9rem;
+    width: 90%;
+    margin: 1rem 0px;
+  }
 `;
 
 export const ImageDiv = styled.div <ImagensPersonalizadasProps>`
@@ -29,8 +35,6 @@ export const ImageDiv = styled.div <ImagensPersonalizadasProps>`
       }`
     : null
 }
-
-
 `;
 
 export const Image = styled.img`

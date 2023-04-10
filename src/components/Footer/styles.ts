@@ -12,7 +12,6 @@ export const WhatsappDiv = styled.div`
   display: flex;
   justify-content: center;
   width: 20%;
-  /* background-color: blue; */
   img {
     width: 80%;
     cursor: pointer;

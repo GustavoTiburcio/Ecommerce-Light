@@ -17,4 +17,13 @@ export const Container = styled.div`
     margin-top: 10px;
     color: #fff;
   }
+
+  @media screen and (max-width: 767px){
+    height: 4rem;
+    text-align: center;
+
+    img {
+      visibility: hidden;
+    }
+  }
 `;

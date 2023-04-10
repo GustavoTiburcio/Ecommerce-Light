@@ -3,8 +3,12 @@ import { CarouselContainer, Container } from './styles';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
 import Card from '../Card';
+import useWindowDimensions from '../../utils/WindowDimensions';
 
 export default function ProdutosDestaque() {
+  const { width } = useWindowDimensions();
+  const isMobile = width <= 767;
+
 
   const produtos = [
     { nome: 'Top Alto Giro hyper Costas Decotada', preço: '149,90', parcelamento: '6x R$ 24,98 sem juros', imageSrc: 'https://td0295.vtexassets.com/arquivos/ids/1752537-900-900?v=1766576413&width=900&height=900&aspect=true' },
@@ -36,7 +40,28 @@ export default function ProdutosDestaque() {
     }
   });
 
+  const carretelImagensMobile = produtos.map((produto, i) => {
+    if (i % 3 === 0) {
+      return (
+        <CarouselContainer key={i} className='carousel'>
+          {produtos.map((produto, index) => index >= i && index <= i + 2 &&
+            <Card
+              key={index}
+              imageSrc={produto.imageSrc}
+              nome={produto.nome}
+              preço={produto.preço}
+              parcelamento={produto.parcelamento}
+            />
+          )}
+        </CarouselContainer>);
+    } else {
+      return '';
+    }
+  });
+
+
   const carretelFiltrado = carretelImagens.filter(teste => teste);
+  const carretelFiltradoMobile = carretelImagensMobile.filter(teste => teste);
 
   return (
     <Container>
@@ -47,9 +72,14 @@ export default function ProdutosDestaque() {
         showThumbs={false}
         swipeable={true}
         emulateTouch={true}
-        infiniteLoop={true}
+        infiniteLoop={false}
+        showIndicators={true}
+      // autoPlay
       >
-        {carretelFiltrado.map(novo => novo)}
+        {isMobile ?
+          carretelFiltradoMobile.map(novo => novo)
+          : carretelFiltrado.map(novo => novo)
+        }
       </Carousel>
     </Container>
   );
