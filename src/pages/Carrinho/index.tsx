@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Container, CupomInput, FinalizarButton, FinalizarCarrinhoDiv, FinalizarDiv,
   FreteDiv, HiddenDiv, ListaCarrinhoDiv, Logo, LogoDiv, PrecoDiv, ProdutoDiv,
@@ -10,7 +10,6 @@ import Footer from '../../components/Footer';
 import Copyright from '../../components/Copyright';
 
 export default function Carrinho() {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
   const [quantidade, setQuantidade] = useState('1');
 
   function incrementarQuantidade() {
@@ -34,6 +33,9 @@ export default function Carrinho() {
     }
   }
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
   return (
     <Container>
