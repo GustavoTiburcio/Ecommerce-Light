@@ -1,43 +1,71 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Accordion from '../../components/Accordion';
 import Card from '../../components/Card';
-import Copyright from '../../components/Copyright';
-import Footer from '../../components/Footer';
+// import Footer from '../../components/Footer';
 import {
   Container, Banner, TitleDiv, ProdutosDiv,
   FiltrosDiv, CardsDiv, InputSlider, ActivityIndicator
 } from './styles';
-import Logo from '../../assets/images/header_logo.svg';
+import { toast } from 'react-toastify';
+import api from '../../services/api';
+import { formatCurrency } from '../../utils/formatCurrency';
+import { useLocation } from 'react-router-dom';
+import Context from '../../context/Context';
 
+interface ProdutoCardProps {
+  linkFot: string;
+  mer: string;
+  codbar: string;
+  valVenMin: string | number;
+  parcelamento?: string;
+}
 
 export default function ProdutoListagem() {
-  const [produtos, setProdutos] = useState<any>([]);
-  const [temMais, setTemMais] = useState(true);
-  const [pagina, setPagina] = useState<number>(1);
-  const [isLoading, setIsLoading] = useState(false);
+  const location = useLocation();
+  const { configs }: any = useContext(Context);
 
-  function getProdutos(page: number) {
-    setIsLoading(true);
-    const newProdutos = [
-      { nome: 'Top Alto Giro Hyper Tule Costas E termo', preço: '258,90', parcelamento: '6x R$ 43,15 sem juros', imageSrc: 'https://td0295.vtexassets.com/arquivos/ids/1751803-900-900?v=1766576823&width=900&height=900&aspect=true' },
-      { nome: 'Top Alto Giro Versatily Dupla Face Roletes Costas', preço: '254,90', parcelamento: '6x R$ 42,48 sem juros', imageSrc: 'https://td0295.vtexassets.com/arquivos/ids/1751764-900-900?v=1766351067&width=900&height=900&aspect=true' },
-      { nome: 'Shorts Alto Giro Wind 3 Em 1', preço: '319,90', parcelamento: '6x R$ 53,31 sem juros', imageSrc: 'https://td0295.vtexassets.com/arquivos/ids/1755570-900-900?v=1766575986&width=900&height=900&aspect=true' },
-      { nome: 'Leggin Alto Giro Hyper C/ Abert. Na Barra e Bolsa', preço: '278,90', parcelamento: '6x R$ 46,48 sem juros', imageSrc: 'https://td0295.vtexassets.com/arquivos/ids/1752066-900-900?v=1766521159&width=900&height=900&aspect=true' },
-      { nome: 'Top Alto Giro Hyper Tule Costas E termo', preço: '258,90', parcelamento: '6x R$ 43,15 sem juros', imageSrc: 'https://td0295.vtexassets.com/arquivos/ids/1751803-900-900?v=1766576823&width=900&height=900&aspect=true' },
-      { nome: 'Top Alto Giro Versatily Dupla Face Roletes Costas', preço: '254,90', parcelamento: '6x R$ 42,48 sem juros', imageSrc: 'https://td0295.vtexassets.com/arquivos/ids/1751764-900-900?v=1766351067&width=900&height=900&aspect=true' },
-      { nome: 'Shorts Alto Giro Wind 3 Em 1', preço: '319,90', parcelamento: '6x R$ 53,31 sem juros', imageSrc: 'https://td0295.vtexassets.com/arquivos/ids/1755570-900-900?v=1766575986&width=900&height=900&aspect=true' },
-      { nome: 'Leggin Alto Giro Hyper C/ Abert. Na Barra e Bolsa', preço: '278,90', parcelamento: '6x R$ 46,48 sem juros', imageSrc: 'https://td0295.vtexassets.com/arquivos/ids/1752066-900-900?v=1766521159&width=900&height=900&aspect=true' }
-    ];
-    //setar state para falso quando acabar os produtos
-    if (page === 100) {
-      setTemMais(false);
-    }
+  const [produtos, setProdutos] = useState<ProdutoCardProps[]>([]);
+  const [temMais, setTemMais] = useState<boolean>(true);
+  const [pagina, setPagina] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    setTimeout(() => {
-      setProdutos([...produtos, ...newProdutos]);
+  //config
+  const [logoURI, setLogoURI] = useState<string>('');
+
+  async function getProdutos() {
+    try {
+      if (!temMais) return;
+
+      setIsLoading(true);
+
+      const response = await api.get(`/mercador/listarProdutosCard?page=${pagina}&PESQUISA=${location.state?.pesquisa || 'Buque'}&size=8`);
+
+      if (response.status === 200) {
+        if (response.data.content.length === 0) {
+          setTemMais(false);
+          return;
+        }
+
+        const newProdutos: ProdutoCardProps[] = response.data.content.map((produto: any) => {
+          return {
+            linkFot: produto.linkFot ? 'https://' + produto.linkFot : 'https://infoworld.am3shop.com.br/arquivos/08784917000136/publico/produto-padrao.jpg',
+            mer: produto.mer,
+            codbar: produto.codBar,
+            valVenMin: formatCurrency(produto.valVenMin),
+            parcelamento: `3x de ${formatCurrency(produto.valVenMin / 3)}`
+          };
+        });
+
+        setProdutos([...produtos, ...newProdutos]);
+      }
+
+    } catch (error: any) {
+      toast.error('Falha ao buscar produtos ' + error.message);
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   }
+
 
   function onScroll() {
     const scrollTop = document.documentElement.scrollTop;
@@ -49,8 +77,21 @@ export default function ProdutoListagem() {
     }
   }
 
+  function novaPesquisa() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    produtos.length = 0;
+    setPagina(0);
+    setTemMais(true);
+    getProdutos();
+  }
+
   useEffect(() => {
-    getProdutos(pagina);
+    novaPesquisa();
+  }, [location.state]);
+
+
+  useEffect(() => {
+    getProdutos();
   }, [pagina]);
 
   //Busca mais produtos quando usuario scrolla até o final da página
@@ -61,12 +102,19 @@ export default function ProdutoListagem() {
     }
   }, [produtos]);
 
+  useEffect(() => {
+    if (configs.length > 0) {
+      const [{ val: uri }] = configs.filter((config: any) => config.gru === 'logo');
+      setLogoURI('https://' + uri);
+    }
+  }, [configs]);
+
   return (
     <Container>
-      <Banner src='https://td0295.vtexassets.com/assets/vtex.file-manager-graphql/images/b463a0cf-e1e3-4a9d-834a-714c38de43b4___ed11e381031b526d361b84ee82e8e02f.jpg' />
+      {!location.state?.pesquisa && <Banner src='https://td0295.vtexassets.com/assets/vtex.file-manager-graphql/images/b463a0cf-e1e3-4a9d-834a-714c38de43b4___ed11e381031b526d361b84ee82e8e02f.jpg' />}
       <TitleDiv>
         <span>Home {'>'} Feminino {'>'} Fitness</span>
-        <b>Fitness</b>
+        <b>{location.state?.pesquisa ? `Palavra-chave: ${location.state?.pesquisa}` : 'Fitness'}</b>
         <span>Ordenação</span>
       </TitleDiv>
       <ProdutosDiv>
@@ -86,9 +134,10 @@ export default function ProdutoListagem() {
             return (
               <React.Fragment key={index}>
                 <Card
-                  imageSrc={produto.imageSrc}
-                  nome={produto.nome}
-                  preço={produto.preço}
+                  imageSrc={produto.linkFot}
+                  nome={produto.mer}
+                  codbar={produto.codbar}
+                  preço={produto.valVenMin}
                   parcelamento={produto.parcelamento}
                 />
               </React.Fragment>);
@@ -96,10 +145,9 @@ export default function ProdutoListagem() {
         </CardsDiv>
       </ProdutosDiv>
       {isLoading &&
-        <ActivityIndicator src={Logo} alt='Logo' />
+        <ActivityIndicator src={logoURI} alt='Logo' />
       }
-      <Footer />
-      <Copyright />
+      {/* <Footer /> */}
     </Container>
   );
 }

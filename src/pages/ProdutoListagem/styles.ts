@@ -55,11 +55,13 @@ export const FiltrosDiv = styled.div`
 
 export const CardsDiv = styled.div`
   display:flex;
-  justify-content: center;
+  justify-content: flex-start;
   width: 85%;
   flex-wrap: wrap;
   column-gap: 25px;
   row-gap: 4rem;
+  margin-left: 10rem;
+  min-height: 20.7rem;
 `;
 
 export const InputSlider = styled.input`

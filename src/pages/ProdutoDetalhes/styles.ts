@@ -26,6 +26,10 @@ export const ImageCarouselDiv = styled.div`
   margin-left: 15px;
   width: 40%;
 
+  @media screen and (max-width: 1700px){
+    width: 35%;
+  }
+
   .control-next.control-arrow:before {
       content: '';
       border: solid #000;
@@ -97,10 +101,13 @@ export const Button = styled.button<ButtonProps>`
   border-radius: 5px;
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
   margin: 2rem;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  :active {
+    opacity: 0.6;
+  }
 `;
 
 export const Titulo = styled.span`
@@ -108,6 +115,7 @@ export const Titulo = styled.span`
   font-weight: 450;
   font-size: 1.5rem;
   margin-top: 1rem;
+  text-transform: capitalize;
 `;
 
 export const Ref = styled.span`
@@ -161,7 +169,7 @@ export const PaletaCoresDiv = styled.div`
   flex-direction: row;
   width: 100%;
   column-gap: 10px;
-  row-gap: 10px;
+  row-gap: 5px;
 `;
 
 export const TamanhosDiv = styled.div`
@@ -177,6 +185,8 @@ export const PaletaTamanhosDiv = styled.div`
   flex-wrap: wrap;
   flex-direction: row;
   width: 100%;
+  column-gap: 10px;
+  row-gap: 5px;
 `;
 
 export const FreteDiv = styled.div`

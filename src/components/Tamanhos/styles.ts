@@ -15,8 +15,4 @@ export const Tamanho = styled.div<tamanhoProps>`
   cursor: pointer;
   border: 2px solid white;
   ${({selecionado}) => selecionado ? 'outline: 2px solid red; color: red;' : ''}
-
-  :nth-child(n+2) {
-    margin-left: 10px;
-  }
 `;

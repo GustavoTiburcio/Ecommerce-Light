@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Buttons, Categorias, Container, LogoDiv, Logo, Subcontainer, ModalDiv } from './styles';
-import LogoSVG from '../../assets/images/header_logo.svg';
+import React, { useState, useEffect, useContext } from 'react';
+import { Buttons, Categorias, Container, LogoDiv, Logo, Subcontainer, ModalDiv, CartIconDiv, CartCountDiv } from './styles';
 import * as FiIcons from 'react-icons/fi';
 import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
@@ -11,39 +10,21 @@ import ReactModal from 'react-modal';
 import SearchBar from '../SearchBar';
 import useWindowDimensions from '../../utils/WindowDimensions';
 import SideBar from '../SideBar';
-
+import Context from '../../context/Context';
+import CountUp from 'react-countup';
 
 export default function Header() {
   const navigate = useNavigate();
   const { width } = useWindowDimensions();
   const isMobile = width <= 767;
   const paginaAtual = useLocation();
+  const { configs, carrinho }: any = useContext(Context);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [headerFixoNoScroll, setHeaderFixoNoScroll] = useState(false);
   const [showSideBar, setShowSideBar] = useState(false);
-
-  useEffect(() => {
-    //Função chamada quando scrolla a página
-    const handleScroll = (e: any) => {
-      const scrollTop = e.target.documentElement.scrollTop;
-      if (scrollTop > 200) {
-        setHeaderFixoNoScroll(true);
-      } else {
-        setHeaderFixoNoScroll(false);
-      }
-    };
-
-    if (document) {
-      document.addEventListener('scroll', handleScroll);
-    }
-
-    return () => {
-      if (document) {
-        document.removeEventListener('scroll', handleScroll);
-      }
-    };
-  }, [setHeaderFixoNoScroll]);
+  const [logoURI, setLogoURI] = useState<string>('');
+  const [carrinhoCount, setCarrinhoCount] = useState<number>(0);
 
   function PesquisaModal() {
     return (
@@ -71,12 +52,54 @@ export default function Header() {
             <div style={{ alignSelf: 'flex-end', cursor: 'pointer' }}>
               <AiIcons.AiOutlineClose onClick={() => setModalVisible(false)} size={25} />
             </div>
-            <SearchBar placeholder='O que você procura?' />
+            <SearchBar placeholder='O que você procura?' setModalVisible={setModalVisible} />
           </ModalDiv>
         </ReactModal>
       </>
     );
   }
+
+  function CartIcon({ count }: any) {
+    return (
+      <CartIconDiv>
+        <FiIcons.FiShoppingCart />
+        {count > 0 && <CartCountDiv style={{ backgroundColor: 'red' }}><CountUp end={count} duration={0} /></CartCountDiv>}
+      </CartIconDiv>
+    );
+  }
+
+  useEffect(() => {
+    //Função chamada quando scrolla a página
+    const handleScroll = (e: any) => {
+      const scrollTop = e.target.documentElement.scrollTop;
+      if (scrollTop > 200) {
+        setHeaderFixoNoScroll(true);
+      } else {
+        setHeaderFixoNoScroll(false);
+      }
+    };
+
+    if (document) {
+      document.addEventListener('scroll', handleScroll);
+    }
+
+    return () => {
+      if (document) {
+        document.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [setHeaderFixoNoScroll]);
+
+  useEffect(() => {
+    if (configs.length > 0) {
+      const [{ val: uri }] = configs.filter((config: any) => config.gru === 'logo');
+      setLogoURI('https://' + uri);
+    }
+  }, [configs]);
+
+  useEffect(() => {
+    setCarrinhoCount(carrinho.length);
+  }, [carrinho]);
 
   return (
     <Container
@@ -94,7 +117,7 @@ export default function Header() {
         }
         <LogoDiv>
           <Link to={'/'}>
-            <Logo src={LogoSVG} alt='Logo' />
+            <Logo src={logoURI} alt='Logo' />
           </Link>
         </LogoDiv>
         {!isMobile &&
@@ -130,7 +153,7 @@ export default function Header() {
             <AiIcons.AiOutlineHeart />
           </Link>
           <Link to={'/carrinho'}>
-            <FiIcons.FiShoppingCart />
+            <CartIcon count={carrinhoCount} />
           </Link>
           <Link to={'/login'}>
             <FiIcons.FiUser />

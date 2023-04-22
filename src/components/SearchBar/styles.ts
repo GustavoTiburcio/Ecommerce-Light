@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Container = styled.div`
+export const Container = styled.form`
   display: flex;
   align-items: center;
   align-self: center;
@@ -27,4 +27,13 @@ export const Input = styled.input`
   :focus {
     outline: none;
   }
+`;
+
+export const Button = styled.button`
+  all: unset;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 10%;
+  cursor: pointer;
 `;

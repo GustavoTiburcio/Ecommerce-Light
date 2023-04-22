@@ -1,17 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import {
   Anchor, Button, Container, GhostButton, Input, LeftOverlayPanel, Overlay,
   OverlayContainer, Paragraph, RightOverlayPanel, LoginContainer,
   CadastroContainer, Title, Form, LoginDiv, Logo
 } from './styles';
-import LogoSVG from '../../assets/images/header_logo.svg';
 import { useNavigate } from 'react-router';
+import Context from '../../context/Context';
 
 export default function Login() {
   const navigate = useNavigate();
+  const { configs }: any = useContext(Context);
+
   const [login, setLogin] = useState(true);
   const [randomCadastroFrase, setRandomCadastroFrase] = useState('');
   const [randomLoginFrase, setRandomLoginFrase] = useState('');
+
+  //config
+  const [logoURI, setLogoURI] = useState<string>('');
 
   const loginFrases = [
     'Sentiu minha falta né? 🥰',
@@ -32,10 +37,18 @@ export default function Login() {
     'Confia no pai que o seu pedido sai 😎'
   ];
 
+
   useEffect(() => {
     setRandomCadastroFrase(cadastroFrases[(Math.random() * ((cadastroFrases.length - 1) - 0 + 1)) << 0]);
     setRandomLoginFrase(loginFrases[(Math.random() * ((loginFrases.length - 1) - 0 + 1)) << 0]);
   }, []);
+
+  useEffect(() => {
+    if (configs.length > 0) {
+      const [{ val: uri }] = configs.filter((config: any) => config.gru === 'logo');
+      setLogoURI('https://' + uri);
+    }
+  }, [configs]);
 
   return (
     <Container>
@@ -83,7 +96,7 @@ export default function Login() {
           </Overlay>
         </OverlayContainer>
       </LoginDiv>
-      <Logo src={LogoSVG} alt="Logo" />
+      {logoURI && <Logo src={logoURI} alt="Logo" onClick={() => navigate('/')} />}
     </Container>
   );
 }

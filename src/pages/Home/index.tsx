@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Banner from '../../components/Banner';
 import BannerCarousel from '../../components/BannerCarousel';
 // import EmpresaInfo from '../../components/EmpresaInfo';
@@ -9,16 +9,29 @@ import Newsletter from '../../components/Newsletter';
 import ProdutosDestaque from '../../components/ProdutosDestaque';
 import Sections from '../../components/Sections';
 import { Container, LogoRodape } from './styles';
-import LogoSVG from '../../assets/images/header_logo.svg';
 import Footer from '../../components/Footer';
-import Copyright from '../../components/Copyright';
+import Context from '../../context/Context';
 
 export default function Home() {
+  const { configs }: any = useContext(Context);
   const [isLoading, setIsLoading] = useState(true);
 
-  setTimeout(() => {
-    setIsLoading(false);
-  }, 1000);
+  //configs
+  const [logoURI, setLogoURI] = useState<string>('');
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  useEffect(() => {
+    if (configs.length > 0) {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1500);
+      const [{ val: uri }] = configs.filter((config: any) => config.gru === 'logo');
+      setLogoURI('https://' + uri);
+    }
+  }, [configs]);
 
   return (
     <>
@@ -38,12 +51,11 @@ export default function Home() {
           />
           {/* <EmpresaInfo /> */}
           <Newsletter />
-          <LogoRodape src={LogoSVG} alt="Logo" />
+          <LogoRodape src={logoURI} alt="Logo" />
           <Footer />
-          <Copyright />
         </Container>
         :
-        <Loader />
+        <Loader logoURI={logoURI} />
       }
     </>
   );

@@ -1,6 +1,10 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
+
+`;
+
+export const SubContainer = styled.div`
   display: flex;
   width: 100%;
   height: 15rem;
@@ -8,7 +12,7 @@ export const Container = styled.div`
   background-color: #f7f7f7;
 `;
 
-export const WhatsappDiv = styled.div`
+export const WhatsappDiv = styled.a`
   display: flex;
   justify-content: center;
   width: 20%;
@@ -27,6 +31,7 @@ export const ContatoDiv = styled.div`
   span{
     font-size: 1rem;
     font-weight: 450;
+    width: 95%;
   }
   a{
     margin-right: 10px;

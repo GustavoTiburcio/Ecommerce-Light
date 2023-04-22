@@ -1,12 +1,15 @@
 import React from 'react';
-import Logo from '../../assets/images/header_logo.svg';
 import { Container, Image } from './styles';
 
-export default function Loader() {
+interface LoaderProps{
+  logoURI: string;
+}
+
+export default function Loader({logoURI}:LoaderProps) {
   return (
     <>
       <Container>
-        <Image src={Logo} alt='Logo' />
+        {logoURI && <Image src={logoURI} alt='Logo' />}
       </Container>
     </>
   );

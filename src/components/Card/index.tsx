@@ -5,20 +5,21 @@ import { useNavigate } from 'react-router';
 interface CardProps {
   imageSrc: string;
   nome: string;
+  codbar: string;
   preço: string | number;
   parcelamento?: string;
 }
 
-export default function Card({ imageSrc, nome, preço, parcelamento }: CardProps) {
+export default function Card({ imageSrc, nome, codbar, preço, parcelamento }: CardProps) {
   const navigate = useNavigate();
 
   return (
     <>
-      <CardContainer onClick={() => navigate('/produtoDetalhes')}>
+      <CardContainer onClick={() => navigate('/produtoDetalhes', { state: { codbar: codbar} })}>
         <CardImage src={imageSrc} />
         <TextDiv>
           <span className='nomeProduto'>{nome}</span>
-          <span>R$ {preço}</span>
+          <span>{preço}</span>
           <b>{parcelamento}</b>
         </TextDiv>
       </CardContainer>

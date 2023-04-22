@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CorDiv, SelectPersonalizadoContainerDiv } from './styles';
 import Select from 'react-dropdown-select';
 
 interface CoresProps {
   codbar?: string;
   setCorSelecionada: any;
+  coresLista: string[];
 }
 
-export default function Cores({ setCorSelecionada }: CoresProps) {
-  const [cores, setCores] = useState([
-    { cod: 1, nome: 'Cinza', linkFot: 'https://td0295.vtexassets.com/arquivos/ids/1760432-1600-auto?v=638159783722870000&width=1600&height=auto&aspect=true', isSelected: false },
-    { cod: 2, nome: 'azul', linkFot: 'https://td0295.vtexassets.com/arquivos/ids/1760416-1600-auto?v=638159783664100000&width=1600&height=auto&aspect=true', isSelected: false },
-    { cod: 3, nome: 'ciano', linkFot: 'https://td0295.vtexassets.com/arquivos/ids/1760502-1600-auto?v=638159784412700000&width=1600&height=auto&aspect=true', isSelected: false }
-  ]);
+export default function Cores({ setCorSelecionada, coresLista }: CoresProps) {
+  const [cores, setCores] = useState<any>([]);
+
+  useEffect(() => {
+    setCores(coresLista);
+  }, [coresLista]);
 
   function conteudoSelectPersonalizado({ state }: any) {
     return (
@@ -27,9 +28,9 @@ export default function Cores({ setCorSelecionada }: CoresProps) {
             }}
           />}
         </div>
-        {state.values[0]?.nome ? (
+        {state.values[0]?.padmer ? (
           <span>
-            {state.values[0]?.nome}
+            {state.values[0]?.padmer}
           </span>
         ) : (
           <p>
@@ -70,10 +71,13 @@ export default function Cores({ setCorSelecionada }: CoresProps) {
       {cores.length > 5 ?
         <Select
           options={cores}
-          labelField='nome'
+          labelField='padmer'
           valueField='cod'
           placeholder={'Cores Disponíveis'}
-          onChange={(value: any) => setCorSelecionada(value)}
+          onChange={(value: any) => {
+            const [cor] = value;
+            setCorSelecionada(cor);
+          }}
           itemRenderer={itemSelectPersonalizado}
           contentRenderer={conteudoSelectPersonalizado}
           noDataLabel='Nenhuma cor foi encontrada'
@@ -87,20 +91,25 @@ export default function Cores({ setCorSelecionada }: CoresProps) {
         cores.map((cor: any, index: number) => (
           <CorDiv
             key={index}
-            title={cor.nome}
-            backgroundImage={cor.linkFot}
+            title={cor.padmer}
+            backgroundImage={
+              cor?.linkFot === 'https://darckmoveis.meucatalogodigital.com/imagens/nofigure.jpg' ?
+                null : cor.linkFot
+            }
             selecionado={cor.isSelected}
             onClick={() => {
-              const filtroCores = cores.map(corMarcada => {
-                if (corMarcada.nome === cor.nome) {
-                  return { cod: corMarcada.cod, nome: corMarcada.nome, linkFot: corMarcada.linkFot, isSelected: true };
+              const filtroCores = cores.map((corMarcada: any) => {
+                if (corMarcada.cod === cor.cod) {
+                  return { cod: corMarcada.cod, padmer: corMarcada.padmer, linkFot: corMarcada.linkFot, isSelected: true };
                 }
-                return { cod: corMarcada.cod, nome: corMarcada.nome, linkFot: corMarcada.linkFot, isSelected: false };
+                return { cod: corMarcada.cod, padmer: corMarcada.padmer, linkFot: corMarcada.linkFot, isSelected: false };
               });
               setCores(filtroCores);
-              setCorSelecionada(cor.cor);
+              setCorSelecionada(cor);
             }}
-          />
+          >
+            {cor?.linkFot === 'https://darckmoveis.meucatalogodigital.com/imagens/nofigure.jpg' ? (<span>{cor?.padmer}</span>) : null}
+          </CorDiv>
         ))
       }
     </>
