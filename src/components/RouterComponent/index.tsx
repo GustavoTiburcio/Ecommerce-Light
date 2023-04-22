@@ -58,7 +58,7 @@ export default function RouterComponent() {
       <Routes>
         <Route element={<AppLayout />}>
           <Route path='/' element={<Home />} />
-          <Route path='/produtoDetalhes' element={<ProdutoDetalhes />} />
+          <Route path='/produtoDetalhes/:codbar' element={<ProdutoDetalhes />} />
           <Route path='/produtoListagem' element={<ProdutoListagem />} />
         </Route>
         <Route>

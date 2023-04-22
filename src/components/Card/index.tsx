@@ -15,7 +15,7 @@ export default function Card({ imageSrc, nome, codbar, preço, parcelamento }: C
 
   return (
     <>
-      <CardContainer onClick={() => navigate('/produtoDetalhes', { state: { codbar: codbar} })}>
+      <CardContainer onClick={() => navigate(`/produtoDetalhes/${codbar}`)}>
         <CardImage src={imageSrc} />
         <TextDiv>
           <span className='nomeProduto'>{nome}</span>

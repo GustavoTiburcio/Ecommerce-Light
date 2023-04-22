@@ -159,6 +159,7 @@ export const QuantidadeInput = styled.input`
 
   /* Firefox */
   [type=number] {
+    appearance: textfield;
     -moz-appearance: textfield;
   }
 `;

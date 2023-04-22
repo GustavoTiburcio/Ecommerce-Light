@@ -17,7 +17,7 @@ import Cores from '../../components/Cores/Index';
 import Tamanhos from '../../components/Tamanhos';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { formatCurrency } from '../../utils/formatCurrency';
 import Context from '../../context/Context';
 
@@ -39,7 +39,8 @@ interface CorSelecionadaProps {
 }
 
 export default function ProdutoDetalhes() {
-  const location = useLocation();
+  const { codbar } = useParams();
+
   const { carrinho, setCarrinho }: any = useContext(Context);
 
   const [quantidade, setQuantidade] = useState<string>('1');
@@ -134,7 +135,7 @@ export default function ProdutoDetalhes() {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    getProdutoDetalhes(location.state?.codbar);
+    getProdutoDetalhes(codbar ?? '');
   }, []);
 
   useEffect(() => {
@@ -186,10 +187,10 @@ export default function ProdutoDetalhes() {
           </NavDiv>
           <hr />
           <Titulo>
-            {produtoDetalhes?.mer}
+            {produtoDetalhes?.mer ?? ''}
           </Titulo>
           <Ref>
-            Ref: {location.state?.codbar}
+            Ref: {codbar ?? ''}
           </Ref>
           <PrecoDiv>
             <b>
