@@ -217,13 +217,17 @@ export const FinalizarButton = styled.button`
   border-radius: 5px;
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
   font-weight: 450;
-  transition: all ease-in-out 200ms;
   margin-top: 1rem;
 
-  :hover {
-    background-color: #fff;
-    color: #000;
+  :active {
+    opacity: 0.6;
   }
+
+  :disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+
 `;
 
 export const TotaisDiv = styled.div`

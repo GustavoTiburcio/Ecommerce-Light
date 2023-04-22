@@ -161,7 +161,7 @@ export default function Carrinho() {
               </b>
             </TotaisFinalizarDiv>
           </TotaisDiv>
-          <FinalizarButton>
+          <FinalizarButton disabled={carrinho.length === 0}>
             Finalizar Compra
           </FinalizarButton>
         </FinalizarCarrinhoDiv>
