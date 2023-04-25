@@ -3,12 +3,15 @@ import { fadeInUp } from 'react-animations';
 
 const fadeInUpAnimation = keyframes`${fadeInUp}`;
 
-export const CardContainer = styled.div`
+interface CardProps {
+  tipoCardImagem?: string;
+}
+
+export const CardContainer = styled.div<CardProps>`
   display:  flex;
   flex-direction: column;
-  height: 592px;
-  width: 20%;
-  /* width: 10vw; */
+  height: ${({ tipoCardImagem }) => tipoCardImagem === 'paisagem' ? '356px' : '592px'};
+  ${({ tipoCardImagem }) => tipoCardImagem !== 'paisagem' ? 'width: 20%;' : ''}
   background-color: transparent;
   text-align: start;
   cursor: pointer;
@@ -22,7 +25,7 @@ export const CardContainer = styled.div`
 
 export const CardImage = styled.img`
   object-fit: cover!important;
-  max-width: 100%;
+  /* max-width: 100%; */
   height: 80%;
   box-shadow: 0 4px 8px 0 rgba(171, 183, 183,0.2), 0 3px 10px 0 rgba(171, 183, 183,0.5);
 

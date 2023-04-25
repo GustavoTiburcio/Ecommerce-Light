@@ -22,11 +22,11 @@ export default function SearchBar({ placeholder, setModalVisible }: SearchBarPro
       }
 
       setModalVisible(false);
-      navigate('/produtoListagem', { state: { pesquisa: pesquisa } });
+      navigate(`/produtoListagem/${pesquisa}`);
     }}>
       <Input
         placeholder={placeholder}
-        onChange={(e) => setPesquisa(e.target.value)}
+        onChange={(e) => setPesquisa(e.target.value.trimEnd())}
         autoFocus={true}
       />
       <Button type='submit'>

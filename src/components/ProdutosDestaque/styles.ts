@@ -1,12 +1,15 @@
 import styled from 'styled-components';
 
-export const Container = styled.div`
+interface ProdutoDestaqueProps {
+  tipoCardImagem?: string;
+}
+
+export const Container = styled.div<ProdutoDestaqueProps>`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 100vh;
   margin: 2rem 0px;
   background-color: #F7F7F7;
   overflow: hidden;
@@ -17,10 +20,6 @@ export const Container = styled.div`
     font-style: italic;
   }
 
-  /* .carousel-wrapper{
-    max-width: 100%;
-  } */
-
   .control-next.control-arrow:before {
     content: '';
     border: solid #000;
@@ -29,7 +28,7 @@ export const Container = styled.div`
     padding: 10px;
     transform: rotate(-45deg);
     -webkit-transform: rotate(-45deg);
-    margin-right: 4rem;
+    margin-right: ${({ tipoCardImagem }) => tipoCardImagem === 'paisagem' ? '14rem' : '4rem'};
   }
 
   .control-prev.control-arrow:before {
@@ -40,7 +39,7 @@ export const Container = styled.div`
     padding: 10px;
     transform: rotate(135deg);
     -webkit-transform: rotate(135deg);
-    margin-left: 4rem;
+    margin-left: ${({ tipoCardImagem }) => tipoCardImagem === 'paisagem' ? '14rem' : '4rem'};
   }
 
   @media screen and (max-width: 767px){
@@ -60,7 +59,7 @@ export const CarouselContainer = styled.div`
   width: 90%;
   margin-left: 5%;
   justify-content: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   column-gap: 20px;
 
   @media screen and (max-width: 767px){

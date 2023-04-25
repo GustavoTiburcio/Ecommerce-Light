@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { CarouselContainer, Container } from './styles';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
@@ -7,6 +7,7 @@ import useWindowDimensions from '../../utils/WindowDimensions';
 import { toast } from 'react-toastify';
 import api from '../../services/api';
 import { formatCurrency } from '../../utils/formatCurrency';
+import Context from '../../context/Context';
 
 interface ProdutoCardProps {
   linkFot: string;
@@ -17,6 +18,7 @@ interface ProdutoCardProps {
 }
 
 export default function ProdutosDestaque() {
+  const { configs }:any = useContext(Context);
   const { width } = useWindowDimensions();
   const isMobile = width <= 767;
   const [produtos, setProdutos] = useState<ProdutoCardProps[]>([
@@ -29,6 +31,7 @@ export default function ProdutosDestaque() {
     // { nome: 'Shorts Alto Giro Wind 3 Em 1', preço: '319,90', parcelamento: '6x R$ 53,31 sem juros', imageSrc: 'https://td0295.vtexassets.com/arquivos/ids/1755570-900-900?v=1766575986&width=900&height=900&aspect=true' },
     // { nome: 'Leggin Alto Giro Hyper C/ Abert. Na Barra e Bolsa', preço: '278,90', parcelamento: '6x R$ 46,48 sem juros', imageSrc: 'https://td0295.vtexassets.com/arquivos/ids/1752066-900-900?v=1766521159&width=900&height=900&aspect=true' },
   ]);
+  const [tipoCardImagem, setTipoCardImagem] = useState('');
 
   async function getProdutosCardDestaque() {
     try {
@@ -38,7 +41,7 @@ export default function ProdutosDestaque() {
         return {
           linkFot: produtos.linkFot ? 'https://' + produtos.linkFot : 'https://infoworld.am3shop.com.br/arquivos/08784917000136/publico/produto-padrao.jpg',
           mer: produtos.mer,
-          codbar:produtos.codBar,
+          codbar: produtos.codBar,
           valVenMin: formatCurrency(produtos.valVenMin),
           parcelamento: `3x de ${formatCurrency(produtos.valVenMin / 3)}`
         };
@@ -52,10 +55,10 @@ export default function ProdutosDestaque() {
   }
 
   const carretelImagens = produtos.map((produto, i) => {
-    if (i % 4 === 0) {
+    if (i % (tipoCardImagem === 'paisagem' && width < 1600 ? 3 : 4) === 0) {
       return (
         <CarouselContainer key={i} className='carousel'>
-          {produtos.map((produto, index) => index >= i && index <= i + 3 &&
+          {produtos.map((produto, index) => index >= i && index <= i + (tipoCardImagem === 'paisagem' && width < 1600 ? 2 : 3) &&
             <Card
               key={index}
               imageSrc={produto.linkFot}
@@ -95,12 +98,20 @@ export default function ProdutosDestaque() {
   const carretelFiltrado = carretelImagens.filter(teste => teste);
   const carretelFiltradoMobile = carretelImagensMobile.filter(teste => teste);
 
-  useEffect(()=>{
+  useEffect(() => {
     getProdutosCardDestaque();
-  },[]);
+  }, []);
+
+  useEffect(() => {
+    if (configs.length > 0) {
+      const [{ val: tipoImagem }] = configs.filter((config: any) => config.con === 'ExiTipImg');
+
+      setTipoCardImagem(tipoImagem.toLowerCase());
+    }
+  }, [configs]);
 
   return (
-    <Container>
+    <Container tipoCardImagem={tipoCardImagem}>
       <p>Nossos Destaques</p>
       <Carousel
         showArrows={true}

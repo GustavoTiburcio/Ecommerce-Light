@@ -5,18 +5,21 @@ import {
   ProdutoNomeDiv, QuantidadeButton, QuantidadeDiv, QuantidadeInput, QuantidadeInputDiv,
   TituloColunasDiv, TotaisDiv, TotaisFinalizarDiv, TotalDiv
 } from './styles';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Context from '../../context/Context';
 import { formatCurrency } from '../../utils/formatCurrency';
 
 export default function Carrinho() {
-  const { configs, carrinho, setCarrinho }: any = useContext(Context);
+  const navigate = useNavigate();
+  const { configs, carrinho, gruposAjuda, setCarrinho }: any = useContext(Context);
 
   const [itensCarrinho, setItensCarrinho] = useState<any>(carrinho);
 
   //config
   const [logoURI, setLogoURI] = useState<string>('');
+  const [finalizarCarrinhoNoWhats, setFinalizarCarrinhoNoWhats] = useState<boolean>(false);
+  const [numCel, setNumCel] = useState<string>('');
 
   async function incrementarQuantidade(cod: number) {
     const novoCarrinho = itensCarrinho.map((item: any) => {
@@ -46,9 +49,6 @@ export default function Carrinho() {
   }
 
   function alterarQuantidade(e: React.ChangeEvent<HTMLInputElement>, cod: number) {
-    // if (+e.target.value) {
-
-    // }
     const novoCarrinho = itensCarrinho.map((item: any) => {
       if (item.cod === cod) {
         return { ...item, quantidade: e.target.value };
@@ -59,16 +59,49 @@ export default function Carrinho() {
     setItensCarrinho(novoCarrinho);
   }
 
+  function finalizarCarrinho() {
+
+    if (finalizarCarrinhoNoWhats) {
+      const produtos = itensCarrinho.map((item: any) => {
+        return `Ref: ${item.codbar} ` + item.mer + ` Tamanho: ${item.codTam ?? ''}` + ` Cor: ${item.cor.padmer ?? ''}` +
+          ` Qtde: ${item.quantidade}` + ` Vlr Unitário: ${formatCurrency(item.valor)}` + '%0A';
+      });
+
+      const url = 'https://api.whatsapp.com/send?phone=55' + numCel + '&text=Olá!! Gostaria de finalizar meu carrinho:' + '%0A' + produtos;
+      setCarrinho([]);
+      navigate('/');
+      window.open(url);
+      return;
+    }
+
+    console.log('Finalizar carrinho pelo site ainda em construção');
+  }
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
   useEffect(() => {
     if (configs.length > 0) {
+      const [{ val: falarComVendedor }] = configs.filter((config: any) => config.con === 'botFalVen');
+      setFinalizarCarrinhoNoWhats(Boolean(JSON.parse(falarComVendedor ?? '0')));
+
       const [{ val: uri }] = configs.filter((config: any) => config.gru === 'logo');
       setLogoURI('https://' + uri);
     }
   }, [configs]);
+
+  useEffect(() => {
+    if (gruposAjuda.length > 0) {
+      const [grupoAjudaCel] = gruposAjuda.filter((config: any) => config.tipo === 'cel');
+
+      if (grupoAjudaCel) {
+        const { gruaju: cel } = grupoAjudaCel;
+        setNumCel(cel);
+      }
+
+    }
+  }, [gruposAjuda]);
 
   return (
     <Container>
@@ -92,7 +125,7 @@ export default function Carrinho() {
           itemCarrinho &&
           <ProdutoDiv key={index}>
             <ProdutoNomeDiv>
-              <img src={itemCarrinho?.cor?.linkFot} title={itemCarrinho.cor.padmer}/>
+              <img src={itemCarrinho?.cor?.linkFot} title={itemCarrinho.cor.padmer} />
               <span>{itemCarrinho?.mer}{' '}{itemCarrinho.codTam}</span>
             </ProdutoNomeDiv>
             <PrecoDiv>
@@ -131,9 +164,13 @@ export default function Carrinho() {
         <FreteDiv>
         </FreteDiv>
         <FinalizarCarrinhoDiv>
-          <span>CEP</span>
-          <CupomInput placeholder='Informe o CEP' />
-          <br />
+          {!finalizarCarrinhoNoWhats &&
+            <>
+              <span>CEP</span>
+              <CupomInput placeholder='Informe o CEP' />
+              <br />
+            </>
+          }
           <span>Cupom de Desconto</span>
           <CupomInput placeholder='Código' />
           <br />
@@ -161,7 +198,7 @@ export default function Carrinho() {
               </b>
             </TotaisFinalizarDiv>
           </TotaisDiv>
-          <FinalizarButton disabled={carrinho.length === 0}>
+          <FinalizarButton disabled={carrinho.length === 0} onClick={finalizarCarrinho}>
             Finalizar Compra
           </FinalizarButton>
         </FinalizarCarrinhoDiv>

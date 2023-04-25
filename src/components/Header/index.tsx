@@ -5,13 +5,14 @@ import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
 import * as GiIcons from 'react-icons/gi';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { categorias } from './CategoriasMock';
 import ReactModal from 'react-modal';
 import SearchBar from '../SearchBar';
 import useWindowDimensions from '../../utils/WindowDimensions';
 import SideBar from '../SideBar';
 import Context from '../../context/Context';
 import CountUp from 'react-countup';
+import { toast } from 'react-toastify';
+import api from '../../services/api';
 
 export default function Header() {
   const navigate = useNavigate();
@@ -25,6 +26,34 @@ export default function Header() {
   const [showSideBar, setShowSideBar] = useState(false);
   const [logoURI, setLogoURI] = useState<string>('');
   const [carrinhoCount, setCarrinhoCount] = useState<number>(0);
+  const [itensMenu, setItensMenu] = useState([]);
+  const [todosSecMerMenu, setTodosSecMerMenu] = useState([]);
+
+  async function getItensMenu() {
+    try {
+      const response = await api.get('/secmer/listarParaMegaMenuPersonalizado');
+
+      if (response.status === 200) {
+        setItensMenu(response.data);
+      }
+
+    } catch (error: any) {
+      toast.error('Falha ao buscar itens do Menu. ' + error.message);
+    }
+  }
+
+  async function getTodosSecMerMenu() {
+    try {
+      const response = await api.get('/secmer/listarParaMegaMenuSecoes');
+
+      if (response.status === 200) {
+        setTodosSecMerMenu(response.data);
+      }
+
+    } catch (error: any) {
+      toast.error('Falha ao buscar todos secmer menu. ' + error.message);
+    }
+  }
 
   function PesquisaModal() {
     return (
@@ -101,6 +130,11 @@ export default function Header() {
     setCarrinhoCount(carrinho.length);
   }, [carrinho]);
 
+  useEffect(() => {
+    getItensMenu();
+    getTodosSecMerMenu();
+  }, []);
+
   return (
     <Container
       hoverHeaderActive={paginaAtual.pathname === '/' && !headerFixoNoScroll && !isMobile}
@@ -127,24 +161,44 @@ export default function Header() {
                 <GiIcons.GiHamburgerMenu size={25} style={{ marginTop: 5 }} />
               </button>
               <div className='dropdown-content'>
-                <a href='/produtoListagem'>Novidades</a>
-                <a href='/produtoListagem'>Promoções</a>
-                <a href='/produtoListagem'>Fitness</a>
+                {todosSecMerMenu.map((item: any, index: number) => (
+                  <a
+                    key={index}
+                    onClick={
+                      () => navigate(`/produtoListagem/${item.secmer}`, { state: { tipoDePesquisa: 'itemMenuTodosSecMer' } })
+                    }
+                  >
+                    {item.secmer}
+                  </a>
+                ))}
               </div>
             </div>
-            {categorias.map((categoria, index) => (
+            {itensMenu.map((item: any, index: number) => (
               <div className='dropdown' key={index}>
-                <button className='dropbtn' onClick={() => navigate('/produtoListagem')}>
-                  {categoria.categoria}
+                <button
+                  className='dropbtn'
+                  onClick={
+                    () => navigate(`/produtoListagem/${item.secmer}`, { state: { tipoDePesquisa: 'itemMenu' } })
+                  }
+                >
+                  {item.secmer}
                 </button>
                 <div className='dropdown-content'>
-                  {categoria.filhos.map((filho, index) => (
-                    <a href='/produtoListagem' key={index}>{filho}</a>
+                  {item.subsec.map((subItem: any, index: number) => (
+                    <a
+                      key={index}
+                      onClick={
+                        () => navigate(`/produtoListagem/${subItem.subsec}`, { state: { tipoDePesquisa: 'itemMenu' } })
+                      }
+                    >
+                      {subItem.subsec}
+                    </a>
                   ))}
                 </div>
               </div>
             ))}
-          </Categorias>}
+          </Categorias>
+        }
         <Buttons>
           <a onClick={() => setModalVisible(true)}>
             <FiIcons.FiSearch />

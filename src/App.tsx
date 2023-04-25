@@ -12,10 +12,11 @@ function App() {
   const [configs, setConfigs] = useState({});
   const [gruposAjuda, setGruposAjuda] = useState({});
   const [carrinho, setCarrinho] = useState([]);
+  const [dadosLogin, setDadosLogin] = useState([]);
 
   return (
     <>
-      <Context.Provider value={{ configs, setConfigs, gruposAjuda, setGruposAjuda, carrinho, setCarrinho }}>
+      <Context.Provider value={{ configs, setConfigs, gruposAjuda, setGruposAjuda, carrinho, setCarrinho, dadosLogin, setDadosLogin }}>
         <GlobalStyles />
         <ToastContainer
           position='top-right'

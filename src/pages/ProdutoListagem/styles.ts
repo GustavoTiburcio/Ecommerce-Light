@@ -74,3 +74,21 @@ export const ActivityIndicator = styled.img`
   animation: 3s ${flashAnimation};
   animation-iteration-count: infinite;
 `;
+
+export const NotFoundDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-evenly; */
+  align-items: center;
+  width: 80%;
+  height: 72.9vh;
+
+  img {
+    height: 13rem
+    /* width: 156px; */
+  }
+
+  b {
+    margin-top: 2rem;
+  }
+`;

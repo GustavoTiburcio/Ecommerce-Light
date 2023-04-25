@@ -24,6 +24,7 @@ import Context from '../../context/Context';
 interface ProdutoCarrinhoProps {
   cod: string | number;
   mer: string;
+  codbar?: string;
   codTam: string;
   cor: CorSelecionadaProps;
   padMerLinkFot?: string;
@@ -41,7 +42,7 @@ interface CorSelecionadaProps {
 export default function ProdutoDetalhes() {
   const { codbar } = useParams();
 
-  const { carrinho, setCarrinho }: any = useContext(Context);
+  const { carrinho, setCarrinho, configs }: any = useContext(Context);
 
   const [quantidade, setQuantidade] = useState<string>('1');
   const [corSelecionada, setCorSelecionada] = useState<CorSelecionadaProps>({ cod: '', padmer: '', linkFot: '' });
@@ -53,6 +54,9 @@ export default function ProdutoDetalhes() {
   const [tamanhos, setTamanhos] = useState<any>([]);
   const [cores, setCores] = useState<any>([]);
   const [indexCarousel, setIndexCarousel] = useState<number>(0);
+
+  //configs
+  const [finalizarCarrinhoNoWhats, setFinalizarCarrinhoNoWhats] = useState<boolean>(false);
 
   async function getProdutoDetalhes(codbar: string) {
     try {
@@ -102,8 +106,8 @@ export default function ProdutoDetalhes() {
     }
   }
 
-  function addProdutoNoCarrinho({ cod, mer, codTam, cor, quantidade, valor }: ProdutoCarrinhoProps) {
-    const novoProduto = [{ cod, mer, codTam, cor, quantidade, valor }];
+  function addProdutoNoCarrinho({ cod, codbar, mer, codTam, cor, quantidade, valor }: ProdutoCarrinhoProps) {
+    const novoProduto = [{ cod, codbar, mer, codTam, cor, quantidade, valor }];
 
     if (produtoDetalhes?.tamanhos.length > 0 && !codTam) {
       toast.warning('Selecione o tamanho');
@@ -124,6 +128,18 @@ export default function ProdutoDetalhes() {
 
     if (!cod) {
       toast.error('Código não encontrado');
+      return;
+    }
+
+    const carrinhoAtual = carrinho;
+    const [produtoJaEstaNoCarrinho] = carrinho.filter((item: any) => item.cod === cod);
+
+    if (produtoJaEstaNoCarrinho) {
+      carrinhoAtual[carrinhoAtual.indexOf(produtoJaEstaNoCarrinho)]['quantidade'] = +(carrinhoAtual[carrinhoAtual.indexOf(produtoJaEstaNoCarrinho)].quantidade) + +(quantidade);
+      setCarrinho(carrinhoAtual);
+      toast.success(
+        `${quantidade}x ${mer.toUpperCase()} ${cor.padmer ? '- ' + cor.padmer.toUpperCase() : ''} ${codTam ? '- ' + codTam.toUpperCase() : ''} Foi adicionado ao carrinho`
+      );
       return;
     }
 
@@ -153,6 +169,13 @@ export default function ProdutoDetalhes() {
       return;
     }
   }, [corSelecionada]);
+
+  useEffect(() => {
+    if (configs.length > 0) {
+      const [{ val: falarComVendedor }] = configs.filter((config: any) => config.con === 'botFalVen');
+      setFinalizarCarrinhoNoWhats(Boolean(JSON.parse(falarComVendedor ?? '0')));
+    }
+  }, [configs]);
 
   return (
     <Container>
@@ -217,15 +240,21 @@ export default function ProdutoDetalhes() {
           </CorTamanhoDiv>
           <hr />
           <NavDivCarrinho>
-            <FreteDiv>
-              <span>
-                CALCULE O FRETE E PRAZO DE ENTREGA
-              </span>
-              <FreteInputDiv>
-                <FreteInput placeholder='CEP' />
-                <FiIcons.FiSearch color='#000' style={{ cursor: 'pointer', width: '10%', height: '100%' }} />
-              </FreteInputDiv>
-            </FreteDiv>
+            {!finalizarCarrinhoNoWhats ?
+              <FreteDiv>
+                <span>
+                  CALCULE O FRETE E PRAZO DE ENTREGA
+                </span>
+                <FreteInputDiv>
+
+                  <>
+                    <FreteInput placeholder='CEP' />
+                    <FiIcons.FiSearch color='#000' style={{ cursor: 'pointer', width: '10%', height: '100%' }} />
+                  </>
+
+                </FreteInputDiv>
+              </FreteDiv> : <div/>
+            }
             <QuantidadeInputDiv>
               <QuantidadeButton
                 onClick={decrementarQuantidade}
@@ -250,7 +279,7 @@ export default function ProdutoDetalhes() {
                 );
 
                 addProdutoNoCarrinho({
-                  cod: codmer[0]?.codigo ?? '', mer: produtoDetalhes?.mer, codTam: tamanhoSelecionado, cor: corSelecionada,
+                  cod: codmer[0]?.codigo ?? '', codbar: codbar, mer: produtoDetalhes?.mer, codTam: tamanhoSelecionado, cor: corSelecionada,
                   quantidade: quantidade, valor: codmer[0]?.valor ?? 0
                 });
               }}

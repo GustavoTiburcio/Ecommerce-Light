@@ -120,6 +120,7 @@ export const Categorias = styled.div<HeaderProps>`
     text-decoration: none;
     display: block;
     text-align: left;
+    cursor: pointer;
   }
 
   .dropdown-content a:hover {

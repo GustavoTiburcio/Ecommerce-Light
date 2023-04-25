@@ -44,7 +44,8 @@ export const Input = styled.input`
 export const Button = styled.button`
   background-color: white;
   color: #fff;
-  width: 15%;
+  /* width: 15%; */
+  padding: 0px 10px;
   height: 20%;
   background-color: #555555;
   border-style: none;

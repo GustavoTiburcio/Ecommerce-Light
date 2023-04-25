@@ -4,13 +4,14 @@ import Card from '../../components/Card';
 // import Footer from '../../components/Footer';
 import {
   Container, Banner, TitleDiv, ProdutosDiv,
-  FiltrosDiv, CardsDiv, InputSlider, ActivityIndicator
+  FiltrosDiv, CardsDiv, InputSlider, ActivityIndicator, NotFoundDiv
 } from './styles';
 import { toast } from 'react-toastify';
 import api from '../../services/api';
 import { formatCurrency } from '../../utils/formatCurrency';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import Context from '../../context/Context';
+import NotFoundSvg from '../../assets/images/not_found.svg';
 
 interface ProdutoCardProps {
   linkFot: string;
@@ -22,6 +23,7 @@ interface ProdutoCardProps {
 
 export default function ProdutoListagem() {
   const location = useLocation();
+  const { pesquisa } = useParams();
   const { configs }: any = useContext(Context);
 
   const [produtos, setProdutos] = useState<ProdutoCardProps[]>([]);
@@ -33,12 +35,20 @@ export default function ProdutoListagem() {
   const [logoURI, setLogoURI] = useState<string>('');
 
   async function getProdutos() {
+    let response;
+
     try {
       if (!temMais) return;
 
       setIsLoading(true);
 
-      const response = await api.get(`/mercador/listarProdutosCard?page=${pagina}&PESQUISA=${location.state?.pesquisa || 'Buque'}&size=8`);
+      if (location.state?.tipoDePesquisa === 'itemMenuTodosSecMer') {
+        response = await api.get(`mercador/RetornaParametrosItemMenuTodasCategorias?page=${pagina}&secmer=${pesquisa}&subsecmer=&CODTABPRE=0&size=8`);
+      } else if (location.state?.tipoDePesquisa === 'itemMenu') {
+        response = await api.get(`mercador/RetornaParametrosItemMenuPersonalizado?page=${pagina}&itemClicado=${pesquisa}&CODTABPRE=0&size=8`);
+      } else {
+        response = await api.get(`/mercador/listarProdutosCard?page=${pagina}&PESQUISA=${pesquisa}&size=8`);
+      }
 
       if (response.status === 200) {
         if (response.data.content.length === 0) {
@@ -87,7 +97,7 @@ export default function ProdutoListagem() {
 
   useEffect(() => {
     novaPesquisa();
-  }, [location.state]);
+  }, [pesquisa]);
 
 
   useEffect(() => {
@@ -111,10 +121,10 @@ export default function ProdutoListagem() {
 
   return (
     <Container>
-      {!location.state?.pesquisa && <Banner src='https://td0295.vtexassets.com/assets/vtex.file-manager-graphql/images/b463a0cf-e1e3-4a9d-834a-714c38de43b4___ed11e381031b526d361b84ee82e8e02f.jpg' />}
+      {!pesquisa && <Banner src='https://td0295.vtexassets.com/assets/vtex.file-manager-graphql/images/b463a0cf-e1e3-4a9d-834a-714c38de43b4___ed11e381031b526d361b84ee82e8e02f.jpg' />}
       <TitleDiv>
         <span>Home {'>'} Feminino {'>'} Fitness</span>
-        <b>{location.state?.pesquisa ? `Palavra-chave: ${location.state?.pesquisa}` : 'Fitness'}</b>
+        <b>{`Palavra-chave: ${pesquisa}`}</b>
         <span>Ordenação</span>
       </TitleDiv>
       <ProdutosDiv>
@@ -130,7 +140,7 @@ export default function ProdutoListagem() {
           />
         </FiltrosDiv>
         <CardsDiv>
-          {produtos.map((produto: any, index: number) => {
+          {produtos.length > 0 ? produtos.map((produto: any, index: number) => {
             return (
               <React.Fragment key={index}>
                 <Card
@@ -141,7 +151,13 @@ export default function ProdutoListagem() {
                   parcelamento={produto.parcelamento}
                 />
               </React.Fragment>);
-          })}
+          }) :
+            !isLoading &&
+            <NotFoundDiv>
+              <img src={NotFoundSvg}/>
+              <b>Não encontramos nenhum resultado para sua busca. Tente palavras menos específicas ou palavras-chave diferentes.</b>
+            </NotFoundDiv>
+          }
         </CardsDiv>
       </ProdutosDiv>
       {isLoading &&
