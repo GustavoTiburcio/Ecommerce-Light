@@ -22,7 +22,7 @@ export default function SearchBar({ placeholder, setModalVisible }: SearchBarPro
       }
 
       setModalVisible(false);
-      navigate(`/produtoListagem/${pesquisa}`);
+      navigate(`/produtoListagem/pesquisa=${pesquisa}`);
     }}>
       <Input
         placeholder={placeholder}

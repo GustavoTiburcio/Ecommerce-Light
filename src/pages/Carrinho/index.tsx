@@ -9,6 +9,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Context from '../../context/Context';
 import { formatCurrency } from '../../utils/formatCurrency';
+import * as FaIcons from 'react-icons/fa';
 
 export default function Carrinho() {
   const navigate = useNavigate();
@@ -78,7 +79,9 @@ export default function Carrinho() {
   }
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
   }, []);
 
   useEffect(() => {
@@ -184,10 +187,14 @@ export default function Carrinho() {
                 ))}
               </span>
             </TotaisFinalizarDiv>
-            <TotaisFinalizarDiv>
-              <span>Entrega</span>
-              <span>grátis</span>
-            </TotaisFinalizarDiv>
+            {!finalizarCarrinhoNoWhats &&
+              <>
+                <TotaisFinalizarDiv>
+                  <span>Entrega</span>
+                  <span>grátis</span>
+                </TotaisFinalizarDiv>
+              </>
+            }
             <TotaisFinalizarDiv>
               <b>Total</b>
               <b>
@@ -199,7 +206,10 @@ export default function Carrinho() {
             </TotaisFinalizarDiv>
           </TotaisDiv>
           <FinalizarButton disabled={carrinho.length === 0} onClick={finalizarCarrinho}>
-            Finalizar Compra
+            {finalizarCarrinhoNoWhats && <FaIcons.FaWhatsapp size={20}/>}
+            <span>
+              Finalizar Compra
+            </span>
           </FinalizarButton>
         </FinalizarCarrinhoDiv>
       </FinalizarDiv>

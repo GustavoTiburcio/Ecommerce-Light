@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { CardContainer, CardImage, TextDiv } from './styles';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import Context from '../../context/Context';
 
 interface CardProps {
@@ -13,6 +13,8 @@ interface CardProps {
 
 export default function Card({ imageSrc, nome, codbar, preço, parcelamento }: CardProps) {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const { configs }: any = useContext(Context);
 
   const [tipoCardImagem, setTipoCardImagem] = useState('');
@@ -27,14 +29,14 @@ export default function Card({ imageSrc, nome, codbar, preço, parcelamento }: C
 
   return (
     <>
-      <CardContainer onClick={() => navigate(`/produtoDetalhes/${codbar}`)} tipoCardImagem={tipoCardImagem}>
+      <CardContainer onClick={() => navigate(`/produtoDetalhes/${codbar}`, { state: { caminho: location.state?.caminho } })} tipoCardImagem={tipoCardImagem}>
         <CardImage src={imageSrc} />
         <TextDiv>
           <span className='nomeProduto'>{nome}</span>
           <span>{preço}</span>
           <b>{parcelamento}</b>
         </TextDiv>
-      </CardContainer>
+      </CardContainer >
     </>
   );
 }

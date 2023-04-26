@@ -14,6 +14,8 @@ function App() {
   const [carrinho, setCarrinho] = useState([]);
   const [dadosLogin, setDadosLogin] = useState([]);
 
+  window.document.title = import.meta.env.VITE_TITLE;
+
   return (
     <>
       <Context.Provider value={{ configs, setConfigs, gruposAjuda, setGruposAjuda, carrinho, setCarrinho, dadosLogin, setDadosLogin }}>

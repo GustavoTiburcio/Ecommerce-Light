@@ -150,17 +150,12 @@ export const QuantidadeInput = styled.input`
   text-align: center;
   font-size: 1.1rem;
   font-weight: 450;
+  appearance: textfield;
 
   ::-webkit-outer-spin-button,
   ::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
-  }
-
-  /* Firefox */
-  [type=number] {
-    appearance: textfield;
-    -moz-appearance: textfield;
   }
 `;
 
@@ -210,15 +205,22 @@ export const CupomInput = styled.input`
 `;
 
 export const FinalizarButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: #fff;
-  padding: 0px 20px;
-  height: 2.5rem;
+  /* height: 2.5rem; */
+  padding: 10px 0px;
   background-color: #000;
   border-style: none;
   border-radius: 5px;
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
   font-weight: 450;
   margin-top: 1rem;
+
+  span {
+    margin-left: 10px;
+  }
 
   :active {
     opacity: 0.6;

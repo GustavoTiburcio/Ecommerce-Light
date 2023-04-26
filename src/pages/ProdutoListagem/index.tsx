@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Accordion from '../../components/Accordion';
 import Card from '../../components/Card';
-// import Footer from '../../components/Footer';
+import Footer from '../../components/Footer';
 import {
   Container, Banner, TitleDiv, ProdutosDiv,
   FiltrosDiv, CardsDiv, InputSlider, ActivityIndicator, NotFoundDiv
@@ -25,6 +25,7 @@ export default function ProdutoListagem() {
   const location = useLocation();
   const { pesquisa } = useParams();
   const { configs }: any = useContext(Context);
+  const termoPesquisa = pesquisa?.split('=') ?? [];
 
   const [produtos, setProdutos] = useState<ProdutoCardProps[]>([]);
   const [temMais, setTemMais] = useState<boolean>(true);
@@ -42,12 +43,17 @@ export default function ProdutoListagem() {
 
       setIsLoading(true);
 
-      if (location.state?.tipoDePesquisa === 'itemMenuTodosSecMer') {
-        response = await api.get(`mercador/RetornaParametrosItemMenuTodasCategorias?page=${pagina}&secmer=${pesquisa}&subsecmer=&CODTABPRE=0&size=8`);
-      } else if (location.state?.tipoDePesquisa === 'itemMenu') {
-        response = await api.get(`mercador/RetornaParametrosItemMenuPersonalizado?page=${pagina}&itemClicado=${pesquisa}&CODTABPRE=0&size=8`);
+
+      if (!termoPesquisa || termoPesquisa.length < 2) {
+        throw Error('URL inválida');
+      }
+
+      if (termoPesquisa[0] === 'secMer') {
+        response = await api.get(`mercador/RetornaParametrosItemMenuTodasCategorias?page=${pagina}&secmer=${termoPesquisa[1]?.replaceAll('-', '/')}&subsecmer=&CODTABPRE=0&size=8`);
+      } else if (termoPesquisa[0] === 'itemMenu') {
+        response = await api.get(`mercador/RetornaParametrosItemMenuPersonalizado?page=${pagina}&itemClicado=${termoPesquisa[1]}&CODTABPRE=0&size=8`);
       } else {
-        response = await api.get(`/mercador/listarProdutosCard?page=${pagina}&PESQUISA=${pesquisa}&size=8`);
+        response = await api.get(`/mercador/listarProdutosCard?page=${pagina}&PESQUISA=${termoPesquisa[1]}&size=8`);
       }
 
       if (response.status === 200) {
@@ -70,7 +76,7 @@ export default function ProdutoListagem() {
       }
 
     } catch (error: any) {
-      toast.error('Falha ao buscar produtos ' + error.message);
+      toast.error('Falha ao buscar produtos. ' + error.message);
     } finally {
       setIsLoading(false);
     }
@@ -88,7 +94,9 @@ export default function ProdutoListagem() {
   }
 
   function novaPesquisa() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
     produtos.length = 0;
     setPagina(0);
     setTemMais(true);
@@ -123,8 +131,8 @@ export default function ProdutoListagem() {
     <Container>
       {!pesquisa && <Banner src='https://td0295.vtexassets.com/assets/vtex.file-manager-graphql/images/b463a0cf-e1e3-4a9d-834a-714c38de43b4___ed11e381031b526d361b84ee82e8e02f.jpg' />}
       <TitleDiv>
-        <span>Home {'>'} Feminino {'>'} Fitness</span>
-        <b>{`Palavra-chave: ${pesquisa}`}</b>
+        <span>{location?.state?.caminho ?? ''}</span>
+        <b>{`Palavra-chave: ${termoPesquisa.length > 1 ? termoPesquisa[1].replaceAll('-', '/') : ''}`}</b>
         <span>Ordenação</span>
       </TitleDiv>
       <ProdutosDiv>
@@ -154,7 +162,7 @@ export default function ProdutoListagem() {
           }) :
             !isLoading &&
             <NotFoundDiv>
-              <img src={NotFoundSvg}/>
+              <img src={NotFoundSvg} />
               <b>Não encontramos nenhum resultado para sua busca. Tente palavras menos específicas ou palavras-chave diferentes.</b>
             </NotFoundDiv>
           }
@@ -163,7 +171,7 @@ export default function ProdutoListagem() {
       {isLoading &&
         <ActivityIndicator src={logoURI} alt='Logo' />
       }
-      {/* <Footer /> */}
+      <Footer />
     </Container>
   );
 }

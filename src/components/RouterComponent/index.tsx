@@ -11,8 +11,9 @@ import Context from '../../context/Context';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
 import { FloatingWhatsApp } from 'react-floating-whatsapp';
+import AvatarWhatsApp from '../../assets/images/avatar_whatsapp.png';
 
-const MainLayout = ({cel}: any) => (
+const MainLayout = ({ cel }: any) => (
   <>
     <Header />
     <FloatingWhatsApp
@@ -25,12 +26,13 @@ const MainLayout = ({cel}: any) => (
       allowEsc
       notification
       notificationDelay={60}
+      avatar={AvatarWhatsApp}
     />
     <Outlet />
   </>
 );
 
-const SubLayout = ({cel}: any) => (
+const SubLayout = ({ cel }: any) => (
   <>
     <FloatingWhatsApp
       phoneNumber={'55' + cel.replace(/\D/g, '')}
@@ -42,6 +44,7 @@ const SubLayout = ({cel}: any) => (
       allowEsc
       notification
       notificationDelay={60}
+      avatar={AvatarWhatsApp}
     />
     <Outlet />
   </>

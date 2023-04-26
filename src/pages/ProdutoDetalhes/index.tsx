@@ -2,10 +2,10 @@ import React, { useEffect, useState, useContext } from 'react';
 import {
   Button, Container, CoresDiv, CorTamanhoDiv, DescricaoProdutoDiv,
   DetalhesDiv, FreteDiv, FreteInput, FreteInputDiv, ImageCarouselContainer,
-  ImageCarouselDiv, NavDiv, NavDivCarrinho, NotaProdutoDiv, PaletaCoresDiv,
-  PaletaTamanhosDiv, PrecoDiv, ProdutoInfoDiv, ProdutoReviewDiv,
-  QuantidadeButton, QuantidadeInput, QuantidadeInputDiv, RecomendacaoDiv,
-  Ref, StarDiv, TamanhosDiv, Titulo
+  ImageCarouselDiv, NavDiv, NavDivCarrinho, PaletaCoresDiv,
+  PaletaTamanhosDiv, PrecoDiv, ProdutoInfoDiv, QuantidadeButton, QuantidadeInput,
+  QuantidadeInputDiv,
+  Ref, TamanhosDiv, Titulo
 } from './styles';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
@@ -20,6 +20,7 @@ import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import { formatCurrency } from '../../utils/formatCurrency';
 import Context from '../../context/Context';
+import AvaliacaoProduto from '../../components/AvaliacaoProduto';
 
 interface ProdutoCarrinhoProps {
   cod: string | number;
@@ -40,6 +41,7 @@ interface CorSelecionadaProps {
 }
 
 export default function ProdutoDetalhes() {
+  // const location = useLocation();
   const { codbar } = useParams();
 
   const { carrinho, setCarrinho, configs }: any = useContext(Context);
@@ -150,7 +152,9 @@ export default function ProdutoDetalhes() {
   }
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
     getProdutoDetalhes(codbar ?? '');
   }, []);
 
@@ -202,7 +206,8 @@ export default function ProdutoDetalhes() {
         </ImageCarouselDiv>
         <ProdutoInfoDiv>
           <NavDiv>
-            <span>Home {'>'} Feminino {'>'} Fitness</span>
+            {/* <span>{!location?.state?.caminho ? 'Home' : location?.state?.caminho}</span> */}
+            <span>{''}</span>
             <Button>
               Favoritar
               <AiIcons.AiOutlineHeart style={{ marginLeft: 10 }} size={25} />
@@ -219,20 +224,22 @@ export default function ProdutoDetalhes() {
             <b>
               {produtoDetalhes?.valVenMin && formatCurrency(produtoDetalhes?.valVenMin)}
             </b>
-            <span>
-              {produtoDetalhes?.quaParValMax && produtoDetalhes?.quaParValMax + ' x '}
-              {produtoDetalhes?.valVenMin && produtoDetalhes?.quaParValMax && formatCurrency(produtoDetalhes?.valVenMin / produtoDetalhes?.quaParValMax)}
-            </span>
+            {produtoDetalhes?.quaParValMax !== 1 &&
+              <span>
+                {produtoDetalhes?.quaParValMax && produtoDetalhes?.quaParValMax + ' x '}
+                {produtoDetalhes?.valVenMin && produtoDetalhes?.quaParValMax && formatCurrency(produtoDetalhes?.valVenMin / produtoDetalhes?.quaParValMax)}
+              </span>
+            }
           </PrecoDiv>
           <CorTamanhoDiv>
             <CoresDiv>
-              <span>Cor</span>
+              {cores.length > 0 && <span>Cor</span>}
               <PaletaCoresDiv>
                 <Cores setCorSelecionada={setCorSelecionada} coresLista={cores} />
               </PaletaCoresDiv>
             </CoresDiv>
             <TamanhosDiv>
-              <span>Tamanho</span>
+              {tamanhos.length > 0 && <span>Tamanho</span>}
               <PaletaTamanhosDiv>
                 <Tamanhos setTamanhoSelecionado={setTamanhoSelecionado} tamanhosLista={tamanhos} />
               </PaletaTamanhosDiv>
@@ -240,7 +247,7 @@ export default function ProdutoDetalhes() {
           </CorTamanhoDiv>
           <hr />
           <NavDivCarrinho>
-            {!finalizarCarrinhoNoWhats ?
+            {!finalizarCarrinhoNoWhats &&
               <FreteDiv>
                 <span>
                   CALCULE O FRETE E PRAZO DE ENTREGA
@@ -253,7 +260,7 @@ export default function ProdutoDetalhes() {
                   </>
 
                 </FreteInputDiv>
-              </FreteDiv> : <div/>
+              </FreteDiv>
             }
             <QuantidadeInputDiv>
               <QuantidadeButton
@@ -295,24 +302,7 @@ export default function ProdutoDetalhes() {
             ))}
           </DescricaoProdutoDiv>
           <hr />
-          <ProdutoReviewDiv>
-            <NotaProdutoDiv>
-              <span><b>-/5</b></span>
-              <span>NOTA DO PRODUTO</span>
-              <StarDiv>
-                {/* <AiIcons.AiFillStar color='yellow' style={{ stroke: 'black', strokeWidth: 20}}/> */}
-                <AiIcons.AiOutlineStar />
-                <AiIcons.AiOutlineStar />
-                <AiIcons.AiOutlineStar />
-                <AiIcons.AiOutlineStar />
-                <AiIcons.AiOutlineStar />
-              </StarDiv>
-              <p>Baseado em 0 avaliações</p>
-            </NotaProdutoDiv>
-            <RecomendacaoDiv>
-              Nenhuma avaliação foi informada
-            </RecomendacaoDiv>
-          </ProdutoReviewDiv>
+          <AvaliacaoProduto codbar={codbar} />
         </ProdutoInfoDiv>
       </DetalhesDiv>
       <Footer />

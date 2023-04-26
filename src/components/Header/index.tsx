@@ -18,7 +18,7 @@ export default function Header() {
   const navigate = useNavigate();
   const { width } = useWindowDimensions();
   const isMobile = width <= 767;
-  const paginaAtual = useLocation();
+  const location = useLocation();
   const { configs, carrinho }: any = useContext(Context);
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -137,7 +137,7 @@ export default function Header() {
 
   return (
     <Container
-      hoverHeaderActive={paginaAtual.pathname === '/' && !headerFixoNoScroll && !isMobile}
+      hoverHeaderActive={location.pathname === '/' && !headerFixoNoScroll && !isMobile}
     >
       <SideBar showSideBar={showSideBar} setShowSideBar={setShowSideBar} />
       <PesquisaModal />
@@ -155,7 +155,7 @@ export default function Header() {
           </Link>
         </LogoDiv>
         {!isMobile &&
-          <Categorias hoverHeaderActive={paginaAtual.pathname === '/'}>
+          <Categorias hoverHeaderActive={location.pathname === '/'}>
             <div className='dropdown'>
               <button className='dropbtn'>
                 <GiIcons.GiHamburgerMenu size={25} style={{ marginTop: 5 }} />
@@ -164,11 +164,9 @@ export default function Header() {
                 {todosSecMerMenu.map((item: any, index: number) => (
                   <a
                     key={index}
-                    onClick={
-                      () => navigate(`/produtoListagem/${item.secmer}`, { state: { tipoDePesquisa: 'itemMenuTodosSecMer' } })
-                    }
+                    onClick={() => navigate(`/produtoListagem/secMer=${item?.secmer.replaceAll('/', '-')}`, { state: { caminho: 'Home > ' + item?.secmer.replaceAll('/', '-') } })}
                   >
-                    {item.secmer}
+                    {item?.secmer ?? ''}
                   </a>
                 ))}
               </div>
@@ -177,21 +175,17 @@ export default function Header() {
               <div className='dropdown' key={index}>
                 <button
                   className='dropbtn'
-                  onClick={
-                    () => navigate(`/produtoListagem/${item.secmer}`, { state: { tipoDePesquisa: 'itemMenu' } })
-                  }
+                  onClick={() => navigate(`/produtoListagem/itemMenu=${item?.secmer}`, { state: { caminho: 'Home > ' + item?.secmer } })}
                 >
-                  {item.secmer}
+                  {item?.secmer ?? ''}
                 </button>
                 <div className='dropdown-content'>
                   {item.subsec.map((subItem: any, index: number) => (
                     <a
                       key={index}
-                      onClick={
-                        () => navigate(`/produtoListagem/${subItem.subsec}`, { state: { tipoDePesquisa: 'itemMenu' } })
-                      }
+                      onClick={() => navigate(`/produtoListagem/itemMenu=${subItem?.subsec}` , { state: { caminho: 'Home > ' + item?.secmer + ' > ' + subItem?.subsec } })}
                     >
-                      {subItem.subsec}
+                      {subItem?.subsec ?? ''}
                     </a>
                   ))}
                 </div>

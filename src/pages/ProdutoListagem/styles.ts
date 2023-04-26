@@ -61,7 +61,7 @@ export const CardsDiv = styled.div`
   column-gap: 25px;
   row-gap: 4rem;
   margin-left: 10rem;
-  min-height: 20.7rem;
+  min-height: 72.9vh;
 `;
 
 export const InputSlider = styled.input`

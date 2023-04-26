@@ -9,8 +9,8 @@ export const Container = styled.div`
   background-color: #1D1D1D;
 
   img {
-    height: 50%;
-    width: 2%;
+    height: 32px;
+    width: 32px;
   }
   p {
     margin-left: 5px;

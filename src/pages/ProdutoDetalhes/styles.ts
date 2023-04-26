@@ -219,39 +219,6 @@ export const FreteInputDiv = styled.div`
   align-items: center;
 `;
 
-export const ProdutoReviewDiv = styled.div`
-  display: flex;
-  width: 100%;
-  height: 10rem;
-  margin-bottom: 2rem;
-  justify-content: space-evenly;
-`;
-
-export const StarDiv = styled.div`
-  display: flex;
-`;
-
-export const NotaProdutoDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  p {
-    color: grey;
-  }
-  span{
-    color: #333;
-    font-weight: 450;
-    font-size: 1.5rem;
-  }
-`;
-
-export const RecomendacaoDiv = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
 
 export const DescricaoProdutoDiv = styled.div`
   display: flex;
@@ -280,6 +247,7 @@ export const QuantidadeInput = styled.input`
   text-align: center;
   font-size: 1.1rem;
   font-weight: 450;
+  appearance: textfield;
 
   ::-webkit-outer-spin-button,
   ::-webkit-inner-spin-button {
@@ -287,12 +255,7 @@ export const QuantidadeInput = styled.input`
     margin: 0;
   }
 
-  /* Firefox
-  [type=number] {
-    -moz-appearance: textfield;
-  } */
 `;
-
 
 export const SelectPersonalizadoContainerDiv = styled.div`
   display: flex;

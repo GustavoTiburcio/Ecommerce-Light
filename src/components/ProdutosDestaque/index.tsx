@@ -50,7 +50,7 @@ export default function ProdutosDestaque() {
       setProdutos(newProdutos);
 
     } catch (error: any) {
-      toast.error('Falha ao buscar destaques' + error.message);
+      toast.error('Falha ao buscar destaques. ' + error.message);
     }
   }
 
