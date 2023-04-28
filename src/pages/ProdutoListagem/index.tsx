@@ -51,9 +51,9 @@ export default function ProdutoListagem() {
       if (termoPesquisa[0] === 'secMer') {
         response = await api.get(`mercador/RetornaParametrosItemMenuTodasCategorias?page=${pagina}&secmer=${termoPesquisa[1]?.replaceAll('-', '/')}&subsecmer=&CODTABPRE=0&size=8`);
       } else if (termoPesquisa[0] === 'itemMenu') {
-        response = await api.get(`mercador/RetornaParametrosItemMenuPersonalizado?page=${pagina}&itemClicado=${termoPesquisa[1]}&CODTABPRE=0&size=8`);
+        response = await api.get(`mercador/RetornaParametrosItemMenuPersonalizado?page=${pagina}&itemClicado=${termoPesquisa[1]?.replaceAll('-', '/')}&CODTABPRE=0&size=8`);
       } else {
-        response = await api.get(`/mercador/listarProdutosCard?page=${pagina}&PESQUISA=${termoPesquisa[1]}&size=8`);
+        response = await api.get(`/mercador/listarProdutosCard?page=${pagina}&PESQUISA=${termoPesquisa[1]?.replaceAll('-', '/')}&size=8`);
       }
 
       if (response.status === 200) {

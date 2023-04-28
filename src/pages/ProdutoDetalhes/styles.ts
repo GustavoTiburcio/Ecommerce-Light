@@ -2,12 +2,19 @@ import styled from 'styled-components';
 
 interface ButtonProps {
   backgroundColor?: string;
+  isMobile?: boolean;
 }
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
   background-color: #fff;
+
+  hr {
+    border-width: 1px;
+    color: #eee;
+    opacity: 0.3;
+  }
 `;
 
 export const DetalhesDiv = styled.div`
@@ -62,12 +69,6 @@ export const ProdutoInfoDiv = styled.div`
   width: 58%;
   height: 100%;
   color: #000;
-  hr {
-    border-width: 1px;
-    color: #eee;
-    opacity: 0.3;
-  }
-
 `;
 
 export const NavDiv = styled.div`
@@ -80,6 +81,11 @@ export const NavDiv = styled.div`
   span {
     font-weight: 450;
     font-size: 1.1rem;
+    cursor: pointer;
+  }
+
+  span:hover{
+    opacity: 0.7;
   }
 `;
 
@@ -143,9 +149,9 @@ export const PrecoDiv = styled.div`
  }
 `;
 
-export const CorTamanhoDiv = styled.div`
+export const CorTamanhoDiv = styled.div<ButtonProps>`
   display: flex;
-  flex-direction: row;
+  flex-direction: ${({ isMobile }) => isMobile ? 'column' : 'row'};
   height: 6rem;
   margin: 1rem 0px;
 
@@ -161,6 +167,10 @@ export const CoresDiv = styled.div`
   flex-direction: column;
   justify-content: space-around;
   width: 47.5%;
+
+  @media screen and (max-width: 767px){
+    width: 100%;
+  }
 `;
 
 export const PaletaCoresDiv = styled.div`
@@ -178,6 +188,10 @@ export const TamanhosDiv = styled.div`
   justify-content: space-around;
   display: flex;
   width: 47.5%;
+
+  @media screen and (max-width: 767px){
+    width: 100%;
+  }
 `;
 
 export const PaletaTamanhosDiv = styled.div`
@@ -269,4 +283,17 @@ export const SelectPersonalizadoContainerDiv = styled.div`
   p{
     color: grey;
   }
+`;
+
+export const ContainerMobile = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+
+    hr {
+      border-width: 1px;
+      color: #eee;
+      opacity: 0.3;
+      margin-left: -10px;
+    }
 `;

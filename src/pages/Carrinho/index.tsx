@@ -10,6 +10,7 @@ import Footer from '../../components/Footer';
 import Context from '../../context/Context';
 import { formatCurrency } from '../../utils/formatCurrency';
 import * as FaIcons from 'react-icons/fa';
+import { toast } from 'react-toastify';
 
 export default function Carrinho() {
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ export default function Carrinho() {
       return item;
     });
     setCarrinho(novoCarrinho);
+    localStorage.setItem('@Carrinho', JSON.stringify(novoCarrinho));
     setItensCarrinho(novoCarrinho);
   }
 
@@ -46,6 +48,7 @@ export default function Carrinho() {
 
     const novoCarrinhoFilter = novoCarrinho.filter((carrinho: any) => carrinho);
     setCarrinho(novoCarrinhoFilter);
+    localStorage.setItem('@Carrinho', JSON.stringify(novoCarrinhoFilter));
     setItensCarrinho(novoCarrinhoFilter);
   }
 
@@ -57,6 +60,7 @@ export default function Carrinho() {
       return item;
     });
     setCarrinho(novoCarrinho);
+    localStorage.setItem('@Carrinho', JSON.stringify(novoCarrinho));
     setItensCarrinho(novoCarrinho);
   }
 
@@ -75,7 +79,7 @@ export default function Carrinho() {
       return;
     }
 
-    console.log('Finalizar carrinho pelo site ainda em construção');
+    toast.warning('Finalizar carrinho pelo site ainda em construção');
   }
 
   useEffect(() => {

@@ -102,7 +102,7 @@ export default function RouterComponent() {
       <Routes>
         <Route element={<MainLayout cel={numCel} />}>
           <Route path='/' element={<Home />} />
-          <Route path='/produtoDetalhes/:codbar' element={<ProdutoDetalhes />} />
+          <Route path='/produtoDetalhes/:codbar/:mer' element={<ProdutoDetalhes />} />
           <Route path='/produtoListagem/:pesquisa' element={<ProdutoListagem />} />
         </Route>
         <Route element={<SubLayout cel={numCel} />}>

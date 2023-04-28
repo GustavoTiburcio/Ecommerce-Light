@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CorDiv, SelectPersonalizadoContainerDiv } from './styles';
 import Select from 'react-dropdown-select';
+import useWindowDimensions from '../../utils/WindowDimensions';
 
 interface CoresProps {
   codbar?: string;
@@ -9,6 +10,8 @@ interface CoresProps {
 }
 
 export default function Cores({ setCorSelecionada, coresLista }: CoresProps) {
+  const { width } = useWindowDimensions();
+  const isMobile = width <= 767;
   const [cores, setCores] = useState<any>([]);
 
   useEffect(() => {
@@ -21,8 +24,8 @@ export default function Cores({ setCorSelecionada, coresLista }: CoresProps) {
         <div>
           {state.values.length > 0 && <div
             style={{
-              height: '48px',
-              width: '48px',
+              height: isMobile ? '36px':'48px',
+              width: isMobile ? '36px':'48px',
               backgroundImage: `url(${state.values[0]?.linkFot})`,
               backgroundSize: 'cover',
             }}
@@ -83,7 +86,7 @@ export default function Cores({ setCorSelecionada, coresLista }: CoresProps) {
           noDataLabel='Nenhuma cor foi encontrada'
           color='red'
           style={{
-            width: '20vw',
+            width: isMobile ? '90vw' : '20vw',
             fontWeight: '450',
             textTransform: 'capitalize'
           }}

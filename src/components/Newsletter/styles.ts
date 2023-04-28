@@ -17,7 +17,12 @@ export const Container = styled.div`
   }
 
   @media screen and (max-width: 767px){
-    width: 90%
+    width: 90%;
+
+    b{
+      font-size: 1.2rem;
+      text-align: center;
+    }
   }
 `;
 

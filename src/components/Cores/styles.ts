@@ -33,7 +33,7 @@ export const SelectPersonalizadoContainerDiv = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  height: 36;
+  height: 36px;
 
   span {
     margin-left: 10px;

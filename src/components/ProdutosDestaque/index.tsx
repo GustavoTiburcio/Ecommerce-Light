@@ -18,7 +18,7 @@ interface ProdutoCardProps {
 }
 
 export default function ProdutosDestaque() {
-  const { configs }:any = useContext(Context);
+  const { configs }: any = useContext(Context);
   const { width } = useWindowDimensions();
   const isMobile = width <= 767;
   const [produtos, setProdutos] = useState<ProdutoCardProps[]>([
@@ -35,7 +35,7 @@ export default function ProdutosDestaque() {
 
   async function getProdutosCardDestaque() {
     try {
-      const response = await api.get('/mercador/listarProdutosCard?page=0&CODTABPRE=0&VISDES=1');
+      const response = await api.get('/mercador/listarProdutosCard?page=0&CODTABPRE=0&VISDES=1&size=60');
 
       const newProdutos: ProdutoCardProps[] = response.data.content.map((produtos: any) => {
         return {
@@ -75,10 +75,10 @@ export default function ProdutosDestaque() {
   });
 
   const carretelImagensMobile = produtos.map((produto, i) => {
-    if (i % 3 === 0) {
+    if (i % (width <= 767 ? 2 : 3) === 0) {
       return (
         <CarouselContainer key={i} className='carousel'>
-          {produtos.map((produto, index) => index >= i && index <= i + 2 &&
+          {produtos.map((produto, index) => index >= i && index <= i + (width <= 767 ? 1 : 2) &&
             <Card
               key={index}
               imageSrc={produto.linkFot}

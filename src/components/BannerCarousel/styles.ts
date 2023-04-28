@@ -23,4 +23,8 @@ export const Container = styled.div`
     -webkit-transform: rotate(135deg);
     margin-left: 3rem;
   }
+
+  @media screen and (max-width: 767px) {
+    margin-top: 0rem;
+  }
 `;

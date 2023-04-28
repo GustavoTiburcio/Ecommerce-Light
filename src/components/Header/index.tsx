@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Buttons, Categorias, Container, LogoDiv, Logo, Subcontainer, ModalDiv, CartIconDiv, CartCountDiv } from './styles';
 import * as FiIcons from 'react-icons/fi';
-import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
 import * as GiIcons from 'react-icons/gi';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import ReactModal from 'react-modal';
 import SearchBar from '../SearchBar';
 import useWindowDimensions from '../../utils/WindowDimensions';
-import SideBar from '../SideBar';
 import Context from '../../context/Context';
 import CountUp from 'react-countup';
 import { toast } from 'react-toastify';
 import api from '../../services/api';
+import SideBarMobile from '../SideBarMobile';
 
 export default function Header() {
   const navigate = useNavigate();
@@ -23,7 +22,6 @@ export default function Header() {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [headerFixoNoScroll, setHeaderFixoNoScroll] = useState(false);
-  const [showSideBar, setShowSideBar] = useState(false);
   const [logoURI, setLogoURI] = useState<string>('');
   const [carrinhoCount, setCarrinhoCount] = useState<number>(0);
   const [itensMenu, setItensMenu] = useState([]);
@@ -139,15 +137,13 @@ export default function Header() {
     <Container
       hoverHeaderActive={location.pathname === '/' && !headerFixoNoScroll && !isMobile}
     >
-      <SideBar showSideBar={showSideBar} setShowSideBar={setShowSideBar} />
       <PesquisaModal />
       <Subcontainer>
         {isMobile &&
-          <div>
-            <Link to='#' className='menu-bars' onClick={() => setShowSideBar(true)}>
-              <FaIcons.FaBars />
-            </Link>
-          </div>
+          <SideBarMobile
+            todasCategorias={todosSecMerMenu}
+            itensMenu={itensMenu}
+          />
         }
         <LogoDiv>
           <Link to={'/'}>
@@ -175,7 +171,7 @@ export default function Header() {
               <div className='dropdown' key={index}>
                 <button
                   className='dropbtn'
-                  onClick={() => navigate(`/produtoListagem/itemMenu=${item?.secmer}`, { state: { caminho: 'Home > ' + item?.secmer } })}
+                  onClick={() => navigate(`/produtoListagem/itemMenu=${item?.secmer.replaceAll('/', '-')}`, { state: { caminho: 'Home > ' + item?.secmer } })}
                 >
                   {item?.secmer ?? ''}
                 </button>
@@ -183,7 +179,7 @@ export default function Header() {
                   {item.subsec.map((subItem: any, index: number) => (
                     <a
                       key={index}
-                      onClick={() => navigate(`/produtoListagem/itemMenu=${subItem?.subsec}` , { state: { caminho: 'Home > ' + item?.secmer + ' > ' + subItem?.subsec } })}
+                      onClick={() => navigate(`/produtoListagem/itemMenu=${subItem?.subsec.replaceAll('/', '-')}`, { state: { caminho: 'Home > ' + item?.secmer + ' > ' + subItem?.subsec } })}
                     >
                       {subItem?.subsec ?? ''}
                     </a>

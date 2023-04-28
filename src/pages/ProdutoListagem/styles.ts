@@ -38,7 +38,6 @@ export const ProdutosDiv = styled.div`
 
 export const FiltrosDiv = styled.div`
   display:flex;
-  /* align-items: center; */
   flex-direction: column;
   width: 15%;
   margin-left: 2%;
@@ -51,7 +50,12 @@ export const FiltrosDiv = styled.div`
   p {
     font-size: 1.1rem;
   }
-  `;
+
+  @media screen and (max-width: 767px){
+    display: none;
+  }
+
+`;
 
 export const CardsDiv = styled.div`
   display:flex;
@@ -59,9 +63,18 @@ export const CardsDiv = styled.div`
   width: 85%;
   flex-wrap: wrap;
   column-gap: 25px;
-  row-gap: 4rem;
+  row-gap: 5rem;
   margin-left: 10rem;
-  min-height: 72.9vh;
+  /* min-height: 72.9vh; */
+
+  @media screen and (max-width: 767px){
+    flex-direction: column;
+    width: 100%;
+    margin-left: 0;
+    justify-content: center;
+    align-items: center;
+  }
+
 `;
 
 export const InputSlider = styled.input`
@@ -78,7 +91,6 @@ export const ActivityIndicator = styled.img`
 export const NotFoundDiv = styled.div`
   display: flex;
   flex-direction: column;
-  /* justify-content: space-evenly; */
   align-items: center;
   width: 80%;
   height: 72.9vh;
@@ -90,5 +102,11 @@ export const NotFoundDiv = styled.div`
 
   b {
     margin-top: 2rem;
+  }
+
+  @media screen and (max-width: 767px){
+    width: 100%;
+    justify-content: center;
+    text-align: center;
   }
 `;

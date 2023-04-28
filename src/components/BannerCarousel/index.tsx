@@ -25,6 +25,7 @@ function BannerCarousel() {
         showStatus={false}
         showThumbs={false}
         swipeable={true}
+        showIndicators={!isMobile}
         emulateTouch={true}
         infiniteLoop
         autoPlay

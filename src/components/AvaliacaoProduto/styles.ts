@@ -6,6 +6,10 @@ export const Container = styled.div`
   /* height: 10rem; */
   margin-top: 2rem;
   justify-content: space-evenly;
+
+  @media screen and (max-width: 767px){
+    flex-direction: column;
+  }
 `;
 
 export const StarDiv = styled.div`
@@ -28,7 +32,6 @@ export const NotaProdutoDiv = styled.div`
   }
   b{
     font-size: 1.8rem;
-
   }
 `;
 
@@ -51,5 +54,13 @@ export const RecomendacaoDiv = styled.div`
     ::first-letter{
       text-transform: capitalize;
     }
+
+    @media screen and (max-width: 767px){
+      font-size: 1rem;
+    }
+  }
+
+  @media screen and (max-width: 767px){
+    margin-top: 10px;
   }
 `;

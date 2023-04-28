@@ -150,7 +150,7 @@ export default function Login() {
             <Title>Vamos lá</Title>
             <Input type='email' placeholder='Email' onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)} />
             <Input type='password' placeholder='Senha' onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
-            <Anchor href='/'>Esqueceu sua password?</Anchor>
+            <Anchor href='/'>Esqueceu sua senha?</Anchor>
             <Button>Acessar</Button>
           </Form>
         </LoginContainer>

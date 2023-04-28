@@ -11,7 +11,7 @@ import Context from './context/Context';
 function App() {
   const [configs, setConfigs] = useState({});
   const [gruposAjuda, setGruposAjuda] = useState({});
-  const [carrinho, setCarrinho] = useState([]);
+  const [carrinho, setCarrinho] = useState(JSON.parse(localStorage.getItem('@Carrinho') ?? '') || []);
   const [dadosLogin, setDadosLogin] = useState([]);
 
   window.document.title = import.meta.env.VITE_TITLE;

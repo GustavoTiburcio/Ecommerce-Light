@@ -18,14 +18,15 @@ export const CardContainer = styled.div<CardProps>`
   animation: 0.5s ${fadeInUpAnimation};
 
   @media screen and (max-width: 767px){
-    height: 320px;
-    width: 120px;
+    align-items: ${({ tipoCardImagem }) => tipoCardImagem === 'paisagem' ? 'center' : 'start'};
+    height: ${({ tipoCardImagem }) => tipoCardImagem === 'paisagem' ? '180px' : '356px'};
+    width: ${({ tipoCardImagem }) => tipoCardImagem === 'paisagem' ? '180px' : '180px'};
   }
 `;
 
 export const CardImage = styled.img`
   object-fit: cover!important;
-  /* max-width: 100%; */
+  max-width: 100%;
   height: 80%;
   box-shadow: 0 4px 8px 0 rgba(171, 183, 183,0.2), 0 3px 10px 0 rgba(171, 183, 183,0.5);
 
