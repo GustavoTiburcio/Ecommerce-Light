@@ -16,7 +16,7 @@ export default function Carrinho() {
   const navigate = useNavigate();
   const { configs, carrinho, gruposAjuda, setCarrinho }: any = useContext(Context);
 
-  const [itensCarrinho, setItensCarrinho] = useState<any>(carrinho);
+  const [itensCarrinho, setItensCarrinho] = useState<any>([]);
 
   //config
   const [logoURI, setLogoURI] = useState<string>('');
@@ -97,6 +97,12 @@ export default function Carrinho() {
       setLogoURI('https://' + uri);
     }
   }, [configs]);
+
+  useEffect(() => {
+    if (carrinho.length > 0) {
+      setItensCarrinho(carrinho);
+    }
+  }, [carrinho]);
 
   useEffect(() => {
     if (gruposAjuda.length > 0) {
