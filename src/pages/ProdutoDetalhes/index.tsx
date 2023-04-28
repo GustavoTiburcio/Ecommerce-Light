@@ -200,13 +200,14 @@ export default function ProdutoDetalhes() {
     );
   }
 
-  function handleJoyrideCallback(data: CallBackProps) {
+  function tutorialCallback(data: CallBackProps) {
     const { status } = data;
     const finishedStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
 
     if (finishedStatuses.includes(status)) {
       setRunTutorial(false);
       localStorage.setItem('@Acessado', 'true');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
@@ -245,20 +246,20 @@ export default function ProdutoDetalhes() {
       {!pularTutorial && <Joyride
         run={runTutorial}
         steps={steps}
-        callback={handleJoyrideCallback}
+        callback={tutorialCallback}
         continuous
         hideCloseButton
         showSkipButton
         disableScrolling={!isMobile}
         scrollOffset={70}
         locale={{
-          back: 'Voltar', close: 'Fechar', last: 'Último',
+          back: 'Voltar', close: 'Fechar', last: 'Fechar',
           next: 'Próximo', open: 'Abrir caixa', skip: 'Pular'
         }}
         styles={{
           options: {
-            zIndex: 10000,
-          },
+            primaryColor: '#000', // Cor principal do botão
+          }
         }}
       />}
       {!isMobile ?

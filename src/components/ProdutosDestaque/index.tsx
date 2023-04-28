@@ -121,7 +121,8 @@ export default function ProdutosDestaque() {
         emulateTouch={true}
         infiniteLoop={false}
         showIndicators={true}
-      // autoPlay
+        interval={8000}
+        autoPlay
       >
         {isMobile ?
           carretelFiltradoMobile.length > 0 && carretelFiltradoMobile.map(novo => novo)
