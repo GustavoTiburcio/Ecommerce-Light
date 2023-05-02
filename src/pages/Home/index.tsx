@@ -13,8 +13,7 @@ import Footer from '../../components/Footer';
 import Context from '../../context/Context';
 
 export default function Home() {
-  const { configs }: any = useContext(Context);
-  const [isLoading, setIsLoading] = useState(true);
+  const { configs, isLoading }: any = useContext(Context);
 
   //configs
   const [logoURI, setLogoURI] = useState<string>('');
@@ -25,9 +24,6 @@ export default function Home() {
 
   useEffect(() => {
     if (configs.length > 0) {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1500);
       const [{ val: uri }] = configs.filter((config: any) => config.gru === 'logo');
       setLogoURI('https://' + uri);
     }

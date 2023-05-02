@@ -9,7 +9,7 @@ import SearchBar from '../SearchBar';
 import useWindowDimensions from '../../utils/WindowDimensions';
 import Context from '../../context/Context';
 import CountUp from 'react-countup';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 import api from '../../services/api';
 import SideBarMobile from '../SideBarMobile';
 
@@ -36,7 +36,7 @@ export default function Header() {
       }
 
     } catch (error: any) {
-      toast.error('Falha ao buscar itens do Menu. ' + error.message);
+      // toast.error('Falha ao buscar itens do Menu. ' + error.message);
     }
   }
 
@@ -49,7 +49,7 @@ export default function Header() {
       }
 
     } catch (error: any) {
-      toast.error('Falha ao buscar todos secmer menu. ' + error.message);
+      // toast.error('Falha ao buscar todos secmer menu. ' + error.message);
     }
   }
 

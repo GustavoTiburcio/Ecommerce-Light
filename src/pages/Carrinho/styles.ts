@@ -19,6 +19,12 @@ export const Container = styled.div`
     margin-top: 2rem;
     font-size: 1.2rem;
   }
+
+  @media screen and (max-width: 767px){
+    hr {
+      width: 100%;
+    }
+  }
 `;
 
 export const LogoDiv = styled.div`
@@ -30,6 +36,10 @@ export const LogoDiv = styled.div`
 
   span {
     font-weight: 450;
+  }
+
+  @media screen and (max-width: 767px){
+      flex-direction: column;
   }
 `;
 
@@ -74,6 +84,10 @@ export const TituloColunasDiv = styled.div`
   }
   .total {
     width: 10%;
+  }
+
+  @media screen and (max-width: 767px){
+    display: none;
   }
 `;
 
@@ -137,11 +151,20 @@ export const QuantidadeInputDiv = styled.div`
 `;
 
 export const QuantidadeButton = styled.button`
- width: 36px;
- height: 36px;
- margin: 0px 10px;
- font-size: 1.1rem;
-font-weight: 450;
+  width: 36px;
+  height: 36px;
+  margin: 0px 10px;
+  font-size: 1.1rem;
+  font-weight: 450;
+
+
+  @media screen and (max-width: 767px){
+    width: 24px;
+    height: 24px;
+    font-size: 0.9rem;
+    margin: 0px 10px;
+  }
+
 `;
 
 export const QuantidadeInput = styled.input`
@@ -156,6 +179,11 @@ export const QuantidadeInput = styled.input`
   ::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+  }
+
+  @media screen and (max-width: 767px){
+    width: 24px;
+    height: 24px;
   }
 `;
 
@@ -175,12 +203,19 @@ export const FinalizarDiv = styled.div`
   display: flex;
   margin: 2rem 0rem;
   width: 70%;
+
+  @media screen and (max-width: 767px){
+    flex-direction: column;
+  }
 `;
 
 export const FreteDiv = styled.div`
   display: flex;
   flex-direction: column;
   width: 70%;
+  @media screen and (max-width: 767px){
+    width: 100%;
+  }
 `;
 
 export const FinalizarCarrinhoDiv = styled.div`
@@ -190,6 +225,10 @@ export const FinalizarCarrinhoDiv = styled.div`
 
   span {
     font-weight: 450;
+  }
+
+  @media screen and (max-width: 767px){
+    width: 100%;
   }
 `;
 
@@ -241,4 +280,42 @@ export const TotaisDiv = styled.div`
 export const TotaisFinalizarDiv = styled.div`
   display: flex;
   justify-content: space-between;
+`;
+
+export const ProdutoMobileDiv = styled.div`
+  display: flex;
+  margin: 1rem 0px;
+  width: 90%;
+`;
+export const ProdutoMobileImageDiv = styled.div`
+  width: 20%;
+  background-color: grey;
+`;
+export const ProdutoMobileInfoDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  width: 80%;
+  margin-left: 5px;
+
+  span {
+    font-size: 0.9rem;
+  }
+`;
+
+export const ProdutoMobileImage = styled.img`
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+`;
+
+export const MobilePrecoDiv = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 25px;
+
+  b {
+    font-size: 1rem;
+    margin-top: 0px;
+  }
 `;

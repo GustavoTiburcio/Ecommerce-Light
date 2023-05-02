@@ -12,6 +12,7 @@ import api from '../../services/api';
 import { toast } from 'react-toastify';
 import { FloatingWhatsApp } from 'react-floating-whatsapp';
 import AvatarWhatsApp from '../../assets/images/avatar_whatsapp.png';
+import ErrorPage from '../../pages/ErrorPage';
 
 const MainLayout = ({ cel }: any) => (
   <>
@@ -51,7 +52,7 @@ const SubLayout = ({ cel }: any) => (
 );
 
 export default function RouterComponent() {
-  const { setConfigs, setGruposAjuda }: any = useContext(Context);
+  const { setConfigs, setGruposAjuda, setIsLoading, setError }: any = useContext(Context);
   const [numCel, setNumCel] = useState<string>('');
 
   async function getConfig() {
@@ -64,6 +65,7 @@ export default function RouterComponent() {
 
     } catch (error: any) {
       toast.error('Falha ao buscar configs: ' + error.message);
+      setError(error.message);
     }
   }
 
@@ -86,9 +88,13 @@ export default function RouterComponent() {
         }
 
       }
-
     } catch (error: any) {
       toast.error('Falha ao buscar grupos de ajuda: ' + error.message);
+      setError(error.message);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
     }
   }
 
@@ -109,6 +115,7 @@ export default function RouterComponent() {
           <Route path='/carrinho' element={<Carrinho />} />
           <Route path='/login' element={<Login />} />
         </Route>
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
     </Router>
   );

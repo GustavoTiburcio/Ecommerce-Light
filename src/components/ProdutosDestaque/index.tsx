@@ -121,7 +121,7 @@ export default function ProdutosDestaque() {
         emulateTouch={true}
         infiniteLoop={false}
         showIndicators={true}
-        interval={8000}
+        interval={5000}
         autoPlay
       >
         {isMobile ?

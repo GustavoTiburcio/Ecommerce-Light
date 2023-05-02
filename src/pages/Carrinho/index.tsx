@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
 import {
   Container, CupomInput, FinalizarButton, FinalizarCarrinhoDiv, FinalizarDiv,
-  FreteDiv, HiddenDiv, ListaCarrinhoDiv, Logo, LogoDiv, PrecoDiv, ProdutoDiv,
+  FreteDiv, HiddenDiv, ListaCarrinhoDiv, Logo, LogoDiv, MobilePrecoDiv, PrecoDiv, ProdutoDiv,
+  ProdutoMobileDiv, ProdutoMobileImage, ProdutoMobileImageDiv, ProdutoMobileInfoDiv,
   ProdutoNomeDiv, QuantidadeButton, QuantidadeDiv, QuantidadeInput, QuantidadeInputDiv,
   TituloColunasDiv, TotaisDiv, TotaisFinalizarDiv, TotalDiv
 } from './styles';
@@ -11,9 +12,13 @@ import Context from '../../context/Context';
 import { formatCurrency } from '../../utils/formatCurrency';
 import * as FaIcons from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import useWindowDimensions from '../../utils/WindowDimensions';
 
 export default function Carrinho() {
   const navigate = useNavigate();
+  const { width } = useWindowDimensions();
+  const isMobile = width <= 767;
+
   const { configs, carrinho, gruposAjuda, setCarrinho }: any = useContext(Context);
 
   const [itensCarrinho, setItensCarrinho] = useState<any>([]);
@@ -52,10 +57,15 @@ export default function Carrinho() {
     setItensCarrinho(novoCarrinhoFilter);
   }
 
-  function alterarQuantidade(e: React.ChangeEvent<HTMLInputElement>, cod: number) {
+  function alterarQuantidade(quantidade: number | string, cod: number) {
+    if (quantidade == '0') {
+      toast.warning('Quantidade inválida');
+      return;
+    }
+
     const novoCarrinho = itensCarrinho.map((item: any) => {
       if (item.cod === cod) {
-        return { ...item, quantidade: e.target.value };
+        return { ...item, quantidade: String(Math.round(+quantidade)) };
       }
       return item;
     });
@@ -135,42 +145,90 @@ export default function Carrinho() {
           <span className='total'>Total</span>
         </TituloColunasDiv>
         {itensCarrinho.map((itemCarrinho: any, index: number) => (
-          itemCarrinho &&
-          <ProdutoDiv key={index}>
-            <ProdutoNomeDiv>
-              <img src={itemCarrinho?.cor?.linkFot} title={itemCarrinho.cor.padmer} />
-              <span>{itemCarrinho?.mer}{' '}{itemCarrinho.codTam}</span>
-            </ProdutoNomeDiv>
-            <PrecoDiv>
-              <span>{formatCurrency(itemCarrinho?.valor)}</span>
-            </PrecoDiv>
-            <QuantidadeDiv>
-              <QuantidadeInputDiv>
-                <QuantidadeButton
-                  onClick={() => decrementarQuantidade(itemCarrinho?.cod)}
-                >
-                  -
-                </QuantidadeButton>
-                <QuantidadeInput
-                  type={'number'}
-                  value={itemCarrinho.quantidade}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    if (+e.target.value < 0) {
-                      return;
-                    }
-                    alterarQuantidade(e, itemCarrinho?.cod);
-                  }}
-                />
-                <QuantidadeButton
-                  onClick={() => incrementarQuantidade(itemCarrinho?.cod)}>
-                  +
-                </QuantidadeButton>
-              </QuantidadeInputDiv>
-            </QuantidadeDiv>
-            <TotalDiv>
-              <span>{formatCurrency(itemCarrinho?.valor * +(itemCarrinho?.quantidade))}</span>
-            </TotalDiv>
-          </ProdutoDiv>
+          itemCarrinho && !isMobile ?
+            <ProdutoDiv key={index}>
+              <ProdutoNomeDiv>
+                <img src={itemCarrinho?.cor?.linkFot} title={itemCarrinho.cor.padmer} />
+                <span>{itemCarrinho?.mer}{' '}{itemCarrinho.codTam}</span>
+              </ProdutoNomeDiv>
+              <PrecoDiv>
+                <span>{formatCurrency(itemCarrinho?.valor)}</span>
+              </PrecoDiv>
+              <QuantidadeDiv>
+                <QuantidadeInputDiv>
+                  <QuantidadeButton
+                    onClick={() => decrementarQuantidade(itemCarrinho?.cod)}
+                  >
+                    -
+                  </QuantidadeButton>
+                  <QuantidadeInput
+                    type={'number'}
+                    value={itemCarrinho.quantidade}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      if (+e.target.value < 0) {
+                        return;
+                      }
+                      alterarQuantidade(e.target.value, itemCarrinho?.cod);
+                    }}
+                    onBlur={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      if (e.target.value === '' || e.target.value === '0') {
+                        alterarQuantidade('1', itemCarrinho?.cod);
+                      }
+                    }}
+                  />
+                  <QuantidadeButton
+                    onClick={() => incrementarQuantidade(itemCarrinho?.cod)}>
+                    +
+                  </QuantidadeButton>
+                </QuantidadeInputDiv>
+              </QuantidadeDiv>
+              <TotalDiv>
+                <span>{formatCurrency(itemCarrinho?.valor * +(itemCarrinho?.quantidade))}</span>
+              </TotalDiv>
+            </ProdutoDiv> :
+            <>
+              <ProdutoMobileDiv key={index}>
+                <ProdutoMobileImageDiv>
+                  <ProdutoMobileImage src={itemCarrinho?.cor?.linkFot} />
+                </ProdutoMobileImageDiv>
+                <ProdutoMobileInfoDiv>
+                  <span>{itemCarrinho?.mer}{' '}{itemCarrinho.codTam}{' '}{itemCarrinho.cor.padmer}</span>
+                  <MobilePrecoDiv>
+                    <b>{formatCurrency(itemCarrinho?.valor)}/Uni</b>
+                    <div />
+                    <QuantidadeDiv>
+                      <QuantidadeInputDiv>
+                        <QuantidadeButton
+                          onClick={() => decrementarQuantidade(itemCarrinho?.cod)}
+                        >
+                          -
+                        </QuantidadeButton>
+                        <QuantidadeInput
+                          type={'number'}
+                          value={itemCarrinho.quantidade}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            if (+e.target.value < 0) {
+                              return;
+                            }
+                            alterarQuantidade(e.target.value, itemCarrinho?.cod);
+                          }}
+                          onBlur={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            if (e.target.value === '' || e.target.value === '0') {
+                              alterarQuantidade('1', itemCarrinho?.cod);
+                            }
+                          }}
+                        />
+                        <QuantidadeButton
+                          onClick={() => incrementarQuantidade(itemCarrinho?.cod)}>
+                          +
+                        </QuantidadeButton>
+                      </QuantidadeInputDiv>
+                    </QuantidadeDiv>
+                  </MobilePrecoDiv>
+                </ProdutoMobileInfoDiv>
+              </ProdutoMobileDiv>
+              <hr />
+            </>
         ))}
       </ListaCarrinhoDiv>
       <FinalizarDiv>
@@ -216,7 +274,7 @@ export default function Carrinho() {
             </TotaisFinalizarDiv>
           </TotaisDiv>
           <FinalizarButton disabled={carrinho.length === 0} onClick={finalizarCarrinho}>
-            {finalizarCarrinhoNoWhats && <FaIcons.FaWhatsapp size={20}/>}
+            {finalizarCarrinhoNoWhats && <FaIcons.FaWhatsapp size={20} />}
             <span>
               Finalizar Compra
             </span>
