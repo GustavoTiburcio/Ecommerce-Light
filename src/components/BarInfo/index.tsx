@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, IconDiv, IconDivMobile, InfoCard, MobileDiv } from './styles';
 import useWindowDimensions from '../../utils/WindowDimensions';
 import { Carousel } from 'react-responsive-carousel';
-import IconeDinamico from '../IconeDinamico';
+import DynamicIcon from '../DynamicIcon';
 import { toast } from 'react-toastify';
 import api from '../../services/api';
 
@@ -50,7 +50,7 @@ export default function BarInfo() {
           {barInf.length > 0 && barInf.map((barInf: BarInf, index: number) =>
             <MobileDiv key={index}>
               <IconDivMobile>
-                <IconeDinamico nome={barInf.nomico} size={30} />
+                <DynamicIcon name={barInf.nomico} size={30} />
               </IconDivMobile>
               <span>
                 {barInf.barinf}
@@ -62,7 +62,7 @@ export default function BarInfo() {
           {barInf.map((barInf: BarInf, index: number) =>
             <InfoCard key={index}>
               <IconDiv>
-                <IconeDinamico nome={barInf.nomico} size={30}/>
+                <DynamicIcon name={barInf.nomico} size={30}/>
               </IconDiv>
               <span>
                 {barInf.barinf}

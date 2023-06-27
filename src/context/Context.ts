@@ -3,24 +3,24 @@ import { createContext } from 'react';
 export interface IContext {
   configs: any;
   setConfigs: (config: any) => void;
-  rodape: IRodape[];
-  setRodape: (rodape: IRodape[]) => void;
-  carrinho: ICarrinho[];
-  setCarrinho: (carrinho: ICarrinho[]) => void;
-  dadosLogin: IDadosLogin;
-  setDadosLogin: (dadosLogin: IDadosLogin) => void;
-  listaDesejos: IListaDesejo[];
-  setListaDesejos: (listaDesejos: IListaDesejo[]) => void;
+  footer: IFooter[];
+  setFooter: (footer: IFooter[]) => void;
+  cart: ICart[];
+  setCart: (cart: ICart[]) => void;
+  loginData: ILoginData;
+  setLoginData: (loginData: ILoginData) => void;
+  wishList: IWishList[];
+  setWishList: (wishList: IWishList[]) => void;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
   error: string;
   setError: (error: string) => void;
 }
 
-export interface IDadosLogin {
+export interface ILoginData {
   id: number;
   datnas?: string;
-  endUsu: IEndUsu[];
+  endUsu: IUserAdress[];
   cpf?: string;
   username: string;
   password: string;
@@ -38,18 +38,18 @@ export interface IDadosLogin {
   codven?: number
 }
 
-export interface ICarrinho {
+export interface ICart {
   cod?: number;
   codmer: number;
   codbar: string;
   mer: string;
   codtam?: string;
-  cor: ICorSelecionada;
+  cor: ISelectedColor;
   quantidade: string;
   valor: number
 }
 
-export interface IListaDesejo {
+export interface IWishList {
   cod: number | undefined;
   codmer: number;
   linkFot: string;
@@ -58,14 +58,14 @@ export interface IListaDesejo {
   valVenMin: number;
 }
 
-export interface ICorSelecionada {
+export interface ISelectedColor {
   cod: string;
   isSelected?: boolean;
   linkFot: string;
   padmer: string;
 }
 
-export interface IEndUsu {
+export interface IUserAdress {
   cod?: number;
   log: string;
   num: string;
@@ -81,21 +81,21 @@ export interface IEndUsu {
   }
 }
 
-export interface IRodape {
+export interface IFooter {
   cod: number;
   rod?: string;
   ord?: number;
-  iterod: IItensRodape[];
+  iterod: IFooterItens[];
 }
 
-export interface IItensRodape {
+export interface IFooterItens {
   cod: number;
   iterod?: string;
   ord?: number;
-  perresiterod: IPerguntasRespostasItensRodape[];
+  perresiterod: IFooterSubItens[];
 }
 
-export interface IPerguntasRespostasItensRodape {
+export interface IFooterSubItens {
   cod: number;
   per?: string;
   res?: string;

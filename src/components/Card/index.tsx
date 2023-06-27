@@ -1,42 +1,42 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { CardContainer, CardImage, EsgotadoText, TextDiv } from './styles';
+import { CardContainer, CardImage, SoldOutText, TextDiv } from './styles';
 import { useLocation, useNavigate } from 'react-router';
 import Context, { IContext } from '../../context/Context';
 import { formatCurrency } from '../../utils/formatCurrency';
 
 interface CardProps {
   imageSrc: string;
-  nome: string;
-  codbar: string;
-  preço: number;
-  esgotado?: boolean;
+  name: string;
+  sku: string;
+  price: number;
+  soldOut?: boolean;
 }
 
-export default function Card({ imageSrc, nome, codbar, preço, esgotado }: CardProps) {
+export default function Card({ imageSrc, name, sku, price, soldOut }: CardProps) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { configs, dadosLogin }: IContext = useContext(Context);
+  const { configs, loginData }: IContext = useContext(Context);
 
-  const [tipoCardImagem, setTipoCardImagem] = useState('');
-  const [quaMaxPar, setQuaMaxPar] = useState(1);
-  const [valMinPar, setValMinPar] = useState(1);
-  const [NecCadAutMosPro, setNecCadAutMosPro] = useState<boolean>(false);
-  const [ApaCodBarCar, setApaCodBarCar] = useState<boolean>(false);
+  const [cardImageOrientation, setCardImageOrientation] = useState('');
+  const [maxInstallments, setMaxInstallments] = useState(1);
+  const [minInstallmentPrice, setMinInstallmentPrice] = useState(1);
+  const [authSeePrices, setAuthSeePrices] = useState<boolean>(false);
+  const [showSku, setShowSku] = useState<boolean>(false);
 
-  function Preco() {
-    if (NecCadAutMosPro) {
-      if (!dadosLogin.autverprosit) {
+  function Price() {
+    if (authSeePrices) {
+      if (!loginData.autverprosit) {
         return <></>;
       }
     }
     return (
       <>
-        <span>{formatCurrency(preço)}</span>
+        <span>{formatCurrency(price)}</span>
         {
-          quaMaxPar > 0 && (preço / quaMaxPar) >= valMinPar ?
-            <b>{quaMaxPar}x de {formatCurrency(preço / quaMaxPar)}</b> :
-            <b>1x de {formatCurrency(preço)}</b>
+          maxInstallments > 0 && (price / maxInstallments) >= minInstallmentPrice ?
+            <b>{maxInstallments}x de {formatCurrency(price / maxInstallments)}</b> :
+            <b>1x de {formatCurrency(price)}</b>
         }
       </>
     );
@@ -44,35 +44,35 @@ export default function Card({ imageSrc, nome, codbar, preço, esgotado }: CardP
 
   useEffect(() => {
     if (configs.length > 0) {
-      const [{ val: tipoImagem }] = configs.filter((config: any) => config.con === 'ExiTipImg');
-      const [{ val: quaMaxPar }] = configs.filter((config: any) => config.con === 'quamaxpar');
-      const [{ val: valminpar }] = configs.filter((config: any) => config.con === 'valminpar');
-      const [{ val: CadAutMosPro }] = configs.filter((config: any) => config.con === 'NecCadAutMosPro');
+      const [{ val: imageOrientation }] = configs.filter((config: any) => config.con === 'ExiTipImg');
+      const [{ val: maxInstallments }] = configs.filter((config: any) => config.con === 'quamaxpar');
+      const [{ val: minInstallmentPrice }] = configs.filter((config: any) => config.con === 'valminpar');
+      const [{ val: AuthSeePrices }] = configs.filter((config: any) => config.con === 'NecCadAutMosPro');
       const [{ val: CodBarCar }] = configs.filter((config: any) => config.con === 'ApaCodBarCar');
 
-      setTipoCardImagem(tipoImagem.toLowerCase());
-      setQuaMaxPar(quaMaxPar);
-      setValMinPar(valminpar);
-      setNecCadAutMosPro(Boolean(+CadAutMosPro));
-      setApaCodBarCar(Boolean(+CodBarCar));
+      setCardImageOrientation(imageOrientation.toLowerCase());
+      setMaxInstallments(maxInstallments);
+      setMinInstallmentPrice(minInstallmentPrice);
+      setAuthSeePrices(Boolean(+AuthSeePrices));
+      setShowSku(Boolean(+CodBarCar));
     }
   }, [configs]);
 
   return (
     <>
       <CardContainer
-        tipoCardImagem={tipoCardImagem}
-        onClick={() => navigate(`/produtoDetalhes/${codbar}/${nome.replaceAll(' ', '-')}`, { state: { caminho: location.state?.caminho } })}
+        imageOrientation={cardImageOrientation}
+        onClick={() => navigate(`/productDetails/${sku}/${name.replaceAll(' ', '-')}`, { state: { caminho: location.state?.caminho } })}
       >
         <CardImage src={imageSrc} />
         <TextDiv>
-          {(ApaCodBarCar || NecCadAutMosPro) && <span>{codbar}</span>}
-          <span className='nomeProduto'>{nome}</span>
-          <Preco />
-          {esgotado &&
-            <EsgotadoText>
+          {(showSku || authSeePrices) && <span>{sku}</span>}
+          <span className='productName'>{name}</span>
+          <Price />
+          {soldOut &&
+            <SoldOutText>
               Esgotado
-            </EsgotadoText>
+            </SoldOutText>
           }
         </TextDiv>
       </CardContainer >

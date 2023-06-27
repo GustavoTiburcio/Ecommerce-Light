@@ -4,23 +4,23 @@ import { fadeInUp } from 'react-animations';
 const fadeInUpAnimation = keyframes`${fadeInUp}`;
 
 interface CardProps {
-  tipoCardImagem?: string;
+  imageOrientation?: string;
 }
 
 export const CardContainer = styled.div<CardProps>`
   display:  flex;
   flex-direction: column;
-  height: ${({ tipoCardImagem }) => tipoCardImagem === 'paisagem' ? '356px' : '592px'};
-  ${({ tipoCardImagem }) => tipoCardImagem !== 'paisagem' ? 'width: 20%;' : ''}
+  height: ${({ imageOrientation }) => imageOrientation === 'paisagem' ? '356px' : '592px'};
+  ${({ imageOrientation }) => imageOrientation !== 'paisagem' ? 'width: 20%;' : ''}
   background-color: transparent;
   text-align: start;
   cursor: pointer;
   animation: 0.5s ${fadeInUpAnimation};
 
   @media screen and (max-width: 767px){
-    align-items: ${({ tipoCardImagem }) => tipoCardImagem === 'paisagem' ? 'center' : 'start'};
-    height: ${({ tipoCardImagem }) => tipoCardImagem === 'paisagem' ? '180px' : '356px'};
-    width: ${({ tipoCardImagem }) => tipoCardImagem === 'paisagem' ? '180px' : '180px'};
+    align-items: ${({ imageOrientation }) => imageOrientation === 'paisagem' ? 'center' : 'start'};
+    height: ${({ imageOrientation }) => imageOrientation === 'paisagem' ? '180px' : '356px'};
+    width: ${({ imageOrientation }) => imageOrientation === 'paisagem' ? '180px' : '180px'};
   }
 `;
 
@@ -46,11 +46,11 @@ export const TextDiv = styled.div`
     height: 20%;
   }
 
-  .nomeProduto {
+  .productName {
     text-transform: capitalize;
   }
 `;
 
-export const EsgotadoText = styled.b`
+export const SoldOutText = styled.b`
   color: red;
 `;

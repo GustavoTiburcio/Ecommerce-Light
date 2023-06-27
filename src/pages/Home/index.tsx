@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
-import BannerPrimario from '../../components/BannerPrimario';
+import PrimaryBanner from '../../components/PrimaryBanner';
 import BarInfo from '../../components/BarInfo';
 import Newsletter from '../../components/Newsletter';
-import ProdutosDestaque from '../../components/ProdutosDestaque';
+import ProductHighlights from '../../components/ProductHighlights';
 import { Container, LogoRodape } from './styles';
 import Footer from '../../components/Footer';
 import Context from '../../context/Context';
-import BannersPersonalizados from '../../components/BannersPersonalizados';
+import CustomBanners from '../../components/CustomBanners';
 
 export default function Home() {
   const { configs }: any = useContext(Context);
@@ -28,10 +28,10 @@ export default function Home() {
   return (
     <>
       <Container>
-        <BannerPrimario />
+        <PrimaryBanner />
         <BarInfo />
-        <BannersPersonalizados />
-        <ProdutosDestaque />
+        <CustomBanners />
+        <ProductHighlights />
         <Newsletter />
         <LogoRodape src={logoURI} alt="Logo" />
         <Footer />

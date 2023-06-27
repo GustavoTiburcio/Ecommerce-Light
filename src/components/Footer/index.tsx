@@ -4,12 +4,12 @@ import WhatsappSVG from '../../assets/images/Whatsapp.svg';
 import Ssl from '../../assets/images/ssl.png';
 import * as FaIcons from 'react-icons/fa';
 import Copyright from '../Copyright';
-import Context, { IContext, IItensRodape, IRodape } from '../../context/Context';
+import Context, { IContext, IFooterItens, IFooter } from '../../context/Context';
 import { useNavigate } from 'react-router-dom';
 
 export default function Footer() {
   const navigate = useNavigate();
-  const { configs, rodape }: IContext = useContext(Context);
+  const { configs, footer }: IContext = useContext(Context);
 
   //config
   const [instagramURI, setInstagramURI] = useState<string>('');
@@ -41,23 +41,23 @@ export default function Footer() {
           href={numCel ? `https://api.whatsapp.com/send?phone=55${numCel.replace(/\D/g, '')}&text=Olá!! Vim pelo site,%20poderia%20me%20ajudar?` : ''}
           target='_blank'
           rel="noreferrer"
-          width={rodape.length > 0 ? 100 / (rodape.length + 2) : 20}
+          width={footer.length > 0 ? 100 / (footer.length + 2) : 20}
         >
           <img src={WhatsappSVG} alt='Ajuda Whatsapp' />
         </WhatsappDiv>
-        {rodape.sort((a: any, b: any) => a.ord - b.ord).map((rod: IRodape, index: number) => (
+        {footer.sort((a: any, b: any) => a.ord - b.ord).map((rod: IFooter, index: number) => (
           <RodapeDiv
             key={index}
-            width={rodape.length > 0 ? 100 / (rodape.length + 2) : 60}
+            width={footer.length > 0 ? 100 / (footer.length + 2) : 60}
           >
             <b>{rod.rod}</b>
-            {rod.iterod.sort((a: any, b: any) => a.ord - b.ord).map((iterod: IItensRodape, i: number) => (
+            {rod.iterod.sort((a: any, b: any) => a.ord - b.ord).map((iterod: IFooterItens, i: number) => (
               <ItemRodape
                 key={i}
                 cursor={iterod.perresiterod.length > 0 ? 'pointer' : 'default'}
                 onClick={() => {
                   if (iterod.perresiterod.length > 0) {
-                    navigate(`/rodape/${iterod.iterod}`);
+                    navigate(`/footer/${iterod.iterod}`);
                   }
                 }}
               >
@@ -105,7 +105,7 @@ export default function Footer() {
           </RodapeDiv>
         ))}
         <SegurancaDiv
-          width={rodape.length > 0 ? 100 / (rodape.length + 2) : 20}
+          width={footer.length > 0 ? 100 / (footer.length + 2) : 20}
         >
           <img src={Ssl} alt='Proteção' />
         </SegurancaDiv>

@@ -1,39 +1,39 @@
 import React, { useState } from 'react';
 import { AccordionTitle, AccordionDiv } from './style';
-import IconeDinamico from '../IconeDinamico';
+import DynamicIcon from '../DynamicIcon';
 
 interface AccordionProps {
-  titulo: string;
-  texto?: string;
+  title: string;
+  text?: string;
   checkboxInputArray?: {
     cod: string;
-    texto: string;
+    text: string;
   }[];
   checkboxInputValuesArray?: any;
-  setFiltro?: (array: any) => void;
+  setFilter?: (array: any) => void;
 }
 
-export default function Accordion({ titulo, texto, checkboxInputArray, checkboxInputValuesArray, setFiltro }: AccordionProps) {
+export default function Accordion({ title, text, checkboxInputArray, checkboxInputValuesArray, setFilter }: AccordionProps) {
   const [isActive, setIsActive] = useState(false);
 
   function onChangeCheckbox(e: any) {
-    if (setFiltro === undefined) {
+    if (setFilter === undefined) {
       return;
     }
 
     if (e.target.checked === true) {
-      setFiltro((prev: any) => ([...prev, e.target.value]));
+      setFilter((prev: any) => ([...prev, e.target.value]));
       return;
     }
 
-    setFiltro((prev: any) => prev.filter((item: any) => item !== e.target.value));
+    setFilter((prev: any) => prev.filter((item: any) => item !== e.target.value));
   }
 
   return (
     <>
       <AccordionTitle onClick={() => setIsActive(!isActive)}>
-        <div>{titulo}</div>
-        <div>{isActive ? (<IconeDinamico nome='AiFillCaretUp' />) : (<IconeDinamico nome='AiFillCaretDown' />)}</div>
+        <div>{title}</div>
+        <div>{isActive ? (<DynamicIcon name='AiFillCaretUp' />) : (<DynamicIcon name='AiFillCaretDown' />)}</div>
       </AccordionTitle>
       {isActive &&
         <AccordionDiv>
@@ -48,13 +48,13 @@ export default function Accordion({ titulo, texto, checkboxInputArray, checkboxI
                     name='teste'
                     checked={checkboxInputValuesArray.includes(checkboxInput.cod)}
                   />
-                  {' '}{checkboxInput.texto}
+                  {' '}{checkboxInput.text}
                 </label>
               </div>
             ))
             :
             <p>
-              {texto}
+              {text}
             </p>}
         </AccordionDiv>}
       <br />

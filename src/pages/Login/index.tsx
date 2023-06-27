@@ -73,10 +73,10 @@ export default function Login() {
         const dadLogin = response.data;
 
         setDadosLogin(response.data);
-        Cookies.set('@dadosLogin', JSON.stringify(dadLogin), { expires: 7, domain: window.location.hostname });
+        Cookies.set('@loginData', JSON.stringify(dadLogin), { expires: 7, domain: window.location.hostname });
         if (password.startsWith('alt1@@')) {
           toast.success('Feliz em ter você de volta 🤩 Altere já a senha da sua conta no painel de usuário.');
-          navigate('/painelDeUsuario/alterarSenha');
+          navigate('/userPanel/alterarSenha');
           return;
         }
         toast.success(`Bem-vindo ${dadLogin.raz ?? ''}!! Fique a vontade 😉`);
@@ -112,7 +112,7 @@ export default function Login() {
         const dadLogin = response.data;
 
         setDadosLogin(response.data);
-        Cookies.set('@dadosLogin', JSON.stringify(dadLogin), { expires: 7, domain: window.location.hostname });
+        Cookies.set('@loginData', JSON.stringify(dadLogin), { expires: 7, domain: window.location.hostname });
         toast.success('Usuário cadastrado com sucesso');
         navigate('/');
       }

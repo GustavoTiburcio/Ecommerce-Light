@@ -47,7 +47,7 @@ export default function SideBarMobile({ todasCategorias, itensMenu }: SideBarMob
                   <li
                     key={index}
                     onClick={() => {
-                      navigate(`/produtoListagem/secMer=${categoria?.secmer.replaceAll('/', ' - ')}`, { state: { caminho: 'Home > ' + categoria?.secmer.replaceAll('/', ' - '), linimaban: categoria?.linimaban } });
+                      navigate(`/productList/secMer=${categoria?.secmer.replaceAll('/', ' - ')}`, { state: { caminho: 'Home > ' + categoria?.secmer.replaceAll('/', ' - '), linimaban: categoria?.linimaban } });
                       handleToggle();
                     }}
                   >
@@ -64,7 +64,7 @@ export default function SideBarMobile({ todasCategorias, itensMenu }: SideBarMob
               className={activeIndex === index ? 'active' : ''}
               onClick={() => {
                 if (itemMenu.subsec.length === 0) {
-                  navigate(`/produtoListagem/itemMenu=${itemMenu?.parametros.replaceAll('=', ':')}`, { state: { caminho: 'Home > ' + itemMenu?.secmer.replaceAll('/', ' - '), linimaban: itemMenu?.linimaban } });
+                  navigate(`/productList/itemMenu=${itemMenu?.parametros.replaceAll('=', ':')}`, { state: { caminho: 'Home > ' + itemMenu?.secmer.replaceAll('/', ' - '), linimaban: itemMenu?.linimaban } });
                   handleToggle();
                   return;
                 }
@@ -78,7 +78,7 @@ export default function SideBarMobile({ todasCategorias, itensMenu }: SideBarMob
                     <li
                       key={index}
                       onClick={() => {
-                        navigate(`/produtoListagem/itemMenu=${subSec?.parametros.replaceAll('=', ':')}`, { state: { caminho: 'Home > ' + itemMenu?.secmer.replaceAll('/', ' - ') + ' > ' + subSec?.subsec, linimaban: itemMenu?.linimaban } });
+                        navigate(`/productList/itemMenu=${subSec?.parametros.replaceAll('=', ':')}`, { state: { caminho: 'Home > ' + itemMenu?.secmer.replaceAll('/', ' - ') + ' > ' + subSec?.subsec, linimaban: itemMenu?.linimaban } });
                         handleToggle();
                       }}
                     >

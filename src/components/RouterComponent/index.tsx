@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 
 import Header from '../Header';
-import Context, { ICarrinho, IContext } from '../../context/Context';
+import Context, { ICart, IContext } from '../../context/Context';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
 import { FloatingWhatsApp } from 'react-floating-whatsapp';
@@ -11,27 +11,26 @@ import Loader from '../Loader';
 
 //pages
 import Home from '../../pages/Home';
-import Rodape from '../../pages/Rodape';
-import ProdutoDetalhes, { postItemCarrinho } from '../../pages/ProdutoDetalhes';
-import ProdutoListagem from '../../pages/ProdutoListagem';
-import Carrinho from '../../pages/Carrinho';
+import Footer from '../../pages/Footer';
+import ProductDetails, { saveCartItem } from '../../pages/ProductDetails';
+import ProductList from '../../pages/ProductList';
+import Cart from '../../pages/Cart';
 import Login from '../../pages/Login';
 import ErrorPage from '../../pages/ErrorPage';
-import PainelDeUsuario from '../../pages/PainelDeUsuario';
-import FinalizarCarrinho from '../../pages/FinalizarCarrinho';
-import PedidoFinalizado from '../../pages/PedidoFinalizado';
+import UserPanel from '../../pages/UserPanel';
+import Checkout from '../../pages/Checkout';
+import FinishedOrder from '../../pages/FinishedOrder';
 
-function LayoutFixo({ cel, headerVisible }: { cel: string, headerVisible?: boolean }) {
+function FixedLayout({ cel, headerVisible }: { cel: string, headerVisible?: boolean }) {
   return (
     <>
       {headerVisible && <Header />}
       <FloatingWhatsApp
-        phoneNumber={'55' + cel.replace(/\D/g, '')}
-        accountName={import.meta.env.VITE_TITLE ?? ''}
-        statusMessage={'Responde em poucos minutos'}
-        chatMessage={'Olá! 🤝 \nComo podemos lhe ajudar?'}
-        defaultMessage={'Olá!! Vim pelo site, '}
-        placeholder={'Digite sua mensagem'}
+        phoneNumber={cel.replace(/\D/g, '')}
+        accountName={'Ecommerce-Light'}
+        chatMessage={'Hello there! 🤝 \nCan i help you?'}
+        defaultMessage={''}
+        placeholder={'Type a message..'}
         allowClickAway
         allowEsc
         notification
@@ -43,16 +42,19 @@ function LayoutFixo({ cel, headerVisible }: { cel: string, headerVisible?: boole
   );
 }
 
-function PainelDeUsuarioRed() {
-  return <Navigate to="/painelDeUsuario/pedidos" replace />;
+function UserPanelRed() {
+  return <Navigate to="/userPanel/pedidos" replace />;
 }
 
 export default function RouterComponent() {
-  const { setConfigs, setRodape, carrinho, setCarrinho, dadosLogin, isLoading, setIsLoading, setError }: IContext = useContext(Context);
-  const [numCel, setNumCel] = useState<string>('');
+  const {
+    setConfigs, setFooter, cart, setCart,
+    loginData, isLoading, setIsLoading, setError
+  }: IContext = useContext(Context);
+  const [celNumber, setCelNumber] = useState<string>('');
   const [logoURI, setLogoURI] = useState<string>('');
 
-  async function getConfig() {
+  async function getConfigs() {
     try {
       const response = await api.get('/configs');
 
@@ -61,38 +63,38 @@ export default function RouterComponent() {
         const [{ val: numWha }] = response.data.filter((config: any) => config.con === 'NumWha');
 
         setLogoURI('https://' + uri);
-        setNumCel(numWha);
+        setCelNumber(numWha);
         setConfigs(response.data);
       }
 
     } catch (error: any) {
-      toast.error('Falha ao buscar configs: ' + error.message);
+      toast.error('Failed to fetch configs. ' + error.message);
       setError(error.message);
     }
   }
 
-  async function getCarrinho() {
+  async function getCart() {
     try {
 
-      if (dadosLogin.id === 0) return;
+      if (loginData.id === 0) return;
 
-      if (carrinho.length > 0) {
-        carrinho.map((itemCarrinho: ICarrinho) => {
+      if (cart.length > 0) {
+        cart.map((itemCarrinho: ICart) => {
           const itemCarrinhoAtualizado = {
             cod: undefined, codmer: itemCarrinho.codmer,
-            codapp_user: dadosLogin.id, qua: +itemCarrinho.quantidade
+            codapp_user: loginData.id, qua: +itemCarrinho.quantidade
           };
-          postItemCarrinho(itemCarrinhoAtualizado);
+          saveCartItem(itemCarrinhoAtualizado);
         });
       }
 
-      const response = await api.get(`/itecar/listarPorUsuario?id=${dadosLogin.id}`);
+      const response = await api.get(`/itecar/listarPorUsuario?id=${loginData.id}`);
       if (response.status === 200) {
-        if (response.data === 'Produto não encontrado') {
+        if (response.data === 'Product not found') {
           return;
         }
 
-        const carrinhoNuvem: ICarrinho[] = response.data.content.map((itemCarrinho: any) => {
+        const userCart: ICart[] = response.data.content.map((itemCarrinho: any) => {
           return {
             cod: itemCarrinho.codIteCar,
             codmer: itemCarrinho.cod,
@@ -109,23 +111,23 @@ export default function RouterComponent() {
           };
         });
 
-        setCarrinho(carrinhoNuvem);
+        setCart(userCart);
       }
 
     } catch (error: any) {
-      console.log('Falha ao buscar carrinho ' + error.message);
+      console.log('Failed to fetch user cart. ' + error.message);
     }
   }
 
-  async function getRodape() {
+  async function getFooterItens() {
     try {
       const response = await api.get('/rod');
 
       if (response.status === 200) {
-        setRodape(response.data);
+        setFooter(response.data);
       }
     } catch (error: any) {
-      toast.error('Falha ao buscar informações do rodapé: ' + error.message);
+      toast.error('Failed to fetch footer itens. ' + error.message);
     } finally {
       setTimeout(() => {
         setIsLoading(false);
@@ -134,38 +136,38 @@ export default function RouterComponent() {
   }
 
   useEffect(() => {
-    getConfig();
-    getCarrinho();
-    getRodape();
+    getConfigs();
+    getCart();
+    getFooterItens();
   }, []);
 
   useEffect(() => {
-    getCarrinho();
-  }, [dadosLogin]);
+    getCart();
+  }, [loginData]);
 
   return (
     <>
       {
         !isLoading ?
           <Router>
-            < Routes >
-              <Route element={<LayoutFixo cel={numCel} headerVisible />}>
+            <Routes>
+              <Route element={<FixedLayout cel={celNumber} headerVisible />}>
                 <Route path='/' element={<Home />} />
-                <Route path='/produtoDetalhes/:codbar/:mer' element={<ProdutoDetalhes />} />
-                <Route path='/produtoListagem/:pesquisa' element={<ProdutoListagem />} />
-                <Route path='/rodape/:iterod' element={<Rodape />} />
-                <Route path='/painelDeUsuario/:itemMenu' element={<PainelDeUsuario />} />
-                <Route path='/painelDeUsuario/' element={<PainelDeUsuarioRed />} />
+                <Route path='/productDetails/:sku/:product' element={<ProductDetails />} />
+                <Route path='/productList/:search' element={<ProductList />} />
+                <Route path='/footer/:footerItem' element={<Footer />} />
+                <Route path='/userPanel/:menuItem' element={<UserPanel />} />
+                <Route path='/userPanel/' element={<UserPanelRed />} />
               </Route>
-              <Route element={<LayoutFixo cel={numCel} />}>
-                <Route path='/carrinho' element={<Carrinho />} />
+              <Route element={<FixedLayout cel={celNumber} />}>
+                <Route path='/cart' element={<Cart />} />
                 <Route path='/login' element={<Login />} />
-                <Route path='/finalizarCarrinho' element={<FinalizarCarrinho />} />
-                <Route path='/pedidoFinalizado' element={<PedidoFinalizado />} />
+                <Route path='/checkout' element={<Checkout />} />
+                <Route path='/finishedOrder' element={<FinishedOrder />} />
               </Route>
               <Route path='*' element={<ErrorPage />} />
-            </Routes >
-          </Router > :
+            </Routes>
+          </Router> :
           <Loader logoURI={logoURI} />
       }
     </>
