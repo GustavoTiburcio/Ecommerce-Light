@@ -4,33 +4,30 @@ import useWindowDimensions from '../../utils/WindowDimensions';
 import { Carousel } from 'react-responsive-carousel';
 import DynamicIcon from '../DynamicIcon';
 import { toast } from 'react-toastify';
-import api from '../../services/api';
+import { infoBarMock } from '../../Mocks/apiMocks';
 
-interface BarInf {
-  cod: number;
-  barinf: string;
-  nomico?: string;
+export interface IInfoBar {
+  id: number;
+  text: string;
+  iconName?: string;
   ord: number;
 }
 
-export default function BarInfo() {
+export default function InfoBar() {
   const { width } = useWindowDimensions();
   const isMobile = width <= 767;
-  const [barInf, setBarInf] = useState<BarInf[]>([]);
+  const [barInf, setBarInf] = useState<IInfoBar[]>([]);
 
-  async function getBarraDeInformações() {
+  async function getInformationBarData() {
     try {
-      const response = await api.get('/barinf');
-      if (response.status === 200 && response.data.length > 0) {
-        setBarInf(response.data.sort((a: BarInf, b: BarInf) => a.ord - b.ord));
-      }
+      setBarInf(infoBarMock.sort((a: IInfoBar, b: IInfoBar) => a.ord - b.ord));
     } catch (error: any) {
-      toast.error('Falha ao buscar barra de informações');
+      toast.error('Failed to fetch information bar. ' + error.message);
     }
   }
 
   useEffect(() => {
-    getBarraDeInformações();
+    getInformationBarData();
   }, []);
 
   return (
@@ -47,25 +44,25 @@ export default function BarInfo() {
           autoPlay={true}
           className='carousel'
         >
-          {barInf.length > 0 && barInf.map((barInf: BarInf, index: number) =>
+          {barInf.length > 0 && barInf.map((barInf: IInfoBar, index: number) =>
             <MobileDiv key={index}>
               <IconDivMobile>
-                <DynamicIcon name={barInf.nomico} size={30} />
+                <DynamicIcon name={barInf.iconName} size={30} />
               </IconDivMobile>
               <span>
-                {barInf.barinf}
+                {barInf.text}
               </span>
             </MobileDiv>
           )}
         </Carousel> :
         <>
-          {barInf.map((barInf: BarInf, index: number) =>
+          {barInf.map((barInf: IInfoBar, index: number) =>
             <InfoCard key={index}>
               <IconDiv>
-                <DynamicIcon name={barInf.nomico} size={30}/>
+                <DynamicIcon name={barInf.iconName} size={30} />
               </IconDiv>
               <span>
-                {barInf.barinf}
+                {barInf.text}
               </span>
             </InfoCard>
           )}

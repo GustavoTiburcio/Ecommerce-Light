@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 
 import Header from '../Header';
-import Context, { ICart, IContext } from '../../context/Context';
+import Context, { ICart, IConfigs, IContext } from '../../context/Context';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
 import { FloatingWhatsApp } from 'react-floating-whatsapp';
@@ -20,6 +20,7 @@ import ErrorPage from '../../pages/ErrorPage';
 import UserPanel from '../../pages/UserPanel';
 import Checkout from '../../pages/Checkout';
 import FinishedOrder from '../../pages/FinishedOrder';
+import { configsMock, footerMock } from '../../Mocks/apiMocks';
 
 function FixedLayout({ cel, headerVisible }: { cel: string, headerVisible?: boolean }) {
   return (
@@ -56,16 +57,13 @@ export default function RouterComponent() {
 
   async function getConfigs() {
     try {
-      const response = await api.get('/configs');
 
-      if (response.status === 200) {
-        const [{ val: uri }] = response.data.filter((config: any) => config.gru === 'logo');
-        const [{ val: numWha }] = response.data.filter((config: any) => config.con === 'NumWha');
+      const [{ value: uri }] = configsMock.filter((config: IConfigs) => config.config === 'logo');
+      const [{ value: numWha }] = configsMock.filter((config: IConfigs) => config.config === 'whatsapp');
 
-        setLogoURI('https://' + uri);
-        setCelNumber(numWha);
-        setConfigs(response.data);
-      }
+      setLogoURI(uri);
+      setCelNumber(numWha);
+      setConfigs(configsMock);
 
     } catch (error: any) {
       toast.error('Failed to fetch configs. ' + error.message);
@@ -121,11 +119,7 @@ export default function RouterComponent() {
 
   async function getFooterItens() {
     try {
-      const response = await api.get('/rod');
-
-      if (response.status === 200) {
-        setFooter(response.data);
-      }
+      setFooter(footerMock);
     } catch (error: any) {
       toast.error('Failed to fetch footer itens. ' + error.message);
     } finally {

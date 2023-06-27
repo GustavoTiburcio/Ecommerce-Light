@@ -8,16 +8,16 @@ export default function Footer() {
   const { footer }: IContext = useContext(Context);
   let perResIteRod: IFooterSubItens[] = [];
 
-  const itemRodapeFiltrado = footer.map((rodape: IFooter) => rodape.iterod.filter((rod: IFooterItens) => rod.iterod === footerItem)).filter((itemrodape: any) => {
+  const filteredFooterItem = footer.map((foot: IFooter) => foot.footerItens.filter((footItem: IFooterItens) => footItem.text === footerItem)).filter((itemrodape: any) => {
     if (itemrodape.length > 0) {
       return itemrodape;
     }
   });
 
 
-  if (itemRodapeFiltrado.length > 0) {
-    const [[itemRodape]] = itemRodapeFiltrado;
-    perResIteRod = itemRodape.perresiterod;
+  if (filteredFooterItem.length > 0) {
+    const [[iteFoot]] = filteredFooterItem;
+    perResIteRod = iteFoot.footerSubItens;
   }
 
   return (
@@ -25,14 +25,14 @@ export default function Footer() {
       <h1>{perResIteRod.length > 0 ? footerItem : 'Footer Item not found'}</h1>
       {perResIteRod.map((perResIteRod: IFooterSubItens, index: number) => (
         <DetailsView key={index}>
-          {(perResIteRod.per && perResIteRod.res) ?
+          {(perResIteRod.question && perResIteRod.answer) ?
             <details>
-              <summary>{perResIteRod.per}</summary>
-              <p>{perResIteRod.res}</p>
+              <summary>{perResIteRod.question}</summary>
+              <p>{perResIteRod.answer}</p>
             </details> :
             <>
-              <b>{perResIteRod.per}</b>
-              <p>{perResIteRod.res}</p>
+              <b>{perResIteRod.question}</b>
+              <p>{perResIteRod.answer}</p>
             </>
           }
         </DetailsView>

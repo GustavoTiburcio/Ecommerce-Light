@@ -8,9 +8,8 @@ import {
 } from './styles';
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../../components/Footer';
-import Context, { ICart, IContext } from '../../context/Context';
+import Context, { ICart, IConfigs, IContext } from '../../context/Context';
 import { formatCurrency } from '../../utils/formatCurrency';
-import * as FaIcons from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import useWindowDimensions from '../../utils/WindowDimensions';
 import DynamicIcon from '../../components/DynamicIcon';
@@ -27,7 +26,6 @@ export default function Cart() {
 
   //config
   const [logoURI, setLogoURI] = useState<string>('');
-  const [finalizarCarrinhoNoWhats, setFinalizarCarrinhoNoWhats] = useState<boolean>(false);
   const [numCel, setNumCel] = useState<string>('');
   const [necCadAutMosPro, setNecCadAutMosPro] = useState<boolean>(false);
 
@@ -44,7 +42,6 @@ export default function Cart() {
       return item;
     });
     setCart(novoCarrinho);
-    // localStorage.setItem('@Carrinho', JSON.stringify(novoCarrinho));
     setItensCarrinho(novoCarrinho);
   }
 
@@ -95,19 +92,6 @@ export default function Cart() {
 
   function finalizarCarrinho() {
 
-    if (finalizarCarrinhoNoWhats) {
-      const produtos = itensCarrinho.map((item: ICart) => {
-        return `Ref: ${item.codbar} ` + item.mer + ` Tamanho: ${item.codtam ?? ''}` + ` Cor: ${item.cor.padmer ?? ''}` + ` Qtde: ${item.quantidade}` + (necCadAutMosPro ? loginData.autverprosit === 1 ? ` Vlr Unitário: ${formatCurrency(item.valor)}` + '%0A' : '%0A' : ` Vlr Unitário: ${formatCurrency(item.valor)}`+ '%0A');
-      });
-
-      const url = 'https://api.whatsapp.com/send?phone=55' + numCel.replace(/\D/g, '') + '&text=Olá!! Gostaria de finalizar meu carrinho:' + '%0A' + produtos;
-      setCart([]);
-      // localStorage.removeItem('@Carrinho');
-      navigate('/');
-      window.open(url);
-      return;
-    }
-
     if (loginData.id === 0) {
       toast.warning('Faça login para finalizar seu pedido');
       navigate('/login');
@@ -134,13 +118,11 @@ export default function Cart() {
 
   useEffect(() => {
     if (configs.length > 0) {
-      const [{ val: falarComVendedor }] = configs.filter((config: any) => config.con === 'botFalVen');
-      const [{ val: uri }] = configs.filter((config: any) => config.gru === 'logo');
-      const [{ val: numWha }] = configs.filter((config: any) => config.con === 'NumWha');
-      const [{ val: CadAutMosPro }] = configs.filter((config: any) => config.con === 'NecCadAutMosPro');
+      const [{ value: uri }] = configs.filter((config: IConfigs) => config.config === 'logo');
+      const [{ value: numWha }] = configs.filter((config: IConfigs) => config.config === 'whatsapp');
+      const [{ value: CadAutMosPro }] = configs.filter((config: IConfigs) => config.config === 'needAuthToSeePrices');
 
-      setFinalizarCarrinhoNoWhats(Boolean(JSON.parse(falarComVendedor ?? 0)));
-      setLogoURI('https://' + uri);
+      setLogoURI(uri);
       setNumCel(numWha);
       setNecCadAutMosPro(Boolean(+CadAutMosPro));
     }
@@ -165,9 +147,9 @@ export default function Cart() {
       <b>Meu carrinho</b>
       <ListaCarrinhoDiv>
         <TituloColunasDiv>
-          <span className='produto'>Lista de Produtos</span>
-          <span className='preco'>Preço Unitário</span>
-          <span className='quantidade'>Quantidade</span>
+          <span className='produto'>Product List</span>
+          <span className='preco'>Unit Price</span>
+          <span className='quantidade'>Quantity</span>
           <span className='total'>Total</span>
         </TituloColunasDiv>
         {itensCarrinho.map((itemCarrinho: ICart, index: number) =>
@@ -316,12 +298,11 @@ export default function Cart() {
             </TotaisFinalizarDiv>
           </TotaisDiv>
           <FinalizarButton disabled={cart.length === 0} onClick={finalizarCarrinho}>
-            {finalizarCarrinhoNoWhats && <FaIcons.FaWhatsapp size={20} />}
             <span>
-              Finalizar Compra
+              Go to Checkout
             </span>
           </FinalizarButton>
-          <p onClick={() => navigate('/')}>Continuar comprando</p>
+          <p onClick={() => navigate('/')}>Forgot something?</p>
         </FinalizarCarrinhoDiv>
       </FinalizarDiv>
       <Footer />

@@ -4,7 +4,7 @@ import WhatsappSVG from '../../assets/images/Whatsapp.svg';
 import Ssl from '../../assets/images/ssl.png';
 import * as FaIcons from 'react-icons/fa';
 import Copyright from '../Copyright';
-import Context, { IContext, IFooterItens, IFooter } from '../../context/Context';
+import Context, { IContext, IFooterItens, IFooter, IConfigs } from '../../context/Context';
 import { useNavigate } from 'react-router-dom';
 
 export default function Footer() {
@@ -20,11 +20,11 @@ export default function Footer() {
 
   useEffect(() => {
     if (configs.length > 0) {
-      const [{ val: instaURI }] = configs.filter((config: any) => config.con === 'Instagram');
-      const [{ val: faceURI }] = configs.filter((config: any) => config.con === 'Facebook');
-      const [{ val: youtURI }] = configs.filter((config: any) => config.con === 'ConYou');
-      const [{ val: twitURI }] = configs.filter((config: any) => config.con === 'ConTwi');
-      const [{ val: numWha }] = configs.filter((config: any) => config.con === 'NumWha');
+      const [{ value: instaURI }] = configs.filter((config: IConfigs) => config.config === 'instagram');
+      const [{ value: faceURI }] = configs.filter((config: IConfigs) => config.config === 'facebook');
+      const [{ value: youtURI }] = configs.filter((config: IConfigs) => config.config === 'youtube');
+      const [{ value: twitURI }] = configs.filter((config: IConfigs) => config.config === 'twitter');
+      const [{ value: numWha }] = configs.filter((config: IConfigs) => config.config === 'whatsapp');
 
       setInstagramURI(instaURI);
       setFacebookURI(faceURI);
@@ -38,30 +38,30 @@ export default function Footer() {
     <Container>
       <SubContainer>
         <WhatsappDiv
-          href={numCel ? `https://api.whatsapp.com/send?phone=55${numCel.replace(/\D/g, '')}&text=Olá!! Vim pelo site,%20poderia%20me%20ajudar?` : ''}
+          href={numCel ? `https://api.whatsapp.com/send?phone=55${numCel.replace(/\D/g, '')}&text=Hello there!!` : ''}
           target='_blank'
           rel="noreferrer"
           width={footer.length > 0 ? 100 / (footer.length + 2) : 20}
         >
           <img src={WhatsappSVG} alt='Ajuda Whatsapp' />
         </WhatsappDiv>
-        {footer.sort((a: any, b: any) => a.ord - b.ord).map((rod: IFooter, index: number) => (
+        {footer.sort((a: any, b: any) => a.ord - b.ord).map((foot: IFooter, index: number) => (
           <RodapeDiv
             key={index}
             width={footer.length > 0 ? 100 / (footer.length + 2) : 60}
           >
-            <b>{rod.rod}</b>
-            {rod.iterod.sort((a: any, b: any) => a.ord - b.ord).map((iterod: IFooterItens, i: number) => (
+            <b>{foot.title}</b>
+            {foot.footerItens.sort((a: any, b: any) => a.ord - b.ord).map((footerItens: IFooterItens, i: number) => (
               <ItemRodape
                 key={i}
-                cursor={iterod.perresiterod.length > 0 ? 'pointer' : 'default'}
+                cursor={footerItens.footerSubItens.length > 0 ? 'pointer' : 'default'}
                 onClick={() => {
-                  if (iterod.perresiterod.length > 0) {
-                    navigate(`/footer/${iterod.iterod}`);
+                  if (footerItens.footerSubItens.length > 0) {
+                    navigate(`/footer/${footerItens.text}`);
                   }
                 }}
               >
-                {iterod.iterod}
+                {footerItens.text}
               </ItemRodape>
             ))}
             {index === 0 &&
@@ -104,11 +104,11 @@ export default function Footer() {
             }
           </RodapeDiv>
         ))}
-        <SegurancaDiv
+        {/* <SegurancaDiv
           width={footer.length > 0 ? 100 / (footer.length + 2) : 20}
         >
           <img src={Ssl} alt='Proteção' />
-        </SegurancaDiv>
+        </SegurancaDiv> */}
       </SubContainer>
       <Copyright />
     </Container>

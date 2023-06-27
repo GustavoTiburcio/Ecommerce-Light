@@ -6,7 +6,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import ReactModal from 'react-modal';
 import SearchBar from '../SearchBar';
 import useWindowDimensions from '../../utils/WindowDimensions';
-import Context, { IContext } from '../../context/Context';
+import Context, { IConfigs, IContext } from '../../context/Context';
 import CountUp from 'react-countup';
 import api from '../../services/api';
 import SideBarMobile from '../SideBarMobile';
@@ -119,8 +119,8 @@ export default function Header() {
 
   useEffect(() => {
     if (configs.length > 0) {
-      const [{ val: uri }] = configs.filter((config: any) => config.gru === 'logo');
-      setLogoURI('https://' + uri);
+      const [{ value: uri }] = configs.filter((config: IConfigs) => config.config === 'logo');
+      setLogoURI(uri);
     }
   }, [configs]);
 

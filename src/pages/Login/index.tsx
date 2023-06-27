@@ -5,11 +5,10 @@ import {
   CadastroContainer, Title, Form, LoginDiv, Logo, RedefinirPasswordContainer
 } from './styles';
 import { useNavigate } from 'react-router';
-import Context from '../../context/Context';
+import Context, { IConfigs } from '../../context/Context';
 import { toast } from 'react-toastify';
 import api from '../../services/api';
 import Cookies from 'js-cookie';
-import { cnpjMask, cpfMask, validaCpfCnpj } from '../../utils/ValidaCpfCnpj';
 
 interface LoginProps {
   username: string;
@@ -36,7 +35,6 @@ export default function Login() {
 
   //config
   const [logoURI, setLogoURI] = useState<string>('');
-  const [finalizarCarrinhoNoWhats, setFinalizarCarrinhoNoWhats] = useState<boolean>(false);
 
   const frases = [
     'Sentiu minha falta né? 🥰',
@@ -98,10 +96,6 @@ export default function Login() {
         toast.warning('Dados inválidos. Verique os campos digitados.');
         return;
       }
-      if (finalizarCarrinhoNoWhats && !validaCpfCnpj(novoCadastro.cgc ?? '')) {
-        toast.warning('CPF/CNPJ inválido.');
-        return;
-      }
 
       const response = await api.post('/usuarios/salvar', novoCadastro, {
         headers: {
@@ -147,11 +141,9 @@ export default function Login() {
 
   useEffect(() => {
     if (configs.length > 0) {
-      const [{ val: uri }] = configs.filter((config: any) => config.gru === 'logo');
-      const [{ val: falarComVendedor }] = configs.filter((config: any) => config.con === 'botFalVen');
+      const [{ value: uri }] = configs.filter((config: IConfigs) => config.config === 'logo');
 
-      setLogoURI('https://' + uri);
-      setFinalizarCarrinhoNoWhats(Boolean(JSON.parse(falarComVendedor ?? 0)));
+      setLogoURI(uri);
     }
   }, [configs]);
 
@@ -168,23 +160,7 @@ export default function Login() {
                 }}
               >
                 <Title>Criar Conta</Title>
-                {finalizarCarrinhoNoWhats &&
-                  <Input
-                    type='text'
-                    placeholder={'CPF/CNPJ'}
-                    value={novoUsuario.cgc}
-                    required
-                    onChange={
-                      (e: React.ChangeEvent<HTMLInputElement>) => {
-                        if (e.target.value.length > 14) {
-                          setNovoUsuario(prev => ({ ...prev, cgc: cnpjMask(e.target.value) }));
-                          return;
-                        }
-                        setNovoUsuario(prev => ({ ...prev, cgc: cpfMask(e.target.value) }));
-                      }}
-                  />
-                }
-                <Input type='text' required placeholder={finalizarCarrinhoNoWhats ? 'Nome Completo / Razão Social' : 'Nome Completo'}
+                <Input type='text' required placeholder={'Full Name'}
                   onChange={
                     (e: React.ChangeEvent<HTMLInputElement>) => setNovoUsuario(prev => ({ ...prev, fan: e.target.value, raz: e.target.value }))
                   }

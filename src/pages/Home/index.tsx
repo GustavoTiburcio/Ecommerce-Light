@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
 import PrimaryBanner from '../../components/PrimaryBanner';
-import BarInfo from '../../components/BarInfo';
+import InfoBar from '../../components/InfoBar';
 import Newsletter from '../../components/Newsletter';
 import ProductHighlights from '../../components/ProductHighlights';
 import { Container, LogoRodape } from './styles';
 import Footer from '../../components/Footer';
-import Context from '../../context/Context';
+import Context, { IConfigs, IContext } from '../../context/Context';
 import CustomBanners from '../../components/CustomBanners';
 
 export default function Home() {
-  const { configs }: any = useContext(Context);
+  const { configs }: IContext = useContext(Context);
 
   //configs
   const [logoURI, setLogoURI] = useState<string>('');
@@ -20,8 +20,8 @@ export default function Home() {
 
   useEffect(() => {
     if (configs.length > 0) {
-      const [{ val: uri }] = configs.filter((config: any) => config.gru === 'logo');
-      setLogoURI('https://' + uri);
+      const [{ value: uri }] = configs.filter((config: IConfigs) => config.config === 'logo');
+      setLogoURI(uri);
     }
   }, [configs]);
 
@@ -29,7 +29,7 @@ export default function Home() {
     <>
       <Container>
         <PrimaryBanner />
-        <BarInfo />
+        <InfoBar />
         <CustomBanners />
         <ProductHighlights />
         <Newsletter />

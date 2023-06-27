@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Button, Container, Logo, MenuParalelo, CheckBoxButtonDiv, SlideContainer, WrapInput, ButtonDiv, CarouselContainer, TotaisDiv, ProdutoDiv } from './styles';
+import { Button, Container, Logo, MenuParalelo, SlideContainer, WrapInput, ButtonDiv, CarouselContainer, TotaisDiv, ProdutoDiv } from './styles';
 import { Carousel } from 'react-responsive-carousel';
 import { cnpjMask, cpfMask, validaCpfCnpj } from '../../utils/ValidaCpfCnpj';
 import { Link, useNavigate } from 'react-router-dom';
-import Context, { ICart, IContext, IUserAdress } from '../../context/Context';
+import Context, { ICart, IConfigs, IContext, IUserAdress } from '../../context/Context';
 import { BuscaEndereco } from '../../utils/buscaCep';
 import { toast } from 'react-toastify';
 import api from '../../services/api';
 import { formatCurrency } from '../../utils/formatCurrency';
 import ProgressBar from '../../components/ProgressBar';
-import LogoCielo from '../../assets/images/logoCielo.svg';
 import LoadingOverlay from 'react-loading-overlay-ts';
 
 export default function Checkout() {
@@ -40,16 +39,6 @@ export default function Checkout() {
   const [uf, setUf] = useState(EndUsuPad?.uf ?? '');
   const [codIbg, setCodIbg] = useState(EndUsuPad?.codibg ?? 0);
 
-  //Dados extra da entrega
-  const [retLoj, setRetLoj] = useState(false);
-  const [pagRet, setPagRet] = useState(false);
-  const [dest, setDest] = useState('');
-  const [celDest, setCelDest] = useState('');
-  const [datEnt, setDatEnt] = useState('');
-  const [horIni, setHorIni] = useState('');
-  const [horFin, setHorFin] = useState('');
-  const [menCar, setMenCar] = useState('');
-
   //Carrinho e valores
   const [fre, setFre] = useState(0);
   const [subTot, setSubTot] = useState(0);
@@ -57,12 +46,6 @@ export default function Checkout() {
 
   //config
   const [logoURI, setLogoURI] = useState<string>('');
-  const [keyApiGoo, setKeyApiGoo] = useState<string>('0');
-  const [usaDadExtEnt, setUsaDadExtEnt] = useState<boolean>(false);
-  const [usaOpcPagRetLoj, setUsaOpcPagRetLoj] = useState<boolean>(false);
-  const [usaCielo, setUsaCielo] = useState<boolean>(false);
-  const [quaMaxPar, setQuaMaxPar] = useState(1);
-  const [valMinPar, setValMinPar] = useState(1);
 
   const slides = [
     {
@@ -265,10 +248,10 @@ export default function Checkout() {
               SubTotal: {formatCurrency(subTot)}
             </span>
             <span>
-              Frete: {retLoj ? 'grátis' : formatCurrency(fre)}
+              Frete: {formatCurrency(fre)}
             </span>
             <b>
-              Total: {retLoj ? formatCurrency(subTot) : formatCurrency(subTot + fre)}
+              Total: {formatCurrency(subTot + fre)}
             </b>
           </TotaisDiv>
           <br />
@@ -283,145 +266,9 @@ export default function Checkout() {
               Concluir Pagamento
             </Button>
           </ButtonDiv>
-          {usaCielo && <img src={LogoCielo} height='20' width='20' />}
         </SlideContainer>,
     }
   ];
-
-  //Se usar dados extras de entra é acrescentado um novo passo no slide, exemplo de cliente que usa: Floricultura Viverde
-  if (usaDadExtEnt) {
-    const novoPasso = {
-      passo: 3,
-      titulo: 'Dados Extras',
-      component:
-        <SlideContainer>
-          {usaOpcPagRetLoj && <CheckBoxButtonDiv>
-            <input
-              type='checkbox'
-              value='false'
-              onChange={() => {
-                setRetLoj(!retLoj);
-                setPagRet(false);
-              }}
-            />  Retirar na loja
-            {retLoj &&
-              <>
-                <input
-                  type='checkbox'
-                  value='false'
-                  onChange={() =>
-                    setPagRet(!pagRet)
-                  }
-                />
-                Pagar na Retirada
-              </>
-            }
-          </CheckBoxButtonDiv>}
-          <WrapInput>
-            <input
-              className={dest !== '' ? 'has-val input' : 'input'}
-              value={dest}
-              onChange={(e) => setDest(e.target.value)}
-              enterKeyHint='done'
-              maxLength={50}
-            />
-            <span className='focus-input' data-placeholder='Quem vai receber?*'></span>
-          </WrapInput>
-          <MenuParalelo>
-            <WrapInput>
-              <input
-                className={celDest !== '' ? 'has-val input' : 'input'}
-                value={celDest}
-                onChange={(e) => setCelDest(e.target.value)}
-                enterKeyHint='done'
-                type='tel'
-                maxLength={11}
-              />
-              <span className='focus-input' data-placeholder='Celular*'></span>
-            </WrapInput>
-            <WrapInput>
-              <input
-                className={'has-val input'}
-                value={datEnt}
-                onChange={(e) => setDatEnt(e.target.value)}
-                enterKeyHint='done'
-                type='date'
-              />
-              <span className='focus-input' data-placeholder='Data da Entrega*'></span>
-            </WrapInput>
-          </MenuParalelo>
-          <MenuParalelo>
-            <WrapInput>
-              <input
-                className={'has-val input'}
-                value={horIni}
-                onChange={(e) => setHorIni(e.target.value)}
-                onBlur={(e) => {
-                  if (horIni === '') return;
-                  if (e.target.value < '08:00') {
-                    toast.warn('Horário inicial de entrega inválido');
-                    setHorIni('');
-                    return;
-                  }
-                  if (e.target.value >= '18:00') {
-                    toast.warn('Horário inicial de entrega inválido');
-                    setHorIni('');
-                    return;
-                  }
-                }}
-                enterKeyHint='done'
-                type='time'
-              />
-              <span className='focus-input' data-placeholder='Hora inicial*'></span>
-            </WrapInput>
-            <WrapInput>
-              <input
-                className={'has-val input'}
-                value={horFin}
-                onChange={(e) => setHorFin(e.target.value)}
-                onBlur={(e) => {
-                  if (horFin === '') return;
-                  if (e.target.value > '18:00') {
-                    toast.warn('Horário final de entrega inválido');
-                    setHorFin('');
-                    return;
-                  }
-                  if (e.target.value <= '08:00') {
-                    toast.warn('Horário final de entrega inválido');
-                    setHorFin('');
-                    return;
-                  }
-                }}
-                enterKeyHint='done'
-                type='time'
-              />
-              <span className='focus-input' data-placeholder='Hora final*'></span>
-            </WrapInput>
-          </MenuParalelo>
-          <WrapInput>
-            <input
-              className={menCar !== '' ? 'has-val input' : 'input'}
-              value={menCar}
-              onChange={(e) => setMenCar(e.target.value)}
-              enterKeyHint='done'
-            />
-            <span className='focus-input' data-placeholder='Mensagem para o Cartão'></span>
-          </WrapInput>
-          {!retLoj && <span>Taxa de Entrega: {formatCurrency(fre)}</span>}
-          <ButtonDiv>
-            <span onClick={() => setIndexCarousel((prev) => prev - 1)}>Voltar</span>
-            <Button
-              onClick={() => proximoPasso(indexCarousel)}
-              onKeyDown={(e) => { if (e.key === 'Tab') e.preventDefault(); }}
-            >
-              Prosseguir
-            </Button>
-          </ButtonDiv>
-        </SlideContainer>,
-    };
-    slides.splice(slides.length - 1, 0, novoPasso);
-    slides[slides.length - 1]['passo'] = 4;
-  }
 
   function proximoPasso(passo: number) {
     switch (passo) {
@@ -473,26 +320,6 @@ export default function Checkout() {
         setIndexCarousel((passo) => passo + 1);
         break;
       case 2:
-        if (!dest) {
-          toast.error('Destinatário inválido');
-          return;
-        }
-        if (celDest.length < 8) {
-          toast.error('Celular do Destinatário inválido');
-          return;
-        }
-        if (!datEnt) {
-          toast.error('Data de entrega inválida');
-          return;
-        }
-        if (!horIni) {
-          toast.error('Hora inicial de entrega inválida');
-          return;
-        }
-        if (!horFin) {
-          toast.error('Hora final de entrega inválida');
-          return;
-        }
         setIndexCarousel((passo) => passo + 1);
         break;
       default:
@@ -502,17 +329,7 @@ export default function Checkout() {
 
   async function calcularFrete(endereco: any) {
     try {
-      if (keyApiGoo !== '0') {
-        const destino = endereco.log + ', ' +
-          endereco.num + ' - ' + endereco.bai + ', ' + endereco.cid + ' - ' +
-          endereco.uf + ', ' + endereco.cep;
-        const response = await api.get(`/pedidos/CalcularDistanciaParaEntregar?destino=${destino}`);
-        if (response.status === 200) {
-          if (response.data.length > 0) {
-            setFre(+(response.data[0].valor.replace(',', '.')));
-          }
-        }
-      }
+      console.log(endereco);
     } catch (error: any) {
       toast.error('Falha ao calcular frete. ' + error.message);
     }
@@ -531,10 +348,8 @@ export default function Checkout() {
 
       const pedidoPayload: any = {
         cod: '', codcat: null, dathor: dathor,
-        forpag: '', obs: '', sta: pagRet ? 'Pagamento Futuro' : 'Pendente',
-        valfre: retLoj ? 0 : fre, valpro: +(fre + subTot).toFixed(2), retloj: +retLoj, pagloj: +pagRet,
-        quevairec: dest, datent: datEnt, horini: horIni,
-        horfin: horFin, men: menCar, telquevairec: celDest,
+        forpag: '', obs: '', sta: 'Pending',
+        valfre: fre, valpro: +(fre + subTot).toFixed(2),
         appuser: {
           id: loginData.id
         }
@@ -591,94 +406,14 @@ export default function Checkout() {
           }
         });
 
-        if (usaCielo && !pagRet) {
-          let shipping: any = { type: 'WithoutShippingPickUp' };
-          const maximoDeParcelas = +((subTot + fre) / quaMaxPar) < valMinPar ? 1 : +quaMaxPar;
-
-          const itemsCielo = itensCarrinho.map((item: any) => {
-            return {
-              name: item.mer,
-              quantity: item.quantidade,
-              unitPrice: (item.valor * 100),
-              type: 'Asset'
-            };
-          });
-
-          if (pedidoPayload.valfre !== 0 && !retLoj) {
-            shipping = {
-              type: 'FixedAmount',
-              targetZipCode: cep.replace(/[^0-9]/g, ''),
-              services: [{
-                name: 'Motoboy',
-                price: (pedidoPayload.valfre * 100),
-              }],
-              address: {
-                street: log.normalize('NFD'),
-                number: num,
-                complement: com.normalize('NFD'),
-                district: bai.normalize('NFD'),
-                city: cid.normalize('NFD'),
-                state: uf
-              }
-            };
-          }
-
-          const cieloPayload = {
-            'orderNumber': response.data.cod,
-            'cart': {
-              'discount': {
-                'type': 'Percent',
-                'value': 0,
-              },
-              'items': itemsCielo,
-            },
-            'shipping': shipping,
-            'payment': {
-              'installments': maximoDeParcelas,
-              'maxNumberOfInstallments': maximoDeParcelas,
-            },
-
-            'customer': {
-              'identity': cgc.replace(/[^0-9]/g, ''),
-              'fullName': nom,
-              'email': email,
-              'phone': cel.replace(/[^0-9]/g, ''),
-            },
-          };
-
-          const responseCielo = await api.post('/pedidos/recebeEEnviaDadosCielo', cieloPayload, {
-            headers: {
-              'Content-Type': 'application/json',
-            }
-          });
-
-          if (responseCielo.status === 200) {
-
-            pedidoPayload.cod = response.data.cod;
-            pedidoPayload.obs = `Pagamento disponível em ${responseCielo.data.settings.checkoutUrl}`;
-
-            await api.put('/pedidos/alterarPedido', pedidoPayload, {
-              headers: {
-                'Content-Type': 'application/json',
-              }
-            });
-
-            // localStorage.removeItem('@Carrinho');
-            setCart([]);
-            window.location.href = responseCielo.data.settings.checkoutUrl;
-            return;
-          }
-          throw Error('Falha ao enviar pedido pra cielo');
-        }
-
-        toast.success('Pedido enviado com sucesso');
+        toast.success('Order sucess');
         // localStorage.removeItem('@Carrinho');
         setCart([]);
         navigate('/');
       }
 
     } catch (error: any) {
-      toast.error('Falha ao finalizar pedido. ' + error.message);
+      toast.error('Failed to send order. ' + error.message);
     } finally {
       setIsLoadingPost(false);
     }
@@ -686,21 +421,9 @@ export default function Checkout() {
 
   useEffect(() => {
     if (configs.length > 0) {
-      const [{ val: uri }] = configs.filter((config: any) => config.gru === 'logo');
-      const [{ val: keyApiGoo }] = configs.filter((config: any) => config.con === 'KeyApiGoo');
-      const [{ val: usaDadExtEnt }] = configs.filter((config: any) => config.con === 'UsaDadExtEnt');
-      const [{ val: usaOpcPagRetLoj }] = configs.filter((config: any) => config.con === 'UsaOpcPagRetLoj');
-      const [{ val: cieMerId }] = configs.filter((config: any) => config.con === 'CieMerId');
-      const [{ val: quaMaxPar }] = configs.filter((config: any) => config.con === 'quamaxpar');
-      const [{ val: valminpar }] = configs.filter((config: any) => config.con === 'valminpar');
+      const [{ value: uri }] = configs.filter((config: IConfigs) => config.config === 'logo');
 
-      setLogoURI('https://' + uri);
-      setKeyApiGoo(keyApiGoo);
-      setUsaDadExtEnt(Boolean(+usaDadExtEnt));
-      setUsaOpcPagRetLoj(Boolean(+usaOpcPagRetLoj));
-      setUsaCielo(Boolean(cieMerId));
-      setQuaMaxPar(quaMaxPar);
-      setValMinPar(valminpar);
+      setLogoURI(uri);
     }
   }, [configs]);
 
@@ -715,12 +438,12 @@ export default function Checkout() {
 
   useEffect(() => {
     if (loginData.id === 0) {
-      toast.warning('Faça login para finalizar o pedido.');
+      toast.warning('Log in to continue.');
       navigate('/login');
       return;
     }
     if (cart.length === 0) {
-      toast.warning('Seu carrinho está vazio, monte seu carrinho antes de fechar seu pedido.');
+      toast.warning('Your cart is empty, add products to your cart before checkout.');
       navigate('/');
       return;
     }

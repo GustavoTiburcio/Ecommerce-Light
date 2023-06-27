@@ -13,10 +13,18 @@ export const Container = styled.div`
     width: 32px;
   }
 
+  p {
+    color: #fff
+  }
+
   a {
     color: #fff;
     cursor: pointer;
     text-decoration: none;
+
+    :hover {
+      text-decoration: underline;
+    }
   }
 
   @media screen and (max-width: 767px){

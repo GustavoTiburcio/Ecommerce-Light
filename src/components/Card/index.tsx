@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { CardContainer, CardImage, SoldOutText, TextDiv } from './styles';
 import { useLocation, useNavigate } from 'react-router';
-import Context, { IContext } from '../../context/Context';
+import Context, { IConfigs, IContext } from '../../context/Context';
 import { formatCurrency } from '../../utils/formatCurrency';
 
 interface CardProps {
@@ -44,15 +44,15 @@ export default function Card({ imageSrc, name, sku, price, soldOut }: CardProps)
 
   useEffect(() => {
     if (configs.length > 0) {
-      const [{ val: imageOrientation }] = configs.filter((config: any) => config.con === 'ExiTipImg');
-      const [{ val: maxInstallments }] = configs.filter((config: any) => config.con === 'quamaxpar');
-      const [{ val: minInstallmentPrice }] = configs.filter((config: any) => config.con === 'valminpar');
-      const [{ val: AuthSeePrices }] = configs.filter((config: any) => config.con === 'NecCadAutMosPro');
-      const [{ val: CodBarCar }] = configs.filter((config: any) => config.con === 'ApaCodBarCar');
+      const [{ value: imageOrientation }] = configs.filter((config: IConfigs) => config.config === 'imageOrientation');
+      const [{ value: maxInstallments }] = configs.filter((config: IConfigs) => config.config === 'maxInstallments');
+      const [{ value: minInstallmentPrice }] = configs.filter((config: IConfigs) => config.config === 'minInstallmentPrice');
+      const [{ value: AuthSeePrices }] = configs.filter((config: IConfigs) => config.config === 'needAuthToSeePrices');
+      const [{ value: CodBarCar }] = configs.filter((config: IConfigs) => config.config === 'showSkuInCard');
 
       setCardImageOrientation(imageOrientation.toLowerCase());
-      setMaxInstallments(maxInstallments);
-      setMinInstallmentPrice(minInstallmentPrice);
+      setMaxInstallments(+maxInstallments);
+      setMinInstallmentPrice(+minInstallmentPrice);
       setAuthSeePrices(Boolean(+AuthSeePrices));
       setShowSku(Boolean(+CodBarCar));
     }

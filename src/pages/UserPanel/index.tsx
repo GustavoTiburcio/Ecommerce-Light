@@ -35,7 +35,7 @@ export default function UserPanel() {
   const { menuItem } = useParams();
   const { width } = useWindowDimensions();
   const isMobile = width <= 767;
-  const { loginData, setLoginData, configs }: IContext = useContext(Context);
+  const { loginData, setLoginData }: IContext = useContext(Context);
 
   const [itemMenuSelecionado, setItemMenuSelecionado] = useState<string>(menuItem || 'pedidos');
 
@@ -58,9 +58,6 @@ export default function UserPanel() {
   const [indexItemPedido, setIndexItemPedido] = useState<number>(0);
   const [notaDeAvaliacao, setNotaDeAvaliacao] = useState<number>(0);
   const [detalheAvaliacao, setDetalheAvaliacao] = useState<string>('');
-
-  //configs
-  const [usaDadExtEnt, setUsaDadExtEnt] = useState<boolean>(false);
 
   const itensMenu: Record<string, JSX.Element> = {
     pedidos:
@@ -172,22 +169,6 @@ export default function UserPanel() {
                       <span><strong>Endereço:</strong>
                         {detalhesPedidoSelecionado.cliente.endusu.log} {detalhesPedidoSelecionado.cliente.endusu.num} - {detalhesPedidoSelecionado.cliente.endusu.bai} - {detalhesPedidoSelecionado.cliente.endusu.cid} - {detalhesPedidoSelecionado.cliente.endusu.uf}, {detalhesPedidoSelecionado.cliente.endusu.cep}</span>
                     </div>
-                    {usaDadExtEnt &&
-                      <>
-                        <div>
-                          <span><strong>Data de Entrega:</strong> {detalhesPedidoSelecionado.datent}</span>
-                          <span><strong>Destinatário:</strong> {detalhesPedidoSelecionado.quevairec}</span>
-                          <span><strong>Fone:</strong> {detalhesPedidoSelecionado?.telquevairec || ''}</span>
-                        </div>
-                        <div>
-                          <span><strong>Hora Inicial:</strong> {detalhesPedidoSelecionado.horini}</span>
-                          <span><strong>Hora Final:</strong> {detalhesPedidoSelecionado.horfin}</span>
-                        </div>
-                        <div>
-                          <span><strong>Mensagem do Cartão:</strong> {detalhesPedidoSelecionado?.men || ''}</span>
-                        </div>
-                      </>
-                    }
                     <span><strong>Observação:</strong> {detalhesPedidoSelecionado.obs}</span>
                   </DadosDiv>
                   <br />
@@ -615,15 +596,6 @@ export default function UserPanel() {
       sortPedidos();
     }
   }, [ordem]);
-
-  useEffect(() => {
-    if (configs.length > 0) {
-      const [{ val: usaDadExtEnt }] = configs.filter((config: any) => config.con === 'UsaDadExtEnt');
-
-      setUsaDadExtEnt(Boolean(+usaDadExtEnt));
-
-    }
-  }, [configs]);
 
   return (
     <Container>

@@ -6,7 +6,7 @@ import Card from '../Card';
 import useWindowDimensions from '../../utils/WindowDimensions';
 import { toast } from 'react-toastify';
 import api from '../../services/api';
-import Context, { IContext } from '../../context/Context';
+import Context, { IConfigs, IContext } from '../../context/Context';
 
 interface ProductCardProps {
   linkFot: string;
@@ -95,7 +95,7 @@ export default function ProductHighlights() {
 
   useEffect(() => {
     if (configs.length > 0) {
-      const [{ val: tipoImagem }] = configs.filter((config: any) => config.con === 'ExiTipImg');
+      const [{ value: tipoImagem }] = configs.filter((config: IConfigs) => config.config === 'imageOrientation');
 
       setImageOrientation(tipoImagem.toLowerCase());
     }
@@ -103,7 +103,7 @@ export default function ProductHighlights() {
 
   return (
     <Container tipoCardImagem={imageOrientation}>
-      <p>highlights</p>
+      <p>Highlights</p>
       <Carousel
         showArrows={true}
         showStatus={false}

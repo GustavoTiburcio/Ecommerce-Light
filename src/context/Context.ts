@@ -1,8 +1,8 @@
 import { createContext } from 'react';
 
 export interface IContext {
-  configs: any;
-  setConfigs: (config: any) => void;
+  configs: IConfigs[];
+  setConfigs: (config: IConfigs[]) => void;
   footer: IFooter[];
   setFooter: (footer: IFooter[]) => void;
   cart: ICart[];
@@ -82,24 +82,31 @@ export interface IUserAdress {
 }
 
 export interface IFooter {
-  cod: number;
-  rod?: string;
+  id: number;
+  title?: string;
   ord?: number;
-  iterod: IFooterItens[];
+  footerItens: IFooterItens[];
 }
 
 export interface IFooterItens {
-  cod: number;
-  iterod?: string;
+  id: number;
+  text?: string;
   ord?: number;
-  perresiterod: IFooterSubItens[];
+  footerSubItens: IFooterSubItens[];
 }
 
 export interface IFooterSubItens {
-  cod: number;
-  per?: string;
-  res?: string;
+  id: number;
+  question?: string;
+  answer?: string;
   ord?: number;
+}
+
+export interface IConfigs {
+  id: number
+  config: string
+  value: string
+  description: string
 }
 
 const Context = createContext<IContext>({});

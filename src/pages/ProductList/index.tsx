@@ -9,7 +9,7 @@ import {
 import { toast } from 'react-toastify';
 import api from '../../services/api';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import Context, { IContext, IWishList } from '../../context/Context';
+import Context, { IConfigs, IContext, IWishList } from '../../context/Context';
 import NotFoundSvg from '../../assets/images/not_found.svg';
 import SelectInput from '../../components/SelectInput';
 import { formatCurrency } from '../../utils/formatCurrency';
@@ -227,9 +227,9 @@ export default function ProductList() {
 
   useEffect(() => {
     if (configs.length > 0) {
-      const [{ val: uri }] = configs.filter((config: any) => config.gru === 'logo');
+      const [{ value: uri }] = configs.filter((config: IConfigs) => config.config === 'logo');
 
-      setLogoURI('https://' + uri);
+      setLogoURI(uri);
     }
   }, [configs]);
 

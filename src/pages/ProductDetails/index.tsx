@@ -19,7 +19,7 @@ import api from '../../services/api';
 import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import { formatCurrency } from '../../utils/formatCurrency';
-import Context, { ICart, IContext, ISelectedColor } from '../../context/Context';
+import Context, { ICart, IConfigs, IContext, ISelectedColor } from '../../context/Context';
 import ProductDetailReview from '../../components/ProductDetailReview';
 import useWindowDimensions from '../../utils/WindowDimensions';
 import Joyride, { CallBackProps, STATUS } from 'react-joyride';
@@ -88,11 +88,8 @@ export default function ProductDetails() {
   const [runTutorial, setRunTutorial] = useState(false);
 
   //configs
-  const [finishCartOnWhatsApp, setFinishCartOnWhatsApp] = useState<boolean>(false);
   const [maxInstallments, setMaxInstallments] = useState(1);
   const [minInstallmentPrice, setMinInstallmentPrice] = useState(1);
-  const [keyApiGoo, setKeyApiGoo] = useState<string>('0');
-  const [numCel, setNumCel] = useState<string>('');
   const [NecCadAutMosPro, setNecCadAutMosPro] = useState<boolean>(false);
 
   //frete
@@ -302,17 +299,7 @@ export default function ProductDetails() {
   //calcula frete viverde
   async function calculateShippingFee(endereco: any) {
     try {
-      if (keyApiGoo !== '0') {
-        const destino = endereco.log + ', ' +
-          endereco.num + ' - ' + endereco.bai + ', ' + endereco.cid + ' - ' +
-          endereco.uf + ', ' + endereco.cep;
-        const response = await api.get(`/pedidos/CalcularDistanciaParaEntregar?destino=${destino}`);
-        if (response.status === 200) {
-          if (response.data.length > 0) {
-            setDeliveryFee(+(response.data[0].valor.replace(',', '.')));
-          }
-        }
-      }
+      console.log(endereco);
     } catch (error: any) {
       toast.error('Failed to calculate shipping fee. ' + error.message);
     }
@@ -359,18 +346,12 @@ export default function ProductDetails() {
 
   useEffect(() => {
     if (configs.length > 0) {
-      const [{ val: talkToSeller }] = configs.filter((config: any) => config.con === 'botFalVen');
-      const [{ val: maxInstallments }] = configs.filter((config: any) => config.con === 'quamaxpar');
-      const [{ val: minInstallmentPrice }] = configs.filter((config: any) => config.con === 'valminpar');
-      const [{ val: keyApiGoo }] = configs.filter((config: any) => config.con === 'KeyApiGoo');
-      const [{ val: celNumber }] = configs.filter((config: any) => config.con === 'NumWha');
-      const [{ val: AuthSeePrices }] = configs.filter((config: any) => config.con === 'NecCadAutMosPro');
+      const [{ value: maxInstallments }] = configs.filter((config: IConfigs) => config.config === 'maxInstallments');
+      const [{ value: minInstallmentPrice }] = configs.filter((config: IConfigs) => config.config === 'minInstallmentPrice');
+      const [{ value: AuthSeePrices }] = configs.filter((config: IConfigs) => config.config === 'needAuthToSeePrices');
 
-      setFinishCartOnWhatsApp(Boolean(JSON.parse(talkToSeller ?? '0')));
-      setMaxInstallments(maxInstallments);
-      setMinInstallmentPrice(minInstallmentPrice);
-      setKeyApiGoo(keyApiGoo);
-      setNumCel(celNumber);
+      setMaxInstallments(+maxInstallments);
+      setMinInstallmentPrice(+minInstallmentPrice);
       setNecCadAutMosPro(Boolean(+AuthSeePrices));
     }
   }, [configs]);
@@ -630,36 +611,34 @@ export default function ProductDetails() {
             }
           </ColorSizeDiv>
           <hr />
-          {!finishCartOnWhatsApp &&
-            <>
-              <br />
-              <ShippingDiv>
-                <span>
-                  Calculate shipping
-                </span>
-                <ShippingInputDiv>
-                  <>
-                    <ShippingInput
-                      placeholder='ZIP code'
-                      value={zipCode} onChange={(e: any) => setZipCode(e.target.value.replace(/\D/g, ''))}
-                      onBlur={(e: any) => {
-                        if (e.target.value.replace(/\D/g, '').length !== 8) {
-                          setZipCode('');
-                        }
-                      }} />
-                    <FiIcons.FiSearch
-                      color='#000'
-                      style={{ cursor: 'pointer', width: '10%', height: '100%' }}
-                      onClick={getZipCode}
-                    />
-                  </>
-                  {deliveryFee && <strong>&nbsp;&nbsp;{formatCurrency(deliveryFee)}</strong>}
-                </ShippingInputDiv>
-              </ShippingDiv>
-              <br />
-              <hr />
-            </>
-          }
+          <>
+            <br />
+            <ShippingDiv>
+              <span>
+                Calculate shipping
+              </span>
+              <ShippingInputDiv>
+                <>
+                  <ShippingInput
+                    placeholder='ZIP code'
+                    value={zipCode} onChange={(e: any) => setZipCode(e.target.value.replace(/\D/g, ''))}
+                    onBlur={(e: any) => {
+                      if (e.target.value.replace(/\D/g, '').length !== 8) {
+                        setZipCode('');
+                      }
+                    }} />
+                  <FiIcons.FiSearch
+                    color='#000'
+                    style={{ cursor: 'pointer', width: '10%', height: '100%' }}
+                    onClick={getZipCode}
+                  />
+                </>
+                {deliveryFee && <strong>&nbsp;&nbsp;{formatCurrency(deliveryFee)}</strong>}
+              </ShippingInputDiv>
+            </ShippingDiv>
+            <br />
+            <hr />
+          </>
           <ProductDescriptionDiv>
             {productDescription.length > 0 && productDescription.map((descricao: any, index: any) => (
               <Accordion key={index} title={descricao.titulo} text={descricao.conteudo} />

@@ -7,13 +7,13 @@ import RouterComponent from './components/RouterComponent';
 
 import { GlobalStyles } from './styles/GlobalStyles';
 
-import Context, { ICart, IContext, ILoginData, IWishList, IFooter } from './context/Context';
+import Context, { ICart, IContext, ILoginData, IWishList, IFooter, IConfigs } from './context/Context';
 import ErrorPage from './pages/ErrorPage';
 
 import api from './services/api';
 
 function App() {
-  const [configs, setConfigs] = useState([]);
+  const [configs, setConfigs] = useState<IConfigs[]>([]);
   const [footer, setFooter] = useState<IFooter[]>([]);
   const [cart, setCart] = useState<ICart[]>([]);
   const [wishList, setWishList] = useState<IWishList[]>([]);
