@@ -19,6 +19,12 @@ export const Container = styled.div`
     color: #fff;
     align-self: center;
   }
+
+  @media screen and (max-width: 767px){
+    h1 {
+      font-size: 2rem;
+    }
+  }
 `;
 
 export const GifDiv = styled.div`

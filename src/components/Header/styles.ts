@@ -98,6 +98,10 @@ export const Categorias = styled.div<HeaderProps>`
     font-size: 1.0rem;
     font-weight: 450;
     text-transform: capitalize;
+
+    .hamburguer-menu{
+      margin-top: 5px;
+    }
   }
 
   .navbar a:hover, .dropdown:hover .dropbtn {
@@ -111,6 +115,8 @@ export const Categorias = styled.div<HeaderProps>`
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
+    overflow-y: auto;
+    max-height: 40rem;
   }
 
   .dropdown-content a {

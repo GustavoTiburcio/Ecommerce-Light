@@ -29,9 +29,10 @@ export const ImageCarouselDiv = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   margin-left: 15px;
   width: 40%;
+  overflow-x: hidden;
 
   @media screen and (max-width: 1700px){
     width: 35%;
@@ -61,6 +62,10 @@ export const ImageCarouselDiv = styled.div`
 `;
 
 export const ImageCarouselContainer = styled.div`
+  margin-top: 10%;
+  img {
+    max-width: 592px;
+  }
 `;
 
 export const ProdutoInfoDiv = styled.div`
@@ -110,9 +115,15 @@ export const Button = styled.button<ButtonProps>`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 0.9rem;
+  font-weight: 450;
 
   :active {
     opacity: 0.6;
+  }
+  :disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `;
 
@@ -211,7 +222,7 @@ export const FreteDiv = styled.div`
 export const FreteInput = styled.input`
   background: transparent;
   padding: 10px 5px;
-  width: 90%;
+  width: 50%;
   font-weight: bold;
   font-size: 1rem;
   border-width: 0 0 2px;
@@ -231,6 +242,10 @@ export const FreteInputDiv = styled.div`
   display:flex;
   flex-direction: row;
   align-items: center;
+
+  strong {
+    color: red;
+  }
 `;
 
 
@@ -296,4 +311,8 @@ export const ContainerMobile = styled.div`
       opacity: 0.3;
       margin-left: -10px;
     }
+`;
+
+export const EsgotadoText = styled.b`
+  color: red;
 `;

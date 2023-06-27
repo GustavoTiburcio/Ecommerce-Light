@@ -61,6 +61,16 @@ export const LoginContainer = styled.div<LoginProps>`
   ${props => (props.login !== true ? 'transform: translateX(100%)' : null)}
 `;
 
+export const RedefinirPasswordContainer = styled.div`
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  input {
+    width: 100%
+  }
+`;
+
 export const Form = styled.form`
   background-color: #ffffff;
   display: flex;
@@ -95,7 +105,6 @@ export const Input = styled.input`
   }
 `;
 
-
 export const Button = styled.button`
    border-radius: 20px;
    border: 1px solid #1D1D1D;
@@ -126,6 +135,7 @@ export const Anchor = styled.a`
   font-size: 14px;
   text-decoration: none;
   margin: 15px 0;
+  cursor: pointer;
 
   :hover{
     color:red

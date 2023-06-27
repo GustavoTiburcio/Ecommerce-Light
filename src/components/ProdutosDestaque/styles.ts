@@ -20,6 +20,10 @@ export const Container = styled.div<ProdutoDestaqueProps>`
     font-style: italic;
   }
 
+  .carousel {
+    ${({ tipoCardImagem }) => tipoCardImagem === 'paisagem' ? 'margin-top: -2rem;' : ''};
+  }
+
   .control-next.control-arrow:before {
     content: '';
     border: solid #000;
@@ -43,7 +47,7 @@ export const Container = styled.div<ProdutoDestaqueProps>`
   }
 
   @media screen and (max-width: 767px){
-    height: 70vh;
+    /* height: 70vh; */
 
     p {
       font-size: 1.5rem;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import {
   Button, Container, ContainerMobile, CoresDiv, CorTamanhoDiv, DescricaoProdutoDiv,
-  DetalhesDiv, FreteDiv, FreteInput, FreteInputDiv, ImageCarouselContainer,
+  DetalhesDiv, EsgotadoText, FreteDiv, FreteInput, FreteInputDiv, ImageCarouselContainer,
   ImageCarouselDiv, NavDiv, NavDivCarrinho, PaletaCoresDiv,
   PaletaTamanhosDiv, PrecoDiv, ProdutoInfoDiv, QuantidadeButton, QuantidadeInput,
   QuantidadeInputDiv,
@@ -19,27 +19,46 @@ import api from '../../services/api';
 import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import { formatCurrency } from '../../utils/formatCurrency';
-import Context from '../../context/Context';
+import Context, { ICarrinho, IContext, ICorSelecionada } from '../../context/Context';
 import AvaliacaoProduto from '../../components/AvaliacaoProduto';
 import useWindowDimensions from '../../utils/WindowDimensions';
 import Joyride, { CallBackProps, STATUS } from 'react-joyride';
+import { BuscaEndereco } from '../../utils/buscaCep';
 
-interface ProdutoCarrinhoProps {
-  cod: string | number;
-  mer: string;
-  codbar?: string;
-  codTam: string;
-  cor: CorSelecionadaProps;
-  padMerLinkFot?: string;
-  quantidade: string | number;
-  valor: string | number;
+export interface IIteCar {
+  cod: number | undefined,
+  codmer: number,
+  codapp_user: number,
+  qua: number
 }
 
-interface CorSelecionadaProps {
-  cod: string;
-  isSelected?: boolean;
-  linkFot: string;
-  padmer: string;
+export async function postItemCarrinho({ cod, codmer, codapp_user, qua }: IIteCar) {
+  try {
+    const payload = { cod, codmer, codapp_user, qua };
+
+    if (codapp_user === 0) return;
+
+    const response = await api.post('/itecar/salvar', payload, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.status === 201) {
+      return response.data;
+    }
+  } catch (error: any) {
+    console.log('Falha ao salvar carrinho na nuvem.' + error.message);
+  }
+}
+
+export async function deleteItemCarrinho(cod: number | undefined) {
+  try {
+    if (!cod) return;
+    await api.delete(`/itecar/delete?id=${cod}`);
+  } catch (error: any) {
+    console.log('Falha ao apagar item do carrinho na nuvem.' + error.message);
+  }
 }
 
 export default function ProdutoDetalhes() {
@@ -50,10 +69,13 @@ export default function ProdutoDetalhes() {
   const isMobile = width <= 767;
   const pularTutorial = localStorage.getItem('@Acessado');
 
-  const { carrinho, setCarrinho, configs }: any = useContext(Context);
+  const {
+    carrinho, setCarrinho,
+    configs, dadosLogin
+  }: IContext = useContext(Context);
 
   const [quantidade, setQuantidade] = useState<string>('1');
-  const [corSelecionada, setCorSelecionada] = useState<CorSelecionadaProps>({ cod: '', padmer: '', linkFot: '' });
+  const [corSelecionada, setCorSelecionada] = useState<ICorSelecionada>({ cod: '', padmer: '', linkFot: '' });
   const [tamanhoSelecionado, setTamanhoSelecionado] = useState<string>('');
   const [fotos, setFotos] = useState<any>([]);
   const [produtoDetalhes, setProdutoDetalhes] = useState<any>([]);
@@ -67,6 +89,16 @@ export default function ProdutoDetalhes() {
 
   //configs
   const [finalizarCarrinhoNoWhats, setFinalizarCarrinhoNoWhats] = useState<boolean>(false);
+  const [quaMaxPar, setQuaMaxPar] = useState(1);
+  const [valMinPar, setValMinPar] = useState(1);
+  const [keyApiGoo, setKeyApiGoo] = useState<string>('0');
+  const [numCel, setNumCel] = useState<string>('');
+  const [NecCadAutMosPro, setNecCadAutMosPro] = useState<boolean>(false);
+
+  //frete
+  const [fre, setFre] = useState<undefined | number>();
+  const [cepFre, setCepFre] = useState<string>('');
+
 
   const steps = [
     {
@@ -150,15 +182,19 @@ export default function ProdutoDetalhes() {
     }
   }
 
-  function addProdutoNoCarrinho({ cod, codbar, mer, codTam, cor, quantidade, valor }: ProdutoCarrinhoProps) {
-    const novoProduto = [{ cod, codbar, mer, codTam, cor, quantidade, valor }];
+  async function addProdutoNoCarrinho({ codmer, codbar, mer, codtam, cor, quantidade, valor }: ICarrinho) {
+    const novoProduto: any = [{ codmer, codbar, mer, codtam, cor, quantidade, valor }];
 
-    if (quantidade == 0) {
+    if (quantidade == '0') {
       toast.warning('Quantidade inválida');
       return;
     }
+    if (!valor) {
+      toast.warning('Preço do produto está inválido, entre em contato com a loja.');
+      return;
+    }
 
-    if (produtoDetalhes?.tamanhos.length > 0 && !codTam) {
+    if (produtoDetalhes?.tamanhos.length > 0 && !codtam) {
       toast.warning('Selecione o tamanho');
       return;
     }
@@ -175,28 +211,42 @@ export default function ProdutoDetalhes() {
       };
     }
 
-    if (!cod) {
-      toast.error('Código não encontrado');
+    if (!codmer) {
+      toast.error('Código do produto não encontrado');
       return;
     }
 
     const carrinhoAtual = carrinho;
-    const [produtoJaEstaNoCarrinho] = carrinho.filter((item: any) => item.cod === cod);
+    const [produtoJaEstaNoCarrinho] = carrinho.filter((item: ICarrinho) => item.codmer === codmer);
 
     if (produtoJaEstaNoCarrinho) {
-      carrinhoAtual[carrinhoAtual.indexOf(produtoJaEstaNoCarrinho)]['quantidade'] = +(carrinhoAtual[carrinhoAtual.indexOf(produtoJaEstaNoCarrinho)].quantidade) + Math.floor(+(quantidade));
+      const index = carrinhoAtual.indexOf(produtoJaEstaNoCarrinho);
+      carrinhoAtual[index]['quantidade'] = String(+(carrinhoAtual[index].quantidade) + Math.floor(+(quantidade)));
+      const itemCarrinhoAtualizado = {
+        cod: carrinhoAtual[index].cod, codmer: carrinhoAtual[index].codmer,
+        codapp_user: dadosLogin.id, qua: +carrinhoAtual[index].quantidade
+      };
+
+      postItemCarrinho(itemCarrinhoAtualizado);
       setCarrinho(carrinhoAtual);
-      localStorage.setItem('@Carrinho', JSON.stringify(carrinhoAtual));
+      // localStorage.setItem('@Carrinho', JSON.stringify(carrinhoAtual));
       toast.success(
-        `${quantidade}x ${mer.toUpperCase()} ${cor.padmer ? '- ' + cor.padmer.toUpperCase() : ''} ${codTam ? '- ' + codTam.toUpperCase() : ''} Foi adicionado ao carrinho`
+        `${quantidade}x ${mer.toUpperCase()} ${cor.padmer ? '- ' + cor.padmer.toUpperCase() : ''} ${codtam ? '- ' + codtam.toUpperCase() : ''} Foi adicionado ao carrinho`
       );
       return;
     }
 
+    const novoItemCarrinho: IIteCar = { cod: undefined, codmer: novoProduto[0].codmer, codapp_user: dadosLogin.id, qua: +novoProduto[0].quantidade };
+
+    const iteCarSalvo = await postItemCarrinho(novoItemCarrinho);
+    if (iteCarSalvo) {
+      novoProduto[0]['cod'] = iteCarSalvo.cod;
+    }
+
     setCarrinho([...carrinho, ...novoProduto]);
-    localStorage.setItem('@Carrinho', JSON.stringify([...carrinho, ...novoProduto]));
+    // localStorage.setItem('@Carrinho', JSON.stringify([...carrinho, ...novoProduto]));
     toast.success(
-      `${quantidade}x ${mer.toUpperCase()} ${cor.padmer ? '- ' + cor.padmer.toUpperCase() : ''} ${codTam ? '- ' + codTam.toUpperCase() : ''} Foi adicionado ao carrinho`
+      `${quantidade}x ${mer.toUpperCase()} ${cor.padmer ? '- ' + cor.padmer.toUpperCase() : ''} ${codtam ? '- ' + codtam.toUpperCase() : ''} Foi adicionado ao carrinho`
     );
   }
 
@@ -208,6 +258,89 @@ export default function ProdutoDetalhes() {
       setRunTutorial(false);
       localStorage.setItem('@Acessado', 'true');
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  function ComprarPeloWhatsApp() {
+    const produtos = `Ref: ${codbar} ` + produtoDetalhes?.mer + ` Tamanho: ${tamanhoSelecionado}` + ` Cor: ${corSelecionada.padmer}` +
+      ` Qtde: ${quantidade}` + ` Vlr Unitário: ${formatCurrency(produtoDetalhes?.valVenMin)}` + '%0A' + 'https://' + fotos[indexCarousel].linkfot;
+
+    const url = 'https://api.whatsapp.com/send?phone=55' + numCel.replace(/\D/g, '') + '&text=Olá!! Vim pelo site e estou interessado no item:' + '%0A' + produtos;
+
+    window.open(url);
+  }
+
+  async function adicionarListaDeDesejo() {
+    try {
+      if (dadosLogin.id === 0) {
+        toast.warning('Faça login para montar sua lista de desejos');
+        navigate('/login');
+        return;
+      }
+
+      const response = await api.get(`/itelisdes/listarPorUsuario?id=${dadosLogin.id}`);
+      let produtoJaEstaNaLista = [];
+
+      if (response.data !== 'Produto não encontrado') {
+        produtoJaEstaNaLista = response.data.content.filter((e: any) => e.codBar === codbar);
+      }
+
+      if (produtoJaEstaNaLista.length > 0) {
+        await api.delete(`/itelisdes/delete?id=${produtoJaEstaNaLista[0].codIteLisDes}`);
+        toast.success(`${produtoDetalhes?.mer} foi removido da sua lista de desejos.`);
+        return;
+      }
+
+      const payload = {
+        codmer: produtoDetalhes.detalhes[0].codigo,
+        codapp_user: dadosLogin.id
+      };
+
+      await api.post('/itelisdes/salvar', payload, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      toast.success(`${produtoDetalhes?.mer} foi adicionado a sua lista de desejos.`);
+
+    } catch (error: any) {
+      toast.error('Falha ao salvar na lista de desejos. ' + error.message);
+    }
+  }
+
+  //calcula frete viverde
+  async function calcularFrete(endereco: any) {
+    try {
+      if (keyApiGoo !== '0') {
+        const destino = endereco.log + ', ' +
+          endereco.num + ' - ' + endereco.bai + ', ' + endereco.cid + ' - ' +
+          endereco.uf + ', ' + endereco.cep;
+        const response = await api.get(`/pedidos/CalcularDistanciaParaEntregar?destino=${destino}`);
+        if (response.status === 200) {
+          if (response.data.length > 0) {
+            setFre(+(response.data[0].valor.replace(',', '.')));
+          }
+        }
+      }
+    } catch (error: any) {
+      toast.error('Falha ao calcular frete. ' + error.message);
+    }
+  }
+
+  async function buscaCep() {
+    setFre(undefined);
+    if (cepFre.length < 8) {
+      toast.warning('Cep infomado é inválido');
+      return;
+    }
+
+    const dadosEndereco = await BuscaEndereco(cepFre);
+    if (dadosEndereco) {
+      calcularFrete({
+        log: dadosEndereco.logradouro, num: '', bai: dadosEndereco.bairro,
+        cid: dadosEndereco.localidade, uf: dadosEndereco.uf, cep: dadosEndereco.cep
+      });
     }
   }
 
@@ -237,7 +370,18 @@ export default function ProdutoDetalhes() {
   useEffect(() => {
     if (configs.length > 0) {
       const [{ val: falarComVendedor }] = configs.filter((config: any) => config.con === 'botFalVen');
+      const [{ val: quaMaxPar }] = configs.filter((config: any) => config.con === 'quamaxpar');
+      const [{ val: valminpar }] = configs.filter((config: any) => config.con === 'valminpar');
+      const [{ val: keyApiGoo }] = configs.filter((config: any) => config.con === 'KeyApiGoo');
+      const [{ val: numWha }] = configs.filter((config: any) => config.con === 'NumWha');
+      const [{ val: CadAutMosPro }] = configs.filter((config: any) => config.con === 'NecCadAutMosPro');
+
       setFinalizarCarrinhoNoWhats(Boolean(JSON.parse(falarComVendedor ?? '0')));
+      setQuaMaxPar(quaMaxPar);
+      setValMinPar(valminpar);
+      setKeyApiGoo(keyApiGoo);
+      setNumCel(numWha);
+      setNecCadAutMosPro(Boolean(+CadAutMosPro));
     }
   }, [configs]);
 
@@ -258,7 +402,7 @@ export default function ProdutoDetalhes() {
         }}
         styles={{
           options: {
-            primaryColor: '#000', // Cor principal do botão
+            primaryColor: '#000'
           }
         }}
       />}
@@ -275,6 +419,7 @@ export default function ProdutoDetalhes() {
                 infiniteLoop
                 selectedItem={indexCarousel}
                 onChange={setIndexCarousel}
+                thumbWidth={fotos.length < 10 ? 60 : 40}
               >
                 {fotos.length > 0 && fotos.map((foto: any, index: number) => (
                   <ImageCarouselContainer key={index}>
@@ -289,7 +434,7 @@ export default function ProdutoDetalhes() {
               <NavDiv>
                 {/* <span>{!location?.state?.caminho ? 'Home' : location?.state?.caminho}</span> */}
                 <span onClick={() => navigate('/')}>{'Home'}</span>
-                <Button className='buttonFavoritar-step'>
+                <Button className='buttonFavoritar-step' onClick={adicionarListaDeDesejo}>
                   Favoritar
                   <AiIcons.AiOutlineHeart style={{ marginLeft: 10 }} size={25} />
                 </Button>
@@ -301,17 +446,32 @@ export default function ProdutoDetalhes() {
               <Ref>
                 Ref: {codbar ?? ''}
               </Ref>
-              <PrecoDiv>
-                <b>
-                  {produtoDetalhes?.valVenMin && formatCurrency(produtoDetalhes?.valVenMin)}
-                </b>
-                {produtoDetalhes?.quaParValMax !== 1 &&
-                  <span>
-                    {produtoDetalhes?.quaParValMax && produtoDetalhes?.quaParValMax + ' x '}
-                    {produtoDetalhes?.valVenMin && produtoDetalhes?.quaParValMax && formatCurrency(produtoDetalhes?.valVenMin / produtoDetalhes?.quaParValMax)}
-                  </span>
-                }
-              </PrecoDiv>
+              {produtoDetalhes.esgSit === 1 && <EsgotadoText>Esgotado</EsgotadoText>}
+              {NecCadAutMosPro ?
+                dadosLogin.autverprosit === 1 ?
+                  <PrecoDiv>
+                    <b>
+                      {(produtoDetalhes?.valVenMin !== 0 && formatCurrency(produtoDetalhes?.valVenMin)) || ''}
+                    </b>
+                    {quaMaxPar > 1 && (produtoDetalhes?.valVenMin / quaMaxPar) >= valMinPar &&
+                      <span>
+                        {quaMaxPar + ' x '}
+                        {produtoDetalhes?.valVenMin && formatCurrency(produtoDetalhes?.valVenMin / quaMaxPar)}
+                      </span>
+                    }
+                  </PrecoDiv> : <></> :
+                <PrecoDiv>
+                  <b>
+                    {(produtoDetalhes?.valVenMin !== 0 && formatCurrency(produtoDetalhes?.valVenMin)) || ''}
+                  </b>
+                  {quaMaxPar > 1 && (produtoDetalhes?.valVenMin / quaMaxPar) >= valMinPar &&
+                    <span>
+                      {quaMaxPar + ' x '}
+                      {produtoDetalhes?.valVenMin && formatCurrency(produtoDetalhes?.valVenMin / quaMaxPar)}
+                    </span>
+                  }
+                </PrecoDiv>
+              }
               <CorTamanhoDiv>
                 {cores.length > 0 &&
                   <CoresDiv className='cores-step'>
@@ -332,18 +492,28 @@ export default function ProdutoDetalhes() {
               </CorTamanhoDiv>
               <hr />
               <NavDivCarrinho>
-                {!finalizarCarrinhoNoWhats &&
+                {!finalizarCarrinhoNoWhats && api.defaults.baseURL !== 'https://viverde-api.herokuapp.com/api' &&
                   <FreteDiv>
                     <span>
                       CALCULE O FRETE E PRAZO DE ENTREGA
                     </span>
                     <FreteInputDiv>
-
                       <>
-                        <FreteInput placeholder='CEP' />
-                        <FiIcons.FiSearch color='#000' style={{ cursor: 'pointer', width: '10%', height: '100%' }} />
+                        <FreteInput
+                          placeholder='CEP'
+                          value={cepFre} onChange={(e: any) => setCepFre(e.target.value.replace(/\D/g, ''))}
+                          onBlur={(e: any) => {
+                            if (e.target.value.replace(/\D/g, '').length !== 8) {
+                              setCepFre('');
+                            }
+                          }} />
+                        <FiIcons.FiSearch
+                          color='#000'
+                          style={{ cursor: 'pointer', width: '10%', height: '100%' }}
+                          onClick={buscaCep}
+                        />
                       </>
-
+                      {fre && <strong>&nbsp;&nbsp;{formatCurrency(fre)}</strong>}
                     </FreteInputDiv>
                   </FreteDiv>
                 }
@@ -364,34 +534,43 @@ export default function ProdutoDetalhes() {
                   </QuantidadeButton>
                 </QuantidadeInputDiv>
                 <Button
-                  backgroundColor='#000'
+                  backgroundColor={api.defaults.baseURL !== 'https://killar-api.herokuapp.com/api' ? '#000' : '#48DE55'}
                   onClick={() => {
+                    if (api.defaults.baseURL === 'https://killar-api.herokuapp.com/api') {
+                      ComprarPeloWhatsApp();
+                      return;
+                    }
+
                     const codmer = produtoDetalhes?.detalhes.filter((produto: any) =>
                       produto.tamanho == tamanhoSelecionado && (produto?.cor ? produto.cor === corSelecionada.padmer : true)
                     );
 
                     addProdutoNoCarrinho({
-                      cod: codmer[0]?.codigo ?? '', codbar: codbar, mer: produtoDetalhes?.mer, codTam: tamanhoSelecionado, cor: corSelecionada,
+                      codmer: codmer[0]?.codigo ?? '', codbar: produtoDetalhes?.codBar, mer: produtoDetalhes?.mer, codtam: tamanhoSelecionado, cor: corSelecionada,
                       quantidade: String(Math.floor(+quantidade)), valor: codmer[0]?.valor ?? 0
                     });
                   }}
                   className='buttonCarrinho-step'
+                  disabled={Boolean(produtoDetalhes?.esgSit)}
                 >
-                  Adicionar ao Carrinho
-                  <AiIcons.AiOutlineShoppingCart style={{ marginLeft: 10 }} size={25} />
+                  {api.defaults.baseURL !== 'https://killar-api.herokuapp.com/api' ? 'Adicionar ao Carrinho' : 'Compre pelo WhatsApp'}
+                  {api.defaults.baseURL !== 'https://killar-api.herokuapp.com/api' ?
+                    <AiIcons.AiOutlineShoppingCart style={{ marginLeft: 10 }} size={25} /> :
+                    <AiIcons.AiOutlineWhatsApp style={{ marginLeft: 10 }} size={25} />
+                  }
                 </Button>
               </NavDivCarrinho>
               <hr />
               <DescricaoProdutoDiv>
                 {desSit.length > 0 && desSit.map((descricao: any, index: any) => (
-                  <Accordion key={index} titulo={descricao.titulo} conteudo={descricao.conteudo} />
+                  <Accordion key={index} titulo={descricao.titulo} texto={descricao.conteudo} />
                 ))}
               </DescricaoProdutoDiv>
               <hr />
               <AvaliacaoProduto codbar={codbar} />
             </ProdutoInfoDiv>
-          </DetalhesDiv>
-        </Container> :
+          </DetalhesDiv >
+        </Container > :
         <ContainerMobile>
           <div style={{ marginLeft: -10 }}>
             <Carousel
@@ -415,29 +594,44 @@ export default function ProdutoDetalhes() {
           </div>
           <NavDiv>
             <span onClick={() => navigate('/')}>{'Home'}</span>
-            <Button className='buttonFavoritar-step'>
+            <Button className='buttonFavoritar-step' onClick={adicionarListaDeDesejo}>
               Favoritar
               <AiIcons.AiOutlineHeart style={{ marginLeft: 10 }} size={25} />
             </Button>
           </NavDiv>
           <hr />
           <Titulo>
-            {produtoDetalhes?.mer ?? ''}
+            {produtoDetalhes?.mer ?? ''} {' '} {corSelecionada?.padmer ?? ''}
           </Titulo>
           <Ref>
             Ref: {codbar ?? ''}
           </Ref>
-          <PrecoDiv>
-            <b>
-              {produtoDetalhes?.valVenMin && formatCurrency(produtoDetalhes?.valVenMin)}
-            </b>
-            {produtoDetalhes?.quaParValMax !== 1 &&
-              <span>
-                {produtoDetalhes?.quaParValMax && produtoDetalhes?.quaParValMax + ' x '}
-                {produtoDetalhes?.valVenMin && produtoDetalhes?.quaParValMax && formatCurrency(produtoDetalhes?.valVenMin / produtoDetalhes?.quaParValMax)}
-              </span>
-            }
-          </PrecoDiv>
+          {produtoDetalhes.esgSit === 1 && <EsgotadoText>Esgotado</EsgotadoText>}
+          {NecCadAutMosPro ?
+            dadosLogin.autverprosit === 1 ?
+              <PrecoDiv>
+                <b>
+                  {(produtoDetalhes?.valVenMin !== 0 && formatCurrency(produtoDetalhes?.valVenMin)) || ''}
+                </b>
+                {quaMaxPar > 1 && (produtoDetalhes?.valVenMin / quaMaxPar) >= valMinPar &&
+                  <span>
+                    {quaMaxPar + ' x '}
+                    {produtoDetalhes?.valVenMin && formatCurrency(produtoDetalhes?.valVenMin / quaMaxPar)}
+                  </span>
+                }
+              </PrecoDiv> : <></> :
+            <PrecoDiv>
+              <b>
+                {(produtoDetalhes?.valVenMin !== 0 && formatCurrency(produtoDetalhes?.valVenMin)) || ''}
+              </b>
+              {quaMaxPar > 1 && (produtoDetalhes?.valVenMin / quaMaxPar) >= valMinPar &&
+                <span>
+                  {quaMaxPar + ' x '}
+                  {produtoDetalhes?.valVenMin && formatCurrency(produtoDetalhes?.valVenMin / quaMaxPar)}
+                </span>
+              }
+            </PrecoDiv>
+          }
           <CorTamanhoDiv isMobile={isMobile}>
             {cores.length > 0 && <CoresDiv className='cores-step'>
               <span>Cor</span>
@@ -455,7 +649,7 @@ export default function ProdutoDetalhes() {
             }
           </CorTamanhoDiv>
           <hr />
-          {!finalizarCarrinhoNoWhats &&
+          {!finalizarCarrinhoNoWhats && api.defaults.baseURL !== 'https://viverde-api.herokuapp.com/api' &&
             <>
               <br />
               <FreteDiv>
@@ -464,9 +658,21 @@ export default function ProdutoDetalhes() {
                 </span>
                 <FreteInputDiv>
                   <>
-                    <FreteInput placeholder='CEP' />
-                    <FiIcons.FiSearch color='#000' style={{ cursor: 'pointer', width: '10%', height: '100%' }} />
+                    <FreteInput
+                      placeholder='CEP'
+                      value={cepFre} onChange={(e: any) => setCepFre(e.target.value.replace(/\D/g, ''))}
+                      onBlur={(e: any) => {
+                        if (e.target.value.replace(/\D/g, '').length !== 8) {
+                          setCepFre('');
+                        }
+                      }} />
+                    <FiIcons.FiSearch
+                      color='#000'
+                      style={{ cursor: 'pointer', width: '10%', height: '100%' }}
+                      onClick={buscaCep}
+                    />
                   </>
+                  {fre && <strong>&nbsp;&nbsp;{formatCurrency(fre)}</strong>}
                 </FreteInputDiv>
               </FreteDiv>
               <br />
@@ -475,7 +681,7 @@ export default function ProdutoDetalhes() {
           }
           <DescricaoProdutoDiv>
             {desSit.length > 0 && desSit.map((descricao: any, index: any) => (
-              <Accordion key={index} titulo={descricao.titulo} conteudo={descricao.conteudo} />
+              <Accordion key={index} titulo={descricao.titulo} texto={descricao.conteudo} />
             ))}
           </DescricaoProdutoDiv>
           <NavDivCarrinho>
@@ -497,20 +703,29 @@ export default function ProdutoDetalhes() {
             </QuantidadeInputDiv>
             <Button
               className='buttonCarrinho-step'
-              backgroundColor='#000'
+              backgroundColor={api.defaults.baseURL !== 'https://killar-api.herokuapp.com/api' ? '#000' : '#48DE55'}
               onClick={() => {
+                if (api.defaults.baseURL === 'https://killar-api.herokuapp.com/api') {
+                  ComprarPeloWhatsApp();
+                  return;
+                }
+
                 const codmer = produtoDetalhes?.detalhes.filter((produto: any) =>
                   produto.tamanho == tamanhoSelecionado && (produto?.cor ? produto.cor === corSelecionada.padmer : true)
                 );
 
                 addProdutoNoCarrinho({
-                  cod: codmer[0]?.codigo ?? '', codbar: codbar, mer: produtoDetalhes?.mer, codTam: tamanhoSelecionado, cor: corSelecionada,
+                  codmer: codmer[0]?.codigo ?? '', codbar: produtoDetalhes?.codBar, mer: produtoDetalhes?.mer, codtam: tamanhoSelecionado, cor: corSelecionada,
                   quantidade: String(Math.floor(+quantidade)), valor: codmer[0]?.valor ?? 0
                 });
               }}
+              disabled={Boolean(produtoDetalhes?.esgSit)}
             >
-              {isMobile ? 'Comprar' : 'Adicionar ao Carrinho'}
-              <AiIcons.AiOutlineShoppingCart style={{ marginLeft: 10 }} size={25} />
+              {api.defaults.baseURL !== 'https://killar-api.herokuapp.com/api' ? isMobile ? 'Comprar' : 'Adicionar ao Carrinho' : 'WhatsApp'}
+              {api.defaults.baseURL !== 'https://killar-api.herokuapp.com/api' ?
+                <AiIcons.AiOutlineShoppingCart style={{ marginLeft: 10 }} size={25} /> :
+                <AiIcons.AiOutlineWhatsApp style={{ marginLeft: 10 }} size={25} />
+              }
             </Button>
           </NavDivCarrinho>
           <hr />

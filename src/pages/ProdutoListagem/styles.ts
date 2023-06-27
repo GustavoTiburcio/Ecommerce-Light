@@ -11,7 +11,7 @@ export const Container = styled.div`
 `;
 
 export const Banner = styled.img`
-  width: 100%;
+  max-width: 100%;
 `;
 
 export const TitleDiv = styled.div`

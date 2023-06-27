@@ -106,6 +106,7 @@ export const ProdutoNomeDiv = styled.div`
   flex-wrap: wrap;
   width: 50%;
   height: 100%;
+  cursor: pointer;
 
   img {
     width: 20%;
@@ -225,6 +226,17 @@ export const FinalizarCarrinhoDiv = styled.div`
 
   span {
     font-weight: 450;
+  }
+
+  p {
+    align-self: center;
+    cursor: pointer;
+    font-weight: 400;
+    margin-top: 10px;
+
+    :hover {
+      color: red
+    }
   }
 
   @media screen and (max-width: 767px){

@@ -22,7 +22,6 @@ export const AccordionTitle = styled.button`
 `;
 
 export const AccordionDiv = styled.div`
-  padding: 0 18px;
   background-color: white;
   overflow: hidden;
   text-indent: 3em;

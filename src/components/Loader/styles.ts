@@ -7,9 +7,8 @@ export const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 98vh;
+  height: 100vh;
   background-color: #FFF;
-  margin-top: -6rem;
   position: relative;
   z-index: 999;
 `;

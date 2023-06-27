@@ -50,3 +50,7 @@ export const TextDiv = styled.div`
     text-transform: capitalize;
   }
 `;
+
+export const EsgotadoText = styled.b`
+  color: red;
+`;

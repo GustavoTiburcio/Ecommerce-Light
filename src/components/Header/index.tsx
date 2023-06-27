@@ -2,23 +2,22 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Buttons, Categorias, Container, LogoDiv, Logo, Subcontainer, ModalDiv, CartIconDiv, CartCountDiv } from './styles';
 import * as FiIcons from 'react-icons/fi';
 import * as AiIcons from 'react-icons/ai';
-import * as GiIcons from 'react-icons/gi';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import ReactModal from 'react-modal';
 import SearchBar from '../SearchBar';
 import useWindowDimensions from '../../utils/WindowDimensions';
 import Context from '../../context/Context';
 import CountUp from 'react-countup';
-// import { toast } from 'react-toastify';
 import api from '../../services/api';
 import SideBarMobile from '../SideBarMobile';
+import MenuTodasCategorias from '../MenuTodasCategorias';
 
 export default function Header() {
   const navigate = useNavigate();
   const { width } = useWindowDimensions();
   const isMobile = width <= 767;
   const location = useLocation();
-  const { configs, carrinho }: any = useContext(Context);
+  const { configs, carrinho, dadosLogin }: any = useContext(Context);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [headerFixoNoScroll, setHeaderFixoNoScroll] = useState(false);
@@ -29,14 +28,14 @@ export default function Header() {
 
   async function getItensMenu() {
     try {
-      const response = await api.get('/secmer/listarParaMegaMenuPersonalizado');
+      const response = await api.get('/itemen/listarParaMegaMenuPersonalizado');
 
       if (response.status === 200) {
         setItensMenu(response.data);
       }
 
     } catch (error: any) {
-      // toast.error('Falha ao buscar itens do Menu. ' + error.message);
+      console.log('Falha ao buscar itens do Menu. ' + error.message);
     }
   }
 
@@ -49,7 +48,7 @@ export default function Header() {
       }
 
     } catch (error: any) {
-      // toast.error('Falha ao buscar todos secmer menu. ' + error.message);
+      console.log('Falha ao buscar todos secmer menu. ' + error.message);
     }
   }
 
@@ -65,7 +64,8 @@ export default function Header() {
           style={{
             overlay: {
               backgroundColor: '#1D1D1D',
-              opacity: 0.9
+              opacity: 0.9,
+              zIndex: 99
             },
             content: {
               display: 'flex',
@@ -152,36 +152,22 @@ export default function Header() {
         </LogoDiv>
         {!isMobile &&
           <Categorias hoverHeaderActive={location.pathname === '/'}>
-            <div className='dropdown'>
-              <button className='dropbtn'>
-                <GiIcons.GiHamburgerMenu size={25} style={{ marginTop: 5 }} />
-              </button>
-              <div className='dropdown-content'>
-                {todosSecMerMenu.map((item: any, index: number) => (
-                  <a
-                    key={index}
-                    onClick={() => navigate(`/produtoListagem/secMer=${item?.secmer.replaceAll('/', '-')}`, { state: { caminho: 'Home > ' + item?.secmer.replaceAll('/', '-') } })}
-                  >
-                    {item?.secmer ?? ''}
-                  </a>
-                ))}
-              </div>
-            </div>
-            {itensMenu.map((item: any, index: number) => (
+            <MenuTodasCategorias todosSecMerMenu={todosSecMerMenu} />
+            {itensMenu.map((itemMenu: any, index: number) => (
               <div className='dropdown' key={index}>
                 <button
                   className='dropbtn'
-                  onClick={() => navigate(`/produtoListagem/itemMenu=${item?.secmer.replaceAll('/', '-')}`, { state: { caminho: 'Home > ' + item?.secmer } })}
+                  onClick={() => navigate(`/produtoListagem/itemMenu=${itemMenu?.parametros.replaceAll('=', ':')}`, { state: { caminho: 'Home > ' + itemMenu?.secmer.replaceAll('/', ' - '), linimaban: itemMenu?.linimaban } })}
                 >
-                  {item?.secmer ?? ''}
+                  {itemMenu?.secmer ?? ''}
                 </button>
                 <div className='dropdown-content'>
-                  {item.subsec.map((subItem: any, index: number) => (
+                  {itemMenu.subsec.map((subSec: any, index: number) => (
                     <a
                       key={index}
-                      onClick={() => navigate(`/produtoListagem/itemMenu=${subItem?.subsec.replaceAll('/', '-')}`, { state: { caminho: 'Home > ' + item?.secmer + ' > ' + subItem?.subsec } })}
+                      onClick={() => navigate(`/produtoListagem/itemMenu=${subSec?.parametros.replaceAll('=', ':')}`, { state: { caminho: 'Home > ' + itemMenu?.secmer.replaceAll('/', ' - ') + ' > ' + subSec?.subsec, linimaban: itemMenu?.linimaban } })}
                     >
-                      {subItem?.subsec ?? ''}
+                      {subSec?.subsec ?? ''}
                     </a>
                   ))}
                 </div>
@@ -193,13 +179,13 @@ export default function Header() {
           <a onClick={() => setModalVisible(true)}>
             <FiIcons.FiSearch />
           </a>
-          <Link to={'/'}>
+          <Link to={'/produtoListagem/listaDesejos='}>
             <AiIcons.AiOutlineHeart />
           </Link>
-          <Link to={'/carrinho'}>
+          {api.defaults.baseURL !== 'https://killar-api.herokuapp.com/api' && <Link to={'/carrinho'}>
             <CartIcon count={carrinhoCount} />
-          </Link>
-          <Link to={'/login'}>
+          </Link>}
+          <Link to={dadosLogin.id === 0 ? '/login' : '/painelDeUsuario'}>
             <FiIcons.FiUser />
           </Link>
         </Buttons>

@@ -49,7 +49,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    background: #fafafa;
+    background: #fff;
     color: #333;
     caret-color: red;
   }

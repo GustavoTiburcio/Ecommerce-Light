@@ -1,5 +1,10 @@
 import styled from 'styled-components';
 
+interface IRodape {
+  width?: number;
+  cursor?: 'pointer' | 'default';
+}
+
 export const Container = styled.div`
   width: 100%;
 `;
@@ -17,110 +22,70 @@ export const SubContainer = styled.div`
   }
 `;
 
-export const WhatsappDiv = styled.a`
+export const WhatsappDiv = styled.a<IRodape>`
   display: flex;
   justify-content: center;
-  width: 20%;
+  width: ${({ width }) => width + '%'};
+
   img {
     width: 80%;
     cursor: pointer;
   }
+
   @media screen and (max-width: 767px) {
       display: none;
   }
 `;
 
-export const ContatoDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  /* justify-content: space-around; */
-  width: 20%;
-
-  b {
-    margin-top: 1rem;
-  }
-
-  span {
-    font-size: 1rem;
-    font-weight: 450;
-    margin-top: 10px;
-    width: 95%;
-  }
+export const ContatoIconsDiv = styled.div`
+  margin-top: 10px;
   a {
-    margin-right: 10px;
-    cursor: pointer;
-  }
-
-  @media screen and (max-width: 767px){
-    overflow: hidden;
-    width: 32%;
-    span  {
-      font-size: 0.5rem;
+    * {
+      font-size: 2rem;
+    }
+    @media screen and (max-width: 767px) {
+      * {
+        font-size: 1rem;
+      }
     }
   }
+
+  a:nth-child(n+2){
+    margin-left: 15px;
+  }
 `;
 
-export const ContatoIconsDiv = styled.div`
+export const RodapeDiv = styled.div<IRodape>`
   display: flex;
-  font-size: 2rem;
+  flex-direction: column;
+  width: ${({ width }) => width + '%'};
+  b {
+    margin-top: 1rem;
+  }
+
+  @media screen and (max-width: 767px) {
+      font-size: 1rem;
+      width: 32%;
+      a {
+        font-size: 0.5rem;
+      }
+  }
+`;
+
+export const ItemRodape = styled.a<IRodape>`
+  font-size: 1rem;
+  font-weight: 450;
   margin-top: 10px;
+  cursor: ${({ cursor }) => cursor ? cursor : 'default'};
+  width: 90%;
 
   @media screen and (max-width: 767px) {
-      font-size: 1rem;
+      font-size: 0.5rem;
   }
 `;
 
-export const AjudaDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 20%;
-
-  b {
-    margin-top: 1rem;
-  }
-
-  a {
-    font-size: 1rem;
-    font-weight: 450;
-    margin-top: 10px;
-    cursor: pointer;
-  }
-
-  @media screen and (max-width: 767px) {
-      font-size: 1rem;
-      width: 32%;
-      a {
-        font-size: 0.5rem;
-      }
-  }
-`;
-
-export const InstitucionalDiv = styled.div`
-display: flex;
-  flex-direction: column;
-  width: 20%;
-  b {
-    margin-top: 1rem;
-  }
-
-  a {
-    font-size: 1rem;
-    font-weight: 450;
-    margin-top: 10px;
-    cursor: pointer;
-  }
-
-  @media screen and (max-width: 767px) {
-      font-size: 1rem;
-      width: 32%;
-      a {
-        font-size: 0.5rem;
-      }
-  }
-`;
-
-export const SegurancaDiv = styled.div`
-  width: 20%;
+export const SegurancaDiv = styled.div<IRodape>`
+  width: ${({ width }) => width + '%'};
   img {
     width: 60%;
   }

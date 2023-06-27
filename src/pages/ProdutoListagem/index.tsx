@@ -1,77 +1,101 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, ChangeEvent } from 'react';
 import Accordion from '../../components/Accordion';
 import Card from '../../components/Card';
 import Footer from '../../components/Footer';
 import {
   Container, Banner, TitleDiv, ProdutosDiv,
-  FiltrosDiv, CardsDiv, InputSlider, ActivityIndicator, NotFoundDiv
+  FiltrosDiv, CardsDiv, ActivityIndicator, NotFoundDiv
 } from './styles';
 import { toast } from 'react-toastify';
 import api from '../../services/api';
-import { formatCurrency } from '../../utils/formatCurrency';
-import { useLocation, useParams } from 'react-router-dom';
-import Context from '../../context/Context';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import Context, { IContext, IListaDesejo } from '../../context/Context';
 import NotFoundSvg from '../../assets/images/not_found.svg';
+import SelectInput from '../../components/SelectInput';
+import { formatCurrency } from '../../utils/formatCurrency';
 
-interface ProdutoCardProps {
+interface IProdutoCard {
   linkFot: string;
   mer: string;
   codbar: string;
-  valVenMin: string | number;
-  parcelamento?: string;
+  valVenMin: number;
+  esgSit?: boolean;
 }
 
 export default function ProdutoListagem() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { pesquisa } = useParams();
-  const { configs }: any = useContext(Context);
+  const { configs, dadosLogin, setListaDesejos }: IContext = useContext(Context);
   const termoPesquisa = pesquisa?.split('=') ?? [];
 
-  const [produtos, setProdutos] = useState<ProdutoCardProps[]>([]);
+  const [produtos, setProdutos] = useState<IProdutoCard[]>([]);
   const [temMais, setTemMais] = useState<boolean>(true);
   const [pagina, setPagina] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  //filtros
+  const [ordem, setOrdem] = useState<any>('mer,asc');
+  const [filtroCores, setFiltroCores] = useState<any>([]);
+  const [filtroTamanhos, setFiltroTamanhos] = useState<any>([]);
+  const [filtroValVen, setFiltroValVen] = useState<any>({ min: 0, max: 0 });
+  const [filtroValVenSelecionado, setFiltroValVenSelecionado] = useState<any>({ min: '', max: '' });
+  const [filtroCoresSelecionadas, setFiltroCoresSelecionadas] = useState<string[]>([]);
+  const [filtroTamanhosSelecionados, setFiltroTamanhosSelecionados] = useState<string[]>([]);
 
   //config
   const [logoURI, setLogoURI] = useState<string>('');
 
   async function getProdutos() {
-    let response;
-
     try {
-      if (!temMais) return;
-
-      setIsLoading(true);
-
-
       if (!termoPesquisa || termoPesquisa.length < 2) {
         throw Error('URL inválida');
       }
 
-      if (termoPesquisa[0] === 'secMer') {
-        response = await api.get(`mercador/RetornaParametrosItemMenuTodasCategorias?page=${pagina}&secmer=${termoPesquisa[1]?.replaceAll('-', '/')}&subsecmer=&CODTABPRE=0&size=8`);
-      } else if (termoPesquisa[0] === 'itemMenu') {
-        response = await api.get(`mercador/RetornaParametrosItemMenuPersonalizado?page=${pagina}&itemClicado=${termoPesquisa[1]?.replaceAll('-', '/')}&CODTABPRE=0&size=8`);
-      } else {
-        response = await api.get(`/mercador/listarProdutosCard?page=${pagina}&PESQUISA=${termoPesquisa[1]?.replaceAll('-', '/')}&size=8`);
+      if (termoPesquisa[0] === 'listaDesejos') {
+        getListaDesejo();
+        return;
       }
 
-      if (response.status === 200) {
-        if (response.data.content.length === 0) {
+      if (!temMais) return;
+
+      setIsLoading(true);
+
+      const params = {
+        page: pagina,
+        codtabpre: 0,
+        size: 8,
+        sort: ordem,
+        cores: filtroCoresSelecionadas.join(','),
+        tamanhos: filtroTamanhosSelecionados.join(','),
+        valvenmin: filtroValVenSelecionado.min,
+        valvenmax: filtroValVenSelecionado.max,
+        ...(termoPesquisa[0] === 'secMer' && { secmer: termoPesquisa[1]?.replaceAll(' - ', '/') }),
+        ...(termoPesquisa[0] === 'itemMenu' && { itemClicado: termoPesquisa[1]?.replaceAll(':', '=') }),
+        ...(termoPesquisa[0] === 'pesquisa' && { pesquisa: termoPesquisa[1]?.replaceAll(' - ', '/') }),
+        ...(termoPesquisa[0] === 'subSecMer' && { subsecmer: termoPesquisa[1]?.replaceAll(' - ', '/') }),
+      };
+
+      const responseMercador = await api.get('/mercador/listarProdutosCard', {
+        params: params
+      });
+
+      if (responseMercador.status === 200) {
+
+        if (responseMercador.data.content.length === 0) {
           setTemMais(false);
           return;
         }
 
-        const newProdutos: ProdutoCardProps[] = response.data.content.map((produto: any) => {
+        const newProdutos: IProdutoCard[] = responseMercador.data.content.map((produto: any) => {
           return {
             linkFot: produto.linkFot ? 'https://' + produto.linkFot : 'https://infoworld.am3shop.com.br/arquivos/08784917000136/publico/produto-padrao.jpg',
             mer: produto.mer,
             codbar: produto.codBar,
-            valVenMin: formatCurrency(produto.valVenMin),
-            parcelamento: `3x de ${formatCurrency(produto.valVenMin / 3)}`
+            valVenMin: produto.valVenMin,
+            esgSit: Boolean(produto.esgSit)
           };
         });
-
         setProdutos([...produtos, ...newProdutos]);
       }
 
@@ -79,6 +103,84 @@ export default function ProdutoListagem() {
       toast.error('Falha ao buscar produtos. ' + error.message);
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function getListaDesejo() {
+    try {
+
+      if (dadosLogin.id === 0) {
+        toast.warning('Faça login para acessar sua lista de desejos');
+        navigate('/login');
+        return;
+      }
+
+      const response = await api.get(`/itelisdes/listarPorUsuario?id=${dadosLogin.id}`);
+
+      if (response.status === 200) {
+        if (response.data === 'Produto não encontrado') {
+          return;
+        }
+
+        const listaDeDesejosNuvem: IListaDesejo[] = response.data.content.map((iteLisDes: any) => {
+          return {
+            cod: iteLisDes.codIteLisDes,
+            codmer: iteLisDes.cod,
+            linkFot: iteLisDes.linkFot ? 'https://' + iteLisDes.linkFot : 'https://infoworld.am3shop.com.br/arquivos/08784917000136/publico/produto-padrao.jpg',
+            mer: iteLisDes.mer,
+            codbar: iteLisDes.codBar,
+            valVenMin: iteLisDes.valVenMin
+          };
+        });
+
+        if (listaDeDesejosNuvem.length > 0) {
+          setListaDesejos(listaDeDesejosNuvem);
+          setProdutos(listaDeDesejosNuvem);
+          setTemMais(false);
+          return;
+        }
+
+      }
+
+    } catch (error: any) {
+      console.log('Falha ao buscar lista de desejos. ' + error.message);
+    }
+  }
+
+  async function getFiltros() {
+    try {
+      setFiltroCoresSelecionadas([]);
+      setFiltroTamanhosSelecionados([]);
+      setFiltroValVenSelecionado({ min: '', max: '' });
+
+      if (termoPesquisa[0] === 'listaDesejos') return;
+
+      const params = {
+        page: 0,
+        codtabpre: 0,
+        ...(termoPesquisa[0] === 'secMer' && { secmer: termoPesquisa[1]?.replaceAll(' - ', '/') }),
+        ...(termoPesquisa[0] === 'itemMenu' && { itemClicado: termoPesquisa[1]?.replaceAll(':', '=') }),
+        ...(termoPesquisa[0] === 'pesquisa' && { pesquisa: termoPesquisa[1]?.replaceAll(' - ', '/') }),
+        ...(termoPesquisa[0] === 'subSecMer' && { subsecmer: termoPesquisa[1]?.replaceAll(' - ', '/') }),
+      };
+
+      const response = await api.get('/mercador/listarItensFiltros', {
+        params: params
+      });
+
+      if (response?.status === 200 && response.data !== 'Nenhum produto a exibir') {
+        const {
+          cores, tamanhos,
+          valVenMin, valVenMax
+        } = response.data;
+
+        setFiltroCores(cores.map((cor: any) => { return { cod: cor.cod, texto: cor.padmer }; }));
+        setFiltroTamanhos(tamanhos.map((tamanho: string) => { return { cod: tamanho, texto: tamanho }; }));
+        setFiltroValVen({ min: valVenMin, max: valVenMax });
+        setFiltroValVenSelecionado({ min: '', max: valVenMax });
+      }
+    } catch (error: any) {
+      toast.error('Falha ao buscar filtro. ' + error.message);
     }
   }
 
@@ -105,12 +207,15 @@ export default function ProdutoListagem() {
 
   useEffect(() => {
     novaPesquisa();
-  }, [pesquisa]);
-
+  }, [pesquisa, ordem, filtroCoresSelecionadas, filtroTamanhosSelecionados]);
 
   useEffect(() => {
     getProdutos();
   }, [pagina]);
+
+  useEffect(() => {
+    getFiltros();
+  }, [pesquisa]);
 
   //Busca mais produtos quando usuario scrolla até o final da página
   useEffect(() => {
@@ -123,29 +228,90 @@ export default function ProdutoListagem() {
   useEffect(() => {
     if (configs.length > 0) {
       const [{ val: uri }] = configs.filter((config: any) => config.gru === 'logo');
+
       setLogoURI('https://' + uri);
     }
   }, [configs]);
 
   return (
     <Container>
-      {!pesquisa && <Banner src='https://td0295.vtexassets.com/assets/vtex.file-manager-graphql/images/b463a0cf-e1e3-4a9d-834a-714c38de43b4___ed11e381031b526d361b84ee82e8e02f.jpg' />}
+      {location.state?.linimaban && location.state?.linimaban !== '' && <Banner src={'https://' + location.state.linimaban} />}
       <TitleDiv>
-        <span>{location?.state?.caminho ?? ''}</span>
-        <b>{`Palavra-chave: ${termoPesquisa.length > 1 ? termoPesquisa[1].replaceAll('-', '/') : ''}`}</b>
-        <span>Ordenação</span>
+        {/* <span>{location?.state?.caminho ?? ''}</span> */}
+        <span></span>
+
+        {termoPesquisa.length > 1 ? termoPesquisa[0] === 'pesquisa' ?
+          <b>{`Palavra - chave: ${termoPesquisa[1].replaceAll(' - ', '/')}`}</b> :
+          <b>{`${location?.state?.caminho ?? ''}`}</b>
+          : ''}
+        {termoPesquisa[0] === 'listaDesejos' && <b>Lista de Desejos</b>}
+        {
+          termoPesquisa[0] !== 'listaDesejos' ?
+            <SelectInput
+              value={ordem}
+              onChange={setOrdem}
+              options={[
+                { value: 'mer,asc', text: 'De A a Z' },
+                { value: 'mer,desc', text: 'De Z a A' },
+                { value: 'valvenmin,asc', text: 'Menor Preço' },
+                { value: 'valvenmin,desc', text: 'Maior Preço' },
+              ]}
+            /> :
+            <div />
+        }
       </TitleDiv>
       <ProdutosDiv>
         <FiltrosDiv>
-          <span>
-            Filtros
-          </span>
-          <Accordion titulo={'Cores'} conteudo={'Cores'} />
-          <Accordion titulo={'Tamanho'} conteudo={'Tamanhos'} />
-          <p>Faixa de preço</p>
-          <InputSlider
-            type="range" name="preço" min="0" max="50"
-          />
+          {termoPesquisa[0] !== 'listaDesejos' &&
+            <>
+              <span>
+                Filtros
+              </span>
+              {filtroCores.length > 0 &&
+                <Accordion
+                  titulo={'Cores'}
+                  texto={'Cores'}
+                  checkboxInputArray={filtroCores}
+                  checkboxInputValuesArray={filtroCoresSelecionadas}
+                  setFiltro={setFiltroCoresSelecionadas}
+                />
+              }
+              {filtroTamanhos.length > 0 &&
+                <Accordion
+                  titulo={'Tamanho'}
+                  texto={'Tamanhos'}
+                  checkboxInputArray={filtroTamanhos}
+                  checkboxInputValuesArray={filtroTamanhosSelecionados}
+                  setFiltro={setFiltroTamanhosSelecionados}
+                />
+              }
+              {filtroValVen.max !== 0 &&
+                <>
+                  <br />
+                  <p>Faixa de preço</p>
+                  <input
+                    type="range"
+                    value={filtroValVenSelecionado.max}
+                    min={0}
+                    max={filtroValVen.max}
+                    onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                      const value = +event.target.value;
+                      setFiltroValVenSelecionado({ min: '', max: value });
+                    }}
+                    onMouseUp={(event: any) => {
+                      event.preventDefault();
+                      novaPesquisa();
+                    }}
+                    onTouchEnd={(event: any) => {
+                      event.preventDefault();
+                      novaPesquisa();
+                    }}
+                  />
+                  <strong>Até {formatCurrency(filtroValVenSelecionado.max)}</strong>
+                </>
+              }
+            </>
+          }
         </FiltrosDiv>
         <CardsDiv>
           {produtos.length > 0 ? produtos.map((produto: any, index: number) => {
@@ -156,14 +322,14 @@ export default function ProdutoListagem() {
                   nome={produto.mer}
                   codbar={produto.codbar}
                   preço={produto.valVenMin}
-                  parcelamento={produto.parcelamento}
+                  esgotado={produto.esgSit}
                 />
               </React.Fragment>);
           }) :
             !isLoading &&
             <NotFoundDiv>
               <img src={NotFoundSvg} />
-              <b>Não encontramos nenhum resultado para sua busca. Tente palavras menos específicas ou palavras-chave diferentes.</b>
+              <b>Não encontramos nenhum resultado para sua busca. Tente palavras menos específicas ou palavras-chave e filtros diferentes.</b>
             </NotFoundDiv>
           }
         </CardsDiv>
